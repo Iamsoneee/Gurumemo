@@ -11,13 +11,17 @@
     <string name="current_location">現在位置</string>
     <string name="within_300m">~300m</string>
     <string name="within_500m">~500m</string>
-    <string name="within_1km">~1km</string>
     <string name="within_2km">~2km</string>
+    <string name="within_3km">~3km</string>
     <string name="search_by_filter">条件から探す</string>
     <string name="search_filter_1">条件1</string>
     <string name="search_filter_2">条件2</string>
     <string name="search_filter_3">条件3</string>
     <string name="search_filter_4">条件4</string>
+    <string name="shop_name">店舗名称</string>
+    <string name="catch_phrase">キャッチフレーズ</string>
+    <string name="access">アクセス</string>
+
 
     <!--  ShopDetailActivity  -->
     <string name="address">住所</string>

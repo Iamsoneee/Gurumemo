@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    tools:context=".SplashActivity">
+
+    <ImageView
+        android:id="@+id/iv_logo_image"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:src="@drawable/ic_logo"
+        android:layout_marginTop="240dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_logo_text"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_marginTop="-40dp"
+        android:src="@drawable/logo_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_logo_image" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    // To hide API key
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
@@ -42,6 +43,14 @@ android {
 }
 
 dependencies {
+
+    // Coroutine Dependencies
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0-RC")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0-RC")
+
+    // Navigation Dependencies
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
