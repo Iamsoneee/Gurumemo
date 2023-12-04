@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Gurumemo</string>
+
+    <!--  Search Bar & Bottom Navigation  -->
+    <string name="search_bar_hint">店舗・エリア・キーワード</string>
+    <string name="home">ホーム</string>
+    <string name="search">検索</string>
+    <string name="bookmark">ブックマーク</string>
+
+    <!--  SearchActivity  -->
+    <string name="current_location">現在位置</string>
+    <string name="within_300m">~300m</string>
+    <string name="within_500m">~500m</string>
+    <string name="within_1km">~1km</string>
+    <string name="within_2km">~2km</string>
+    <string name="search_by_filter">条件から探す</string>
+    <string name="search_filter_1">条件1</string>
+    <string name="search_filter_2">条件2</string>
+    <string name="search_filter_3">条件3</string>
+    <string name="search_filter_4">条件4</string>
+
+    <!--  ShopDetailActivity  -->
+    <string name="address">住所</string>
+    <string name="memo">メモを残す</string>
+
+
+</resources>
