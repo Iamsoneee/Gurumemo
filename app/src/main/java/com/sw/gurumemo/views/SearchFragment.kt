@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import com.sw.gurumemo.MainActivity
 import com.sw.gurumemo.R
 import com.sw.gurumemo.databinding.FragmentSearchBinding
 
@@ -32,6 +33,7 @@ class SearchFragment : Fragment() {
 
         binding?.ivBackButton?.setOnClickListener {
         // TODO - HOME FRAGMENT로 이동해야 함 (Navigation 사용)
+            (requireActivity() as MainActivity).binding.bottomNavigationView.selectedItemId = R.id.fragment_home
         }
 
     }

@@ -25,8 +25,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding?.btnSearch?.setOnClickListener {
-            val searchFragment = SearchFragment()
-
             (requireActivity() as MainActivity).binding.bottomNavigationView.selectedItemId = R.id.fragment_search
         }
     }
