@@ -3,10 +3,14 @@ package com.sw.gurumemo
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
-import androidx.constraintlayout.motion.widget.Debug.getLocation
+import android.util.Log
 import androidx.core.content.ContextCompat
+import java.io.IOException
+import java.util.Locale
 
 class LocationProvider(val context: Context) {
     private var location: Location? = null
@@ -84,5 +88,27 @@ class LocationProvider(val context: Context) {
 
     fun getLocationLongitude(): Double {
         return location?.longitude ?: 0.0
+    }
+
+    fun getCurrentAddress(latitude: Double, longitude: Double): Address? {
+        val geocoder = Geocoder(context, Locale.getDefault())
+        val addresses: List<Address>?
+
+        addresses = try {
+            geocoder.getFromLocation(latitude, longitude, 1)
+        } catch (ioException: IOException) {
+            Log.e("LocationProvider", "지오코더 서비스 사용 불가", ioException)
+            return null
+        } catch (illegalArgumentException: IllegalArgumentException) {
+            Log.e("LocationProvider", "잘못된 위도, 경도", illegalArgumentException)
+            return null
+        }
+
+        if (addresses.isNullOrEmpty()) {
+            Log.e("LocationProvider", "주소가 발견되지 않았습니다.")
+            return null
+        }
+
+        return addresses[0]
     }
 }

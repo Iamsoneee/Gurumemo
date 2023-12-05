@@ -3,7 +3,6 @@ package com.sw.gurumemo
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,6 +10,7 @@ import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -21,6 +21,7 @@ import com.sw.gurumemo.databinding.ActivityMainBinding
 import com.sw.gurumemo.views.SearchFragment
 import com.sw.gurumemo.views.HomeFragment
 import com.sw.gurumemo.views.BookmarkFragment
+import com.sw.gurumemo.LocationProvider
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -33,6 +34,10 @@ class MainActivity : AppCompatActivity() {
     )
 
     lateinit var getGPSPermissionLauncher: ActivityResultLauncher<Intent>
+    lateinit var locationProvider: LocationProvider
+
+    var latitude: Double = 0.0
+    var longitude: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,19 +46,25 @@ class MainActivity : AppCompatActivity() {
 
         checkAllPermissions()
 
+        updateUI()
+
         setupBottomNavigationView()
         if (savedInstanceState == null) {
             binding.bottomNavigationView.selectedItemId = R.id.fragment_home
         }
+
     }
+
+//    Bottom Navigation Settings
 
     private fun setupBottomNavigationView() {
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.fragment_home -> {
                     showBottomNavigation()
+                    val homeFragment = HomeFragment.newInstance(latitude,longitude)
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.frame_layout, HomeFragment())
+                        .replace(R.id.frame_layout, homeFragment)
                         .commit()
                     true
                 }
@@ -87,6 +98,32 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.visibility = View.VISIBLE
     }
 
+//    Getting current location information
+
+    private fun updateUI() {
+        locationProvider = LocationProvider(this@MainActivity)
+
+        latitude = locationProvider.getLocationLatitude()
+        longitude = locationProvider.getLocationLongitude()
+
+        if (latitude != 0.0 || longitude != 0.0) {
+
+            val address = locationProvider.getCurrentAddress(latitude, longitude)
+            address?.let {
+                Log.d(
+                    "Location",
+                    "${address.countryName + address.adminArea + address.thoroughfare}"
+                )
+                Log.d("Location", "위도: ${latitude}")
+                Log.d("Location", "경도: ${longitude}")
+
+            }
+        } else {
+            Log.e("Location", "Couldn't get latitude, longitude from current location.")
+        }
+    }
+
+
 //    Getting GPS permission from user
 
     private fun checkAllPermissions() {
@@ -107,7 +144,7 @@ class MainActivity : AppCompatActivity() {
         ))
     }
 
-    private fun isRunTimePermissionsGranted(){
+    private fun isRunTimePermissionsGranted() {
         val hasFineLocationPermission = ContextCompat.checkSelfPermission(
             this@MainActivity,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -140,7 +177,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         if (checkResult) {
-            // TODO - 위치값 가져와서 활용하기
+            updateUI()
         } else {
             Toast.makeText(
                 this@MainActivity,
@@ -158,7 +195,11 @@ class MainActivity : AppCompatActivity() {
                     if (isLocationServiceAvailable()) {
                         isRunTimePermissionsGranted()
                     } else {
-                        Toast.makeText(this@MainActivity, "位置情報サービスを利用できません。", Toast.LENGTH_SHORT)
+                        Toast.makeText(
+                            this@MainActivity,
+                            "位置情報サービスを利用できません。",
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                         finish()
                     }

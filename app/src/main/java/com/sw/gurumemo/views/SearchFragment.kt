@@ -11,11 +11,26 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import com.sw.gurumemo.LocationProvider
 import com.sw.gurumemo.MainActivity
 import com.sw.gurumemo.R
 import com.sw.gurumemo.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment() {
+
+    companion object {
+        private const val ARG_LATITUDE = "latitude"
+        private const val ARG_LONGITUDE = "longitude"
+
+        fun newInstance(latitude: Double, longitude: Double): SearchFragment {
+            val fragment = SearchFragment()
+            val args = Bundle()
+            args.putDouble(ARG_LATITUDE, latitude)
+            args.putDouble(ARG_LONGITUDE, longitude)
+            fragment.arguments = args
+            return fragment
+        }
+    }
 
     private var binding : FragmentSearchBinding? = null
     override fun onCreateView(

@@ -6,6 +6,11 @@
     <string name="home">ホーム</string>
     <string name="search">検索</string>
     <string name="bookmark">ブックマーク</string>
+    
+    <!-- HomeFragment   -->
+    <string name="geocoder_country_name">日本</string>
+    <string name="geocoder_admin_area">東京都</string>
+    <string name="geocoder_thoroughfare">千代田区</string>
 
     <!--  SearchFragment  -->
     <string name="current_location">現在位置</string>
