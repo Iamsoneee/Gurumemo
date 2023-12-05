@@ -41,7 +41,9 @@ class HomeFragment : Fragment() {
     }
 
     private var binding: FragmentHomeBinding? = null
-    lateinit var adapter: ViewPagerAdapter
+    private lateinit var adapter: ViewPagerAdapter
+    private lateinit var locationProvider: LocationProvider
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,37 +63,16 @@ class HomeFragment : Fragment() {
         }
 
         val arguments = arguments
+        locationProvider = LocationProvider(requireContext())
         if (arguments != null) {
             val latitude = arguments.getDouble(ARG_LATITUDE, 0.0)
             val longitude = arguments.getDouble(ARG_LONGITUDE, 0.0)
-            val currentAddress = getCurrentAddress(latitude, longitude)
-            binding?.tvGeocoderThoroughfare?.text = currentAddress?.thoroughfare
-            binding?.tvGeocoderCountryName?.text = currentAddress?.countryName
+            val currentAddress = locationProvider.getCurrentAddress(latitude, longitude)
+            binding?.tvGeocoderThoroughfare?.text = currentAddress?.thoroughfare ?: "Welcome!"
+            binding?.tvGeocoderCountryName?.text = currentAddress?.countryName ?: "周辺のおすすめスポット"
             binding?.tvGeocoderAdminArea?.text = currentAddress?.adminArea
         }
         setViewPagerWithAutoScroll()
-    }
-
-    private fun getCurrentAddress(latitude: Double, longitude: Double): Address? {
-        val geocoder = Geocoder(requireContext(), Locale.getDefault())
-        val addresses: List<Address>?
-
-        addresses = try {
-            geocoder.getFromLocation(latitude, longitude, 7)
-        } catch (ioException: IOException) {
-            Toast.makeText(requireContext(), "지오코더 서비스 사용 불가합니다.", Toast.LENGTH_SHORT).show()
-            return null
-        } catch (illegalArgumentException: IllegalArgumentException) {
-            Toast.makeText(requireContext(), "잘못된 위도, 경도 입니다.", Toast.LENGTH_SHORT).show()
-            return null
-        }
-
-        if (addresses.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "주소가 발견되지 않았습니다.", Toast.LENGTH_SHORT).show()
-            return null
-        }
-
-        return addresses[0]
     }
 
     private fun getShopList(): ArrayList<Int> {
@@ -108,10 +89,10 @@ class HomeFragment : Fragment() {
                 val currentItem = binding?.vpImageSlider?.currentItem ?: 0
                 val nextItem = (currentItem + 1) % getShopList().size
                 binding?.vpImageSlider?.setCurrentItem(nextItem, true)
-                handler.postDelayed(this, 2000)  // 3초마다 전환하도록 설정
+                handler.postDelayed(this, 2000)  // Move to next every 2 seconds.
             }
         }
-        handler.postDelayed(runnable, 2000)  // 처음에도 3초 후에 실행하도록 설정
+        handler.postDelayed(runnable, 2000)  // 2 seconds delayed in the beginning
     }
 
     override fun onDestroyView() {

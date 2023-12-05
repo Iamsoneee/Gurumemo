@@ -13,6 +13,7 @@
         android:layout_height="60dp"
         android:gravity="center"
         android:orientation="horizontal"
+        android:layout_marginTop="14dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
@@ -32,8 +33,10 @@
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:maxLines="1"
-            android:textColor="@color/offWhite"
-            android:textSize="12sp" />
+            android:backgroundTint="@color/colorAccent"
+            android:focusedByDefault="true"
+            android:textColor="@color/offBlack"
+            android:textSize="14sp" />
 
         <ImageView
             android:id="@+id/iv_erase_button"
@@ -57,6 +60,8 @@
             android:layout_height="40dp"
             android:gravity="center"
             android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:background="@drawable/ripple_unbounded"
             android:orientation="vertical">
 
             <ImageView
