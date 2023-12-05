@@ -33,11 +33,11 @@ class MainActivity : AppCompatActivity() {
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
 
-    lateinit var getGPSPermissionLauncher: ActivityResultLauncher<Intent>
-    lateinit var locationProvider: LocationProvider
+    private lateinit var getGPSPermissionLauncher: ActivityResultLauncher<Intent>
+    private lateinit var locationProvider: LocationProvider
 
-    var latitude: Double = 0.0
-    var longitude: Double = 0.0
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +45,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         checkAllPermissions()
-
         updateUI()
-
         setupBottomNavigationView()
         if (savedInstanceState == null) {
             binding.bottomNavigationView.selectedItemId = R.id.fragment_home
@@ -115,8 +113,8 @@ class MainActivity : AppCompatActivity() {
                     "Location",
                     "${address.countryName + address.adminArea + address.thoroughfare}"
                 )
-                Log.d("Location", "위도: ${latitude}")
-                Log.d("Location", "경도: ${longitude}")
+                Log.d("Location", "Latitude: ${latitude}")
+                Log.d("Location", "Longitude: ${longitude}")
 
             }
         } else {
@@ -210,11 +208,11 @@ class MainActivity : AppCompatActivity() {
         builder.setTitle("位置情報の使用を許可しますか？")
         builder.setMessage("位置サービスがオフになっています。アプリの利用には設定が必要です。")
         builder.setCancelable(true)
-        builder.setPositiveButton("설정", DialogInterface.OnClickListener { dialog, id ->
+        builder.setPositiveButton("設定", DialogInterface.OnClickListener { dialog, id ->
             val callGPSSettingIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             getGPSPermissionLauncher.launch(callGPSSettingIntent)
         })
-        builder.setNegativeButton("취소",
+        builder.setNegativeButton("キャンセル",
             DialogInterface.OnClickListener { dialog, id ->
                 dialog.cancel()
                 Toast.makeText(
