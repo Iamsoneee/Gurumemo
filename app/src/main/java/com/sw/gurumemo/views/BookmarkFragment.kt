@@ -12,7 +12,7 @@ import com.sw.gurumemo.databinding.FragmentBookmarkBinding
 
 class BookmarkFragment : Fragment() {
 
-    private var binding : FragmentBookmarkBinding? = null
+    private var binding: FragmentBookmarkBinding? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,6 +36,7 @@ class BookmarkFragment : Fragment() {
 //            (requireActivity() as MainActivity).binding.bottomNavigationView.selectedItemId = R.id.fragment_home
 //        }
     }
+
     override fun onDestroyView() {
         binding = null
         super.onDestroyView()

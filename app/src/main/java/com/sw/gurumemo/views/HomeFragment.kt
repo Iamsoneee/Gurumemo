@@ -23,6 +23,7 @@ import java.util.Locale
 
 class HomeFragment : Fragment() {
 
+    //    Passing latitude, longitude data from MainActivity to SearchFragment
     companion object {
         private const val ARG_LATITUDE = "latitude"
         private const val ARG_LONGITUDE = "longitude"
@@ -60,7 +61,6 @@ class HomeFragment : Fragment() {
         }
 
         val arguments = arguments
-        Log.e("HomeFragment","$arguments")
         if (arguments != null) {
             val latitude = arguments.getDouble(ARG_LATITUDE, 0.0)
             val longitude = arguments.getDouble(ARG_LONGITUDE, 0.0)

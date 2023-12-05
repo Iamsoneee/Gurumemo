@@ -6,7 +6,7 @@
     <string name="home">ホーム</string>
     <string name="search">検索</string>
     <string name="bookmark">ブックマーク</string>
-    
+
     <!-- HomeFragment   -->
     <string name="geocoder_country_name">日本</string>
     <string name="geocoder_admin_area">東京都</string>
@@ -34,9 +34,8 @@
     <string name="address_detail">〒100-0005 東京都千代田区丸の内一丁目</string>
 
     <!--  BookmarkFragment  -->
-    <string name="user_name">ユーザー名</string>
+    <string name="user_name">Gurumemo</string>
     <string name="memo">メモを残す</string>
-
 
 
 </resources>

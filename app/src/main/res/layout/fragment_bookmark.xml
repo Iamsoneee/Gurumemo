@@ -25,7 +25,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_bookmark_fragment"
-        app:civ_border_color="@color/colorPrimary"/>
+        app:civ_border_color="@color/colorAccent"/>
 
     <TextView
         android:id="@+id/tv_user_name"

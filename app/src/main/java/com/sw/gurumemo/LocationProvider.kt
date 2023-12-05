@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import java.io.IOException
 import java.util.Locale
 
-class LocationProvider(val context: Context) {
+class LocationProvider(private val context: Context) {
     private var location: Location? = null
     private var locationManager: LocationManager? = null
 

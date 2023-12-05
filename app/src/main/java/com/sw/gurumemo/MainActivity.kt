@@ -71,8 +71,9 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.fragment_search -> {
                     hideBottomNavigation()
+                    val searchFragment = SearchFragment.newInstance(latitude, longitude)
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.frame_layout, SearchFragment())
+                        .replace(R.id.frame_layout, searchFragment)
                         .commit()
                     true
                 }

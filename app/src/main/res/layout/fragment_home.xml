@@ -41,11 +41,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="@string/geocoder_thoroughfare"
-        android:textStyle="bold"
-        android:textSize="20sp"
         android:textColor="@color/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@id/btn_search"
-        />
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/btn_search" />
 
     <LinearLayout
         android:id="@+id/ll_geocoder_bottom_text_area"
@@ -59,19 +58,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
-            android:text="@string/geocoder_country_name"
-            />
+            android:text="@string/geocoder_country_name" />
 
         <TextView
             android:id="@+id/tv_geocoder_admin_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/geocoder_admin_area"
-            />
-
+            android:text="@string/geocoder_admin_area" />
 
     </LinearLayout>
-
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp_image_slider"
@@ -82,6 +77,5 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/ll_geocoder_bottom_text_area" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

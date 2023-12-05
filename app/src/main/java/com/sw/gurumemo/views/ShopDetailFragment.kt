@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.sw.gurumemo.R
+
 class ShopDetailFragment : Fragment() {
 
     override fun onCreateView(
@@ -15,7 +16,6 @@ class ShopDetailFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_shop_detail, container, false)
     }
-
 
 
 }
