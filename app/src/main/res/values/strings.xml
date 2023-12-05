@@ -7,7 +7,7 @@
     <string name="search">検索</string>
     <string name="bookmark">ブックマーク</string>
 
-    <!--  SearchActivity  -->
+    <!--  SearchFragment  -->
     <string name="current_location">現在位置</string>
     <string name="within_300m">~300m</string>
     <string name="within_500m">~500m</string>
@@ -22,10 +22,16 @@
     <string name="catch_phrase">キャッチフレーズ</string>
     <string name="access">アクセス</string>
 
-
-    <!--  ShopDetailActivity  -->
+    <!--  ShopDetailFragment  -->
+    <string name="budget">予算</string>
+    <string name="opening_hours">営業時間</string>
     <string name="address">住所</string>
+    <string name="address_detail">〒100-0005 東京都千代田区丸の内一丁目</string>
+
+    <!--  BookmarkFragment  -->
+    <string name="user_name">ユーザー名</string>
     <string name="memo">メモを残す</string>
+
 
 
 </resources>

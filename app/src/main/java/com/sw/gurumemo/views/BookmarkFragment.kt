@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import com.sw.gurumemo.MainActivity
 import com.sw.gurumemo.R
 import com.sw.gurumemo.databinding.FragmentBookmarkBinding
 
@@ -25,15 +26,15 @@ class BookmarkFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Setting ActionBar
-        (requireActivity() as AppCompatActivity).setSupportActionBar(binding?.toolbarBookmarkActivity)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding?.toolbarBookmarkFragment)
         (requireActivity() as AppCompatActivity).supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
+            setDisplayHomeAsUpEnabled(false)
             title = resources.getString(R.string.bookmark)
         }
 
-        binding?.toolbarBookmarkActivity?.setNavigationOnClickListener {
-            requireActivity().onBackPressed()
-        }
+//        binding?.toolbarBookmarkFragment?.setNavigationOnClickListener {
+//            (requireActivity() as MainActivity).binding.bottomNavigationView.selectedItemId = R.id.fragment_home
+//        }
     }
     override fun onDestroyView() {
         binding = null
