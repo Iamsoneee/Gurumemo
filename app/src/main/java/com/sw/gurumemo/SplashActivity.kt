@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 class SplashActivity : AppCompatActivity() {
     private val time: Long = 2000
 
-    lateinit var binding: ActivitySplashBinding
+    private lateinit var binding: ActivitySplashBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

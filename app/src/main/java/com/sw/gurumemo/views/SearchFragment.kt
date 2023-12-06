@@ -1,19 +1,17 @@
 package com.sw.gurumemo.views
 
-import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.os.bundleOf
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
+import com.sw.gurumemo.R
+import androidx.core.widget.addTextChangedListener
 import com.sw.gurumemo.LocationProvider
 import com.sw.gurumemo.MainActivity
-import com.sw.gurumemo.R
 import com.sw.gurumemo.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment(), View.OnClickListener {
@@ -35,10 +33,10 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
     private var binding: FragmentSearchBinding? = null
 
-    lateinit var locationProvider: LocationProvider
+    private lateinit var locationProvider: LocationProvider
 
-    var currentLatitude: Double = 0.0
-    var currentLongitude: Double = 0.0
+    private var currentLatitude: Double = 0.0
+    private var currentLongitude: Double = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,11 +50,37 @@ class SearchFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         val arguments = arguments
         if (arguments != null) {
-            val latitude = arguments.getDouble(SearchFragment.ARG_LATITUDE, 0.0)
-            val longitude = arguments.getDouble(SearchFragment.ARG_LONGITUDE, 0.0)
+            currentLatitude = arguments.getDouble(SearchFragment.ARG_LATITUDE, 0.0)
+            currentLongitude = arguments.getDouble(SearchFragment.ARG_LONGITUDE, 0.0)
+        }
+
+        binding?.etSearchBar?.addTextChangedListener {
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    Log.d("TextWatcher", "Text changed: $s")
+
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+//                    if (s?.length!! > 0) {
+//                        binding?.ivEraseButton?.visibility = View.VISIBLE
+//                    } else {
+//                        binding?.ivEraseButton?.visibility = View.INVISIBLE
+//                    }
+                }
+
+            }
         }
 
         binding?.ivBackButton?.setOnClickListener(this)
@@ -80,7 +104,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
                 locationProvider = LocationProvider(requireContext())
                 currentLatitude = locationProvider.getLocationLatitude()
                 currentLongitude = locationProvider.getLocationLongitude()
-                binding?.tvLatLng?.text = "${currentLatitude}  ${currentLongitude}"
+                binding?.tvLatLng?.text = "$currentLatitude  $currentLongitude"
             }
         }
     }

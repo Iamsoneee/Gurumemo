@@ -11,12 +11,16 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import android.window.OnBackInvokedDispatcher
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 import com.sw.gurumemo.databinding.ActivityMainBinding
 import com.sw.gurumemo.views.SearchFragment
 import com.sw.gurumemo.views.HomeFragment
@@ -54,6 +58,25 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    var backPressedTime: Long = 0
+    override fun onBackPressed() {
+        //2초 이내에 한 번 더 뒤로가기 클릭 시
+        if (System.currentTimeMillis() - backPressedTime < 2000) {
+            super.onBackPressed()
+            return
+        }
+        Toast.makeText(this, "한 번 더 클릭 시 앱이 종료됩니다.", Toast.LENGTH_SHORT).show()
+        backPressedTime = System.currentTimeMillis()
+    }
+
+    //    to hide keyboard when user touch outside the edit text
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        val imm: InputMethodManager =
+            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        return super.dispatchTouchEvent(ev)
+    }
+
 //    Bottom Navigation Settings
 
     private fun setupBottomNavigationView() {
@@ -61,7 +84,7 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.fragment_home -> {
                     showBottomNavigation()
-                    val homeFragment = HomeFragment.newInstance(latitude,longitude)
+                    val homeFragment = HomeFragment.newInstance(latitude, longitude)
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.frame_layout, homeFragment)
                         .commit()
@@ -69,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.fragment_search -> {
-                    hideBottomNavigation()
+                    showBottomNavigation()
                     val searchFragment = SearchFragment.newInstance(latitude, longitude)
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.frame_layout, searchFragment)
@@ -114,8 +137,8 @@ class MainActivity : AppCompatActivity() {
                     "Location",
                     "${address.countryName + address.adminArea + address.thoroughfare}"
                 )
-                Log.d("Location", "Latitude: ${latitude}")
-                Log.d("Location", "Longitude: ${longitude}")
+                Log.d("Location", "Latitude: $latitude")
+                Log.d("Location", "Longitude: $longitude")
 
             }
         } else {
@@ -216,7 +239,7 @@ class MainActivity : AppCompatActivity() {
             getGPSPermissionLauncher.launch(callGPSSettingIntent)
         })
         builder.setNegativeButton("キャンセル",
-            DialogInterface.OnClickListener { dialog, id ->
+            DialogInterface.OnClickListener { dialog, _ ->
                 dialog.cancel()
                 Toast.makeText(
                     this@MainActivity,

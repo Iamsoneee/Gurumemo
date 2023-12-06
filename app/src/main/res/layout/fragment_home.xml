@@ -57,7 +57,7 @@
         android:id="@+id/tv_geocoder_thoroughfare"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="14dp"
         android:text="@string/geocoder_thoroughfare"
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
@@ -69,7 +69,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         app:layout_constraintTop_toBottomOf="@id/tv_geocoder_thoroughfare">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_location"
+            app:tint="@color/gray"
+            android:layout_marginEnd="4dp"
+            />
 
         <TextView
             android:id="@+id/tv_geocoder_country_name"
