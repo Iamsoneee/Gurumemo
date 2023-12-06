@@ -41,7 +41,7 @@ class ShopListAdapter(private val context: Context) :
             val intent = Intent(context, ShopDetailActivity::class.java)
             intent.putExtra("shopID", shop.id)
             context.startActivity(intent)
-            (context as? FragmentActivity)?.finish()
+//            (context as? FragmentActivity)?.finish()
         }
     }
 

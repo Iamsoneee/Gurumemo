@@ -15,7 +15,6 @@
         android:roundIcon="@mipmap/ic_launcher_gurumemo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gurumemo"
-        android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
         <activity
             android:name=".ShopDetailActivity"

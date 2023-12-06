@@ -16,6 +16,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -47,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        this.onBackPressedDispatcher.addCallback(this, callback)
         checkAllPermissions()
         setupUI()
 
@@ -58,15 +59,21 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    var backPressedTime: Long = 0
-    override fun onBackPressed() {
-        //2초 이내에 한 번 더 뒤로가기 클릭 시
-        if (System.currentTimeMillis() - backPressedTime < 2000) {
-            super.onBackPressed()
-            return
+    private var backPressedTime = 0L
+
+    val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (System.currentTimeMillis() - backPressedTime >= 2000) {
+                backPressedTime = System.currentTimeMillis()
+                Toast.makeText(
+                    this@MainActivity,
+                    "뒤로 버튼을 한번 더 누르면 앱을 종료합니다.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else if (System.currentTimeMillis() - backPressedTime < 2000) {
+                finish()
+            }
         }
-        Toast.makeText(this, "한 번 더 클릭 시 앱이 종료됩니다.", Toast.LENGTH_SHORT).show()
-        backPressedTime = System.currentTimeMillis()
     }
 
     //    to hide keyboard when user touch outside the edit text

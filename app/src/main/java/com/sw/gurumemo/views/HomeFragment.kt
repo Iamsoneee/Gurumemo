@@ -1,6 +1,7 @@
 package com.sw.gurumemo.views
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -21,6 +22,7 @@ import com.sw.gurumemo.retrofit.HotPepperService
 import com.sw.gurumemo.retrofit.RetrofitConnection
 import com.sw.gurumemo.retrofit.Shop
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.invoke
 import kotlinx.coroutines.launch
@@ -53,6 +55,8 @@ class HomeFragment : Fragment() {
 
     private var currentLatitude: Double = 0.0
     private var currentLongitude: Double = 0.0
+
+    private var autoScrollJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -149,7 +153,7 @@ class HomeFragment : Fragment() {
         springDotsIndicator?.attachTo(viewPager!!)
 
         // auto scroll function
-        lifecycleScope.launch {
+        autoScrollJob = lifecycleScope.launch {
             autoScroll()
         }
 //        val handler = Handler(Looper.getMainLooper())
@@ -177,6 +181,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        autoScrollJob?.cancel()
         binding = null
         super.onDestroyView()
     }

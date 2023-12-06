@@ -1,9 +1,11 @@
 package com.sw.gurumemo
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import com.sw.gurumemo.databinding.ActivityShopDetailBinding
 import com.sw.gurumemo.databinding.ActivitySplashBinding
@@ -12,10 +14,31 @@ class ShopDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityShopDetailBinding
 
-    private val callback = object : OnBackPressedCallback(true) {
+    private var backPressedTime = 0L
+
+    val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            Log.e("ShopDetailActivity", "뒤로가기 클릭")
+            if (System.currentTimeMillis() - backPressedTime >= 2000) {
+                backPressedTime = System.currentTimeMillis()
+                Toast.makeText(
+                    this@ShopDetailActivity,
+                    "뒤로 버튼을 한번 더 누르면 앱을 종료합니다.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else if (System.currentTimeMillis() - backPressedTime < 2000) {
+                finish()
+            }
         }
+    }
+
+    private fun addOnBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // 뒤로 가기 버튼이 눌렸을 때 처리 동작
+            }
+        }
+
+        this.onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,8 +50,10 @@ class ShopDetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true) //set back button
         supportActionBar?.title = null
 
-        binding.toolbarShopDetailActivity?.setNavigationOnClickListener {
-            this.onBackPressedDispatcher.addCallback(this, callback)
+        binding.toolbarShopDetailActivity.setNavigationOnClickListener {
+            finish()
         }
+
     }
+
 }
