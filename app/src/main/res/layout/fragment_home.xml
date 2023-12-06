@@ -90,10 +90,28 @@
         android:id="@+id/vp_image_slider"
         android:layout_width="match_parent"
         android:layout_height="240dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="14dp"
         android:background="@color/gray"
         android:clipChildren="false"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/ll_geocoder_bottom_text_area" />
+
+    <com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator
+        android:id="@+id/spring_dots_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:dampingRatio="0.5"
+        app:dotsCornerRadius="20dp"
+        app:dotsSize="10dp"
+        app:dotsSpacing="6dp"
+        app:dotsStrokeWidth="1dp"
+        app:stiffness="300"
+        app:dotsColor="@color/colorPrimary"
+        app:dotsStrokeColor="@color/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@id/vp_image_slider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

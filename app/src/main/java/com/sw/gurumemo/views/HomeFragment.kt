@@ -80,8 +80,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun setViewPagerWithAutoScroll() {
-        binding?.vpImageSlider?.adapter = ViewPagerAdapter(getShopList())
-        binding?.vpImageSlider?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        val springDotsIndicator = binding?.springDotsIndicator
+        val viewPager = binding?.vpImageSlider
+        viewPager?.adapter = ViewPagerAdapter(getShopList())
+        viewPager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        springDotsIndicator?.attachTo(viewPager!!)
 
         val handler = Handler(Looper.getMainLooper())
         val runnable = object : Runnable {

@@ -45,7 +45,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         checkAllPermissions()
-        updateUI()
+        setupUI()
+
         setupBottomNavigationView()
         if (savedInstanceState == null) {
             binding.bottomNavigationView.selectedItemId = R.id.fragment_home
@@ -99,7 +100,7 @@ class MainActivity : AppCompatActivity() {
 
 //    Getting current location information
 
-    private fun updateUI() {
+    private fun setupUI() {
         locationProvider = LocationProvider(this@MainActivity)
 
         latitude = locationProvider.getLocationLatitude()
@@ -176,7 +177,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
         if (checkResult) {
-            updateUI()
+            setupUI()
+            setupBottomNavigationView()
+            binding.bottomNavigationView.selectedItemId = R.id.fragment_home
         } else {
             Toast.makeText(
                 this@MainActivity,
