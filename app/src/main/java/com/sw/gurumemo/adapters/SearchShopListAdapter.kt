@@ -2,35 +2,31 @@ package com.sw.gurumemo.adapters
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sw.gurumemo.ShopDetailActivity
 import com.sw.gurumemo.databinding.ItemImageSliderBinding
+import com.sw.gurumemo.databinding.ItemShopBinding
 import com.sw.gurumemo.retrofit.Shop
 
-class ShopListAdapter(private val context: Context) :
-    RecyclerView.Adapter<ShopListAdapter.ViewHolder>() {
+class SearchShopListAdapter(private val context: Context) :
+    RecyclerView.Adapter<SearchShopListAdapter.ViewHolder>() {
      private val shops: MutableList<Shop> = mutableListOf()
 
-     class ViewHolder(private val binding: ItemImageSliderBinding) : RecyclerView.ViewHolder(binding.root){
+     class ViewHolder(private val binding: ItemShopBinding) : RecyclerView.ViewHolder(binding.root){
          fun bind(shop: Shop){
              binding.apply {
-                 Glide.with(itemView.context).load(shop.photo.pc.l).into(ivShop)
+                 Glide.with(itemView.context).load(shop.logo_image).into(ivThumbnailImage)
                  binding.tvShopName.text = shop.name
+                 binding.tvCatchPhrase.text = shop.catch
+                 binding.tvAccess.text = shop.access
              }
          }
      }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemImageSliderBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val binding = ItemShopBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return ViewHolder(binding)
     }
 
@@ -39,7 +35,7 @@ class ShopListAdapter(private val context: Context) :
         holder.bind(shop)
         holder.itemView.setOnClickListener {
             val intent = Intent(context, ShopDetailActivity::class.java)
-            intent.putExtra("shopID", shop.id)
+            intent.putExtra("sliderShopData", shop)
             context.startActivity(intent)
 //            (context as? FragmentActivity)?.finish()
         }

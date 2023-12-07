@@ -1,14 +1,17 @@
 package com.sw.gurumemo
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import com.bumptech.glide.Glide
 import com.sw.gurumemo.databinding.ActivityShopDetailBinding
 import com.sw.gurumemo.databinding.ActivitySplashBinding
+import com.sw.gurumemo.retrofit.Shop
 
 class ShopDetailActivity : AppCompatActivity() {
 
@@ -53,6 +56,16 @@ class ShopDetailActivity : AppCompatActivity() {
         binding.toolbarShopDetailActivity.setNavigationOnClickListener {
             finish()
         }
+
+        val intent = intent
+        val shop = intent.getSerializableExtra("sliderShopData") as Shop
+
+        Glide.with(this).load(shop.photo.pc.l).into(binding.ivMainImage)
+        binding.tvShopName.text = shop.name
+        binding.tvCatchPhrase.text = shop.catch
+        binding.tvBudget.text = shop.budget.name
+        binding.tvOpeningHours.text = shop.open
+        binding.tvAddressDetail.text = shop.address
 
     }
 

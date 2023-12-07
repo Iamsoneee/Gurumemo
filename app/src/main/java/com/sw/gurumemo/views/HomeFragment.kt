@@ -1,10 +1,7 @@
 package com.sw.gurumemo.views
 
 
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,15 +13,13 @@ import com.sw.gurumemo.Constants
 import com.sw.gurumemo.LocationProvider
 import com.sw.gurumemo.MainActivity
 import com.sw.gurumemo.R
-import com.sw.gurumemo.adapters.ShopListAdapter
+import com.sw.gurumemo.adapters.HomeShopListAdapter
 import com.sw.gurumemo.databinding.FragmentHomeBinding
 import com.sw.gurumemo.retrofit.HotPepperService
 import com.sw.gurumemo.retrofit.RetrofitConnection
-import com.sw.gurumemo.retrofit.Shop
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.invoke
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -49,7 +44,7 @@ class HomeFragment : Fragment() {
 
     private var binding: FragmentHomeBinding? = null
 
-    private lateinit var adapter: ShopListAdapter
+    private lateinit var adapter: HomeShopListAdapter
 
     private lateinit var locationProvider: LocationProvider
 
@@ -57,6 +52,7 @@ class HomeFragment : Fragment() {
     private var currentLongitude: Double = 0.0
 
     private var autoScrollJob: Job? = null
+    private var autoScrollEnabled = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -109,7 +105,7 @@ class HomeFragment : Fragment() {
                 Log.e("HotPepper", "$currentLongitude")
 
 
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     adapter.setData(response.results.shop)
                 }
 
@@ -132,7 +128,7 @@ class HomeFragment : Fragment() {
     }
 
     private suspend fun autoScroll() {
-        while (true) {
+        while (autoScrollEnabled) {
             val itemCount = adapter.itemCount
             if (itemCount > 0) {
                 Log.e("HomeFragment", "$itemCount")
@@ -147,7 +143,7 @@ class HomeFragment : Fragment() {
     private fun setViewPagerWithAutoScroll() {
         val springDotsIndicator = binding?.springDotsIndicator
         val viewPager = binding?.vpImageSlider
-        adapter = ShopListAdapter(this.requireContext())
+        adapter = HomeShopListAdapter(this.requireContext())
         viewPager?.adapter = adapter
         viewPager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         springDotsIndicator?.attachTo(viewPager!!)
