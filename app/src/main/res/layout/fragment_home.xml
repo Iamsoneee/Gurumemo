@@ -44,6 +44,7 @@
         android:background="@drawable/search_bar_background"
         android:drawableLeft="@drawable/ic_search_with_search_bar"
         android:drawablePadding="8dp"
+        android:drawableTint="@color/colorAccent"
         android:hint="@string/search_bar_hint"
         android:paddingLeft="16dp"
         android:textAlignment="textStart"

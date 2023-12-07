@@ -13,16 +13,17 @@
     <string name="geocoder_thoroughfare">千代田区</string>
 
     <!--  SearchFragment  -->
+    <string name="no_result_message">No Results Found</string>
     <string name="current_location">現在位置</string>
     <string name="within_300m">~300m</string>
     <string name="within_500m">~500m</string>
     <string name="within_2km">~2km</string>
     <string name="within_3km">~3km</string>
     <string name="search_by_filter">条件から探す</string>
-    <string name="search_filter_1">#条件</string>
-    <string name="search_filter_2">#条件</string>
-    <string name="search_filter_3">#条件</string>
-    <string name="search_filter_4">#条件</string>
+    <string name="search_filter_1">おススメ順</string>
+    <string name="search_filter_2">小エリア順</string>
+    <string name="search_filter_3">ジャンル順</string>
+    <string name="search_filter_4">店名かな順</string>
     <string name="shop_name">店舗名称</string>
     <string name="catch_phrase">キャッチフレーズ</string>
     <string name="access">アクセス</string>

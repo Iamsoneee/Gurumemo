@@ -12,18 +12,21 @@ import com.sw.gurumemo.retrofit.Shop
 
 class HomeShopListAdapter(private val context: Context) :
     RecyclerView.Adapter<HomeShopListAdapter.ViewHolder>() {
-     private val shops: MutableList<Shop> = mutableListOf()
+    private val shops: MutableList<Shop> = mutableListOf()
 
-     class ViewHolder(private val binding: ItemImageSliderBinding) : RecyclerView.ViewHolder(binding.root){
-         fun bind(shop: Shop){
-             binding.apply {
-                 Glide.with(itemView.context).load(shop.photo.pc.l).into(ivShop)
-                 binding.tvShopName.text = shop.name
-             }
-         }
-     }
+    class ViewHolder(private val binding: ItemImageSliderBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(shop: Shop) {
+            binding.apply {
+                Glide.with(itemView.context).load(shop.photo.pc.l).into(ivShop)
+                binding.tvShopName.text = shop.name
+            }
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemImageSliderBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val binding =
+            ItemImageSliderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -34,7 +37,6 @@ class HomeShopListAdapter(private val context: Context) :
             val intent = Intent(context, ShopDetailActivity::class.java)
             intent.putExtra("sliderShopData", shop)
             context.startActivity(intent)
-//            (context as? FragmentActivity)?.finish()
         }
     }
 
@@ -42,15 +44,6 @@ class HomeShopListAdapter(private val context: Context) :
         return shops.size
     }
 
-//    interface OnItemClickListener{
-//        fun onClick(v: View, position: Int)
-//    }
-//
-//    fun setItemClickListener(onItemClickListener:OnItemClickListener){
-//        this.itemClickListener = onItemClickListener
-//    }
-//
-//    private lateinit var itemClickListener : OnItemClickListener
 
     fun setData(newShops: List<Shop>) {
         shops.clear()

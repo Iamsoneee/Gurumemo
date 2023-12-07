@@ -37,23 +37,12 @@ class SearchShopListAdapter(private val context: Context) :
             val intent = Intent(context, ShopDetailActivity::class.java)
             intent.putExtra("sliderShopData", shop)
             context.startActivity(intent)
-//            (context as? FragmentActivity)?.finish()
         }
     }
 
     override fun getItemCount(): Int {
         return shops.size
     }
-
-//    interface OnItemClickListener{
-//        fun onClick(v: View, position: Int)
-//    }
-//
-//    fun setItemClickListener(onItemClickListener:OnItemClickListener){
-//        this.itemClickListener = onItemClickListener
-//    }
-//
-//    private lateinit var itemClickListener : OnItemClickListener
 
     fun setData(newShops: List<Shop>) {
         shops.clear()
@@ -65,4 +54,10 @@ class SearchShopListAdapter(private val context: Context) :
         shops.addAll(newShops)
         notifyDataSetChanged()
     }
+
+    fun clearData() {
+        shops.clear()
+        notifyDataSetChanged()
+    }
+
 }
