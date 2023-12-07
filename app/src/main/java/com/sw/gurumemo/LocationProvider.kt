@@ -92,9 +92,8 @@ class LocationProvider(private val context: Context) {
 
     fun getCurrentAddress(latitude: Double, longitude: Double): Address? {
         val geocoder = Geocoder(context, Locale.getDefault())
-        val addresses: List<Address>?
 
-        addresses = try {
+        val addresses: List<Address>? = try {
             geocoder.getFromLocation(latitude, longitude, 1)
         } catch (ioException: IOException) {
             Log.e("LocationProvider", "지오코더 서비스 사용 불가", ioException)

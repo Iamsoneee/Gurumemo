@@ -62,7 +62,12 @@ class ShopDetailActivity : AppCompatActivity() {
 
         Glide.with(this).load(shop.photo.pc.l).into(binding.ivMainImage)
         binding.tvShopName.text = shop.name
-        binding.tvCatchPhrase.text = shop.catch
+
+        if (shop.genre.catch.isBlank()) {
+            binding.tvCatchPhrase.text = shop.catch
+        } else {
+            binding.tvCatchPhrase.text = shop.genre.catch
+        }
         binding.tvBudget.text = shop.budget.name
         binding.tvOpeningHours.text = shop.open
         binding.tvAddressDetail.text = shop.address

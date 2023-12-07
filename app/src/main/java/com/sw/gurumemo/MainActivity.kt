@@ -15,20 +15,19 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.material.snackbar.Snackbar
 import com.sw.gurumemo.databinding.ActivityMainBinding
 import com.sw.gurumemo.views.SearchFragment
 import com.sw.gurumemo.views.HomeFragment
 import com.sw.gurumemo.views.BookmarkFragment
-import com.sw.gurumemo.LocationProvider
 
 class MainActivity : AppCompatActivity() {
+    private val TAG = "MainActivity"
+
     lateinit var binding: ActivityMainBinding
 
     private val PERMISSIONS_REQUEST_CODE = 100
@@ -61,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
     private var backPressedTime = 0L
 
-    val callback = object : OnBackPressedCallback(true) {
+    private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (System.currentTimeMillis() - backPressedTime >= 2000) {
                 backPressedTime = System.currentTimeMillis()
@@ -132,21 +131,36 @@ class MainActivity : AppCompatActivity() {
         latitude = locationProvider.getLocationLatitude()
         longitude = locationProvider.getLocationLongitude()
 
+        Log.e(TAG,"Current location before country code check: $latitude $longitude")
+
         if (latitude != 0.0 || longitude != 0.0) {
 
             val address = locationProvider.getCurrentAddress(latitude, longitude)
             address?.let {
+
+                if(address.countryCode.equals("JPN")||address.countryCode.equals("JP")){
+                    latitude = locationProvider.getLocationLatitude()
+                    longitude = locationProvider.getLocationLongitude()
+                    Log.e(TAG,"Current location in Japan: $latitude $longitude")
+                }else{
+//                    setting default value in case user doesn't reside in Japan.
+                    latitude = Constants.DEFAULT_LATITUDE_JP
+                    longitude = Constants.DEFAULT_LONGITUDE_JP
+                }
                 Log.d(
-                    "Location",
-                    "${address.countryName + address.adminArea + address.thoroughfare}"
+                    TAG,
+                    address.countryName + address.adminArea + address.thoroughfare + address.countryCode
                 )
-                Log.d("Location", "Latitude: $latitude")
-                Log.d("Location", "Longitude: $longitude")
+                Log.d(TAG, "Current location after country code check: $latitude $longitude")
 
             }
         } else {
-            Log.e("Location", "Couldn't get latitude, longitude from current location.")
+            Log.e(TAG, "Couldn't get latitude, longitude from current location.")
+            latitude = Constants.DEFAULT_LATITUDE_JP
+            longitude = Constants.DEFAULT_LONGITUDE_JP
         }
+        val finalLocation = locationProvider.getCurrentAddress(latitude,longitude)?.countryCode
+        Log.e(TAG, "Final location: $latitude $longitude $finalLocation")
     }
 
 
@@ -237,7 +251,7 @@ class MainActivity : AppCompatActivity() {
         builder.setTitle("位置情報の使用を許可しますか？")
         builder.setMessage("位置サービスがオフになっています。アプリの利用には設定が必要です。")
         builder.setCancelable(true)
-        builder.setPositiveButton("設定", DialogInterface.OnClickListener { dialog, id ->
+        builder.setPositiveButton("設定", DialogInterface.OnClickListener { _, _ ->
             val callGPSSettingIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             getGPSPermissionLauncher.launch(callGPSSettingIntent)
         })

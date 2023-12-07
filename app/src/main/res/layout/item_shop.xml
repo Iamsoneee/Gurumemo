@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="120dp"
-    android:gravity="center_vertical"
     android:orientation="horizontal">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_thumbnail_image"
-        android:layout_width="80dp"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="2"
         android:scaleType="centerCrop"
         android:src="@mipmap/ic_launcher" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="5"
         android:orientation="vertical"
         android:paddingVertical="12dp"
         android:paddingStart="8dp">
@@ -24,10 +26,10 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:gravity="center_vertical"
             android:autoSizeTextType="none"
-            android:maxLines="1"
             android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
             android:text="@string/shop_name"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -37,9 +39,9 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:maxLines="1"
             android:ellipsize="end"
             android:gravity="center_vertical"
+            android:maxLines="1"
             android:text="@string/catch_phrase" />
 
         <TextView
@@ -47,25 +49,23 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:autoSizeTextType="uniform"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:gravity="center_vertical"
             android:text="@string/access" />
 
     </LinearLayout>
 
-    <!--  For the gap between text and icon  -->
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
-
     <ImageView
         android:id="@+id/iv_bookmark_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="top"
+        android:layout_weight="1"
         android:layout_marginTop="14dp"
-        android:layout_marginEnd="14dp"
-        android:src="@drawable/ic_bookmark" />
+        android:background="@drawable/ripple_unbounded"
+        android:clickable="true"
+        android:src="@drawable/ic_bookmark"
+        app:tint="@color/offWhite" />
 
 </LinearLayout>

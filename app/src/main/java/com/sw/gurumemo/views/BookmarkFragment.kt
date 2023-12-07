@@ -31,10 +31,6 @@ class BookmarkFragment : Fragment() {
             setDisplayHomeAsUpEnabled(false)
             title = resources.getString(R.string.bookmark)
         }
-
-//        binding?.toolbarBookmarkFragment?.setNavigationOnClickListener {
-//            (requireActivity() as MainActivity).binding.bottomNavigationView.selectedItemId = R.id.fragment_home
-//        }
     }
 
     override fun onDestroyView() {
