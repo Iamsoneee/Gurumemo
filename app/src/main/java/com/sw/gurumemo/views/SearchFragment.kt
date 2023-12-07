@@ -1,6 +1,5 @@
 package com.sw.gurumemo.views
 
-import android.nfc.tech.MifareUltralight.PAGE_SIZE
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,15 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
-import androidx.core.content.ContentProviderCompat.requireContext
-import com.sw.gurumemo.R
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.sw.gurumemo.Constants
 import com.sw.gurumemo.LocationProvider
 import com.sw.gurumemo.MainActivity
-import com.sw.gurumemo.adapters.HomeShopListAdapter
+import com.sw.gurumemo.R
 import com.sw.gurumemo.adapters.SearchShopListAdapter
 import com.sw.gurumemo.databinding.FragmentSearchBinding
 import com.sw.gurumemo.retrofit.HotPepperService
@@ -27,12 +24,13 @@ import com.sw.gurumemo.retrofit.Shop
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
 
 class SearchFragment : Fragment(), View.OnClickListener {
 
     //    Passing latitude, longitude data from MainActivity to SearchFragment
     companion object {
+        private val TAG = "SearchFragment"
+        private val DEFAULT_QUERY = "東京"
         private const val ARG_LATITUDE = "latitude"
         private const val ARG_LONGITUDE = "longitude"
 
@@ -52,8 +50,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
     private lateinit var adapter: SearchShopListAdapter
     private lateinit var retrofitAPI: HotPepperService
 
-    private var isLoading = false
-    private var inputString = ""
+    //    private var isLoading = false
     private var currentPage = 1
     private var range = 3 // 検索範囲 (初期値: 1000m)
     private var order = 4 // 1:店名かな順 / 2:ジャンルコード順 / 3:小エリアコード順 / 4:おススメ順
@@ -85,8 +82,11 @@ class SearchFragment : Fragment(), View.OnClickListener {
         }
 
         adapter = SearchShopListAdapter(this.requireContext())
-        binding?.rvShopList?.layoutManager = LinearLayoutManager(this.requireContext())
+        val layoutManager = LinearLayoutManager(requireContext())
+        binding?.rvShopList?.layoutManager = layoutManager
         binding?.rvShopList?.adapter = adapter
+
+//        performSearch(inputString)
 
         binding?.etSearchBar?.addTextChangedListener(
             object : TextWatcher {
@@ -96,13 +96,13 @@ class SearchFragment : Fragment(), View.OnClickListener {
                     count: Int,
                     after: Int
                 ) {
-
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (s.toString().isNotEmpty()) {
                         performSearch(s.toString())
                     } else {
+                        performSearch(DEFAULT_QUERY)
                         // Handle empty query case if needed
                     }
 
@@ -115,7 +115,6 @@ class SearchFragment : Fragment(), View.OnClickListener {
                         binding?.ivEraseButton?.visibility = View.INVISIBLE
                     }
 
-                    inputString = s.toString()
 
                 }
 
@@ -154,8 +153,73 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
             R.id.ll_current_location -> {
                 locationProvider = LocationProvider(requireContext())
-                currentLatitude = locationProvider.getLocationLatitude()
-                currentLongitude = locationProvider.getLocationLongitude()
+
+//                lifecycleScope.launch {
+//                    try {
+//                        val address = withContext(Dispatchers.IO) {
+//                            locationProvider.getCurrentAddress(currentLatitude, currentLongitude)
+//                        }
+//
+//                        address?.let {
+//                            Log.e(TAG, "사용 가능한 주소: $it")
+//                            if (it.countryCode.equals("JPN", ignoreCase = true) || it.countryCode.equals("JP", ignoreCase = true)) {
+//                                currentLatitude = withContext(Dispatchers.IO) {
+//                                    locationProvider.getLocationLatitude()
+//                                }
+//                                currentLongitude = withContext(Dispatchers.IO) {
+//                                    locationProvider.getLocationLongitude()
+//                                }
+//                                Log.e(TAG, "현재 위치는 일본입니다: $currentLatitude $currentLongitude")
+//                            } else {
+//                                currentLatitude = Constants.DEFAULT_LATITUDE_JP
+//                                currentLongitude = Constants.DEFAULT_LONGITUDE_JP
+//                                Log.e(TAG, "일본이 아닌 위치에 대한 기본값 설정.")
+//                            }
+//                        } ?: run {
+//                            currentLatitude = Constants.DEFAULT_LATITUDE_JP
+//                            currentLongitude = Constants.DEFAULT_LONGITUDE_JP
+//                            Log.e(TAG, "현재 위치에서 위도, 경도를 가져올 수 없습니다. 기본값이 설정되었습니다.")
+//                        }
+//
+//                        val query = binding?.etSearchBar?.text.toString()
+//                        currentPage = 1
+//                        val response = withContext(Dispatchers.IO) {
+//                            searchWithQuery(query, currentPage, range, order)
+//                        }
+//                        Log.e(TAG, "현재 위치 아이콘 클릭 후 위치: $currentLatitude $currentLongitude")
+//                        Log.e(TAG, "현재 위치 아이콘 클릭 후 응답: $response")
+//                    } catch (e: Exception) {
+//                        Log.e(TAG, "오류 발생: ${e.message}")
+//                    }
+//                }
+
+                val address = locationProvider.getCurrentAddress(currentLatitude, currentLongitude)
+                Log.e(TAG, "Current address before country code check: $address")
+                address?.let {
+                    if (address.countryCode.equals("JPN") || address.countryCode.equals("JP")) {
+                        currentLatitude = address.latitude
+                        currentLongitude = address.longitude
+                        Log.e(TAG, "Current location in Japan: $currentLatitude $currentLongitude")
+                    } else {
+//                    setting default value in case user doesn't reside in Japan.
+                        currentLatitude = Constants.DEFAULT_LATITUDE_JP
+                        currentLongitude = Constants.DEFAULT_LONGITUDE_JP
+                    }
+                } ?: run {
+                    currentLatitude = Constants.DEFAULT_LATITUDE_JP
+                    currentLongitude = Constants.DEFAULT_LONGITUDE_JP
+                    Log.e(
+                        TAG,
+                        "Couldn't get latitude, longitude from current location. Default values are set."
+                    )
+                }
+//                val response = searchWithQuery(inputString, currentPage, range, order)
+                val response = performSearch(DEFAULT_QUERY)
+                Log.e(
+                    TAG,
+                    "Location after the location icon is clicked: $currentLatitude $currentLongitude"
+                )
+                Log.e(TAG, "Response after the location icon is clicked: $response")
             }
 
             R.id.fragment_search -> {
@@ -198,28 +262,28 @@ class SearchFragment : Fragment(), View.OnClickListener {
             }
 
             // filter buttons
-                // おすすめ順
-            R.id.tv_filter_1 ->{
+            // おすすめ順
+            R.id.tv_filter_1 -> {
                 order = 1
                 searchWithQuery(query, currentPage, range, order)
                 binding?.rvShopList?.smoothScrollToPosition(0)
             }
 
-                // 小エリア順
-            R.id.tv_filter_2 ->{
+            // 小エリア順
+            R.id.tv_filter_2 -> {
                 order = 2
                 searchWithQuery(query, currentPage, range, order)
                 binding?.rvShopList?.smoothScrollToPosition(0)
             }
 
-                // ジャンル順
-            R.id.tv_filter_3 ->{
+            // ジャンル順
+            R.id.tv_filter_3 -> {
                 order = 3
                 searchWithQuery(query, currentPage, range, order)
                 binding?.rvShopList?.smoothScrollToPosition(0)
             }
-                // 店名かな順
-            R.id.tv_filter_4 ->{
+            // 店名かな順
+            R.id.tv_filter_4 -> {
                 order = 4
                 searchWithQuery(query, currentPage, range, order)
                 binding?.rvShopList?.smoothScrollToPosition(0)
@@ -234,6 +298,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
             searchWithQuery(query, currentPage, range, order)
         } else {
             // Handle empty query case if needed
+
         }
     }
 
@@ -241,15 +306,14 @@ class SearchFragment : Fragment(), View.OnClickListener {
         retrofitAPI = RetrofitConnection.getInstance().create(HotPepperService::class.java)
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                isLoading = true
+//                isLoading = true
 
                 val response = retrofitAPI.getGourmetData(
                     apiKey = Constants.HOTPEPPER_API_KEY,
-                    lat = "34.702485",
-                    lng = "135.495951",
-//                    lat = currentLatitude.toString(),
-//                    lng = currentLongitude.toString(),
+                    lat = currentLatitude.toString(),
+                    lng = currentLongitude.toString(),
                     name = query, // 가게 이름 검색
+                    nameKana = query,
                     nameAny = query, // 가게 이름 일부
                     keyword = query, // 키워드 검색
                     order = order,
@@ -259,64 +323,51 @@ class SearchFragment : Fragment(), View.OnClickListener {
                 )
 
                 withContext(Dispatchers.Main) {
-                    Log.d("API_RESPONSE", "Response: $response")
+                    Log.d(TAG, "API request for search response: $response")
 
                     if (page == 1) {
-                        updateUI(response.results.shop, isReplace = true)
+                        updateUI(response.results.shop, isReplaced = true)
                     } else {
-                        updateUI(response.results.shop, isReplace = false)
+                        updateUI(response.results.shop, isReplaced = false)
                     }
 
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Log.e("API_ERROR", "Error: ${e.message}", e)
-                    binding?.llNoResult?.visibility = View.VISIBLE
+                    Log.e(TAG, "API request error: ${e.message}", e)
+//                    binding?.llNoResult?.visibility = View.VISIBLE
                 }
-            } finally {
-                isLoading = false
             }
         }
     }
 
-    private fun loadNextPage() {
-        currentPage++
-        binding?.etSearchBar?.text?.let { query ->
-            searchWithQuery(query.toString(), currentPage, range, order)
-        }
-    }
 
-    private fun updateUI(shops: List<Shop>, isReplace: Boolean) {
+    private fun updateUI(shops: List<Shop>, isReplaced: Boolean) {
 
         if (shops.isNotEmpty()) {
-            if (isReplace) {
+            if (isReplaced) {
                 adapter.setData(shops)
             } else {
                 adapter.addData(shops)
             }
             binding?.llNoResult?.visibility = View.GONE
         } else {
-            adapter.clearData()
-            binding?.llNoResult?.visibility = View.VISIBLE
+//            binding?.llNoResult?.visibility = View.VISIBLE
+            if (!isReplaced) {
+                // 이전 아이템을 유지하고 데이터가 없는 경우
+                adapter.addData(emptyList())
+            } else {
+                // 새로운 검색 결과가 없는 경우
+                adapter.clearData()
+                binding?.llNoResult?.visibility = View.VISIBLE
+            }
         }
-
-    }
-
-    override fun onPause() {
-        super.onPause()
-        adapter.clearData()
     }
 
     override fun onResume() {
         super.onResume()
-        if (inputString.isNotEmpty()){
-            searchWithQuery(inputString,currentPage,range,order)
-        }else{
-            adapter.clearData()
-        }
+
     }
-
-
 
     override fun onDestroyView() {
         binding = null

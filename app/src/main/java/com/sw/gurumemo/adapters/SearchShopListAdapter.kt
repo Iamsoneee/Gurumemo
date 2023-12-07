@@ -20,8 +20,13 @@ class SearchShopListAdapter(private val context: Context) :
              binding.apply {
                  Glide.with(itemView.context).load(shop.logo_image).into(ivThumbnailImage)
                  binding.tvShopName.text = shop.name
-                 binding.tvCatchPhrase.text = shop.catch
                  binding.tvAccess.text = shop.access
+
+                 if (shop.genre.catch.isBlank()){
+                 binding.tvCatchPhrase.text = shop.catch
+                 }else{
+                     binding.tvCatchPhrase.text = shop.genre.catch
+                 }
              }
          }
      }
