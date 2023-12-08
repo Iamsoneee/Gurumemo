@@ -9,15 +9,29 @@ import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import com.bumptech.glide.Glide
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.sw.gurumemo.databinding.ActivityShopDetailBinding
 import com.sw.gurumemo.databinding.ActivitySplashBinding
 import com.sw.gurumemo.retrofit.Shop
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class ShopDetailActivity : AppCompatActivity() {
+class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var binding: ActivityShopDetailBinding
 
     private var backPressedTime = 0L
+    private var mMap: GoogleMap? = null
+
+    private var shopLatitude: Double = 0.0
+    private var shopLongitude: Double = 0.0
 
     val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -60,6 +74,9 @@ class ShopDetailActivity : AppCompatActivity() {
         val intent = intent
         val shop = intent.getSerializableExtra("shopData") as Shop
 
+        shopLatitude = shop.lat!!
+        shopLongitude = shop.lng!!
+
         Glide.with(this).load(shop.photo.pc.l).into(binding.ivMainImage)
         binding.tvShopName.text = shop.name
 
@@ -71,6 +88,46 @@ class ShopDetailActivity : AppCompatActivity() {
         binding.tvBudget.text = shop.budget.name
         binding.tvOpeningHours.text = shop.open
         binding.tvAddressDetail.text = shop.address
+
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment?.getMapAsync(this)
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        CoroutineScope(Dispatchers.Main).launch {
+            val shopLocation = withContext(Dispatchers.Default) {
+                LatLng(shopLatitude, shopLongitude)
+            }
+
+            mMap?.let {
+                it.setMaxZoomPreference(20.0f)
+                it.setMinZoomPreference(12.0f)
+                it.moveCamera(CameraUpdateFactory.newLatLngZoom(shopLocation, 16f))
+            }
+
+            setMarker()
+        }
+    }
+
+    private fun setMarker() {
+        mMap?.let {
+            it.clear()
+
+            val markerOptions = MarkerOptions()
+            markerOptions.position(it.cameraPosition.target)
+            markerOptions.title("店舗位置")
+
+            val marker = it.addMarker(markerOptions)
+
+            it.setOnCameraIdleListener {
+                marker?.let { marker -> marker.position = it.cameraPosition.target }
+            }
+        }
+    }
+
+    private fun updateUI() {
 
     }
 

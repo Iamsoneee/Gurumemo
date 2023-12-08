@@ -27,6 +27,8 @@ data class Shop(
     val mobile_access: String,
     val photo: Photo,
     val open: String?,
+    val lat: Double?,
+    val lng: Double?,
 ) : Serializable
 
 data class Genre(
