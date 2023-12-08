@@ -112,15 +112,16 @@ class HomeFragment : Fragment() {
                         apiKey = Constants.HOTPEPPER_API_KEY,
                         lat = currentLatitude.toString(),
                         lng = currentLongitude.toString(),
-                        genre = genreList.random()
+//                        genre = genreList.random()
                     )
                 }
                 Log.e(TAG, "Image slider response: $response")
                 Log.e(TAG, "Request data by: $currentLatitude $currentLongitude")
 
                 withContext(Dispatchers.Main) {
-                    adapter.setData(response.results.shop)
+                    adapter.setData(response.results.shop.shuffled().take(5))
                 }
+
 
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {

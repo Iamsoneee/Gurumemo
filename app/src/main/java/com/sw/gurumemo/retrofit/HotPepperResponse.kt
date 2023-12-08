@@ -29,6 +29,7 @@ data class Shop(
     val open: String?,
     val lat: Double?,
     val lng: Double?,
+    val urls: Urls,
 ) : Serializable
 
 data class Genre(
@@ -47,6 +48,10 @@ data class Photo(
 
 data class PC(
     val l: String
+) : Serializable
+
+data class Urls(
+    val pc: String,
 ) : Serializable
 
 
