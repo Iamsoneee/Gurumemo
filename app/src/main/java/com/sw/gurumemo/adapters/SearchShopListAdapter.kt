@@ -1,5 +1,6 @@
 package com.sw.gurumemo.adapters
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -8,14 +9,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sw.gurumemo.ShopDetailActivity
 import com.sw.gurumemo.databinding.ItemImageSliderBinding
+import com.sw.gurumemo.databinding.ItemLoadingBinding
 import com.sw.gurumemo.databinding.ItemShopBinding
+import com.sw.gurumemo.retrofit.Budget
+import com.sw.gurumemo.retrofit.Genre
+import com.sw.gurumemo.retrofit.PC
+import com.sw.gurumemo.retrofit.Photo
 import com.sw.gurumemo.retrofit.Shop
 
 class SearchShopListAdapter(private val context: Context) :
     RecyclerView.Adapter<SearchShopListAdapter.ViewHolder>() {
     private val shops: MutableList<Shop> = mutableListOf()
+    private val VIEW_TYPE_ITEM = 0
+    private val VIEW_TYPE_LOADING = -1
+    private var isLoading = false
 
-    class ViewHolder(private val binding: ItemShopBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ItemShopBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(shop: Shop) {
             binding.apply {
                 Glide.with(itemView.context).load(shop.logo_image).into(ivThumbnailImage)
@@ -31,19 +40,19 @@ class SearchShopListAdapter(private val context: Context) :
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemShopBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val shop = shops[position]
         holder.bind(shop)
         holder.itemView.setOnClickListener {
             val intent = Intent(context, ShopDetailActivity::class.java)
-            intent.putExtra("sliderShopData", shop)
+            intent.putExtra("shopData", shop)
             context.startActivity(intent)
         }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ItemShopBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -61,7 +70,7 @@ class SearchShopListAdapter(private val context: Context) :
         notifyDataSetChanged()
     }
 
-    fun clearData(){
+    fun clearData() {
         shops.clear()
         notifyDataSetChanged()
     }

@@ -15,8 +15,8 @@
     <!--  SearchFragment  -->
     <string name="no_result_message">No Results Found</string>
     <string name="current_location">現在位置</string>
-    <string name="within_300m">~300m</string>
-    <string name="within_500m">~500m</string>
+    <string name="within_300m">~500m</string>
+    <string name="within_500m">~1km</string>
     <string name="within_2km">~2km</string>
     <string name="within_3km">~3km</string>
     <string name="search_by_filter">条件から探す</string>

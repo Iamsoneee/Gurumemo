@@ -58,7 +58,7 @@ class ShopDetailActivity : AppCompatActivity() {
         }
 
         val intent = intent
-        val shop = intent.getSerializableExtra("sliderShopData") as Shop
+        val shop = intent.getSerializableExtra("shopData") as Shop
 
         Glide.with(this).load(shop.photo.pc.l).into(binding.ivMainImage)
         binding.tvShopName.text = shop.name

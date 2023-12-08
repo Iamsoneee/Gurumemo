@@ -36,22 +36,15 @@ data class Genre(
 ) : Serializable
 
 data class Budget(
-    val code: String,
     val name: String,
-    val average: String,
 ) : Serializable
 
 data class Photo(
     val pc: PC,
-    val mobile: Mobile
 ) : Serializable
 
 data class PC(
     val l: String
 ) : Serializable
 
-data class Mobile(
-    val l: String,
-    val s: String
-) : Serializable
 

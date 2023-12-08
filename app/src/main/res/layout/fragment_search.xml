@@ -106,7 +106,7 @@
             android:gravity="center">
 
             <TextView
-                android:id="@+id/tv_within_300m"
+                android:id="@+id/tv_within_500m"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="4dp"
@@ -122,7 +122,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_within_500m"
+                android:id="@+id/tv_within_1km"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="4dp"
@@ -194,7 +194,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-
             android:orientation="vertical">
 
             <LinearLayout

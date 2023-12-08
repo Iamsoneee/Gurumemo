@@ -22,6 +22,8 @@ import com.sw.gurumemo.retrofit.HotPepperService
 import com.sw.gurumemo.retrofit.RetrofitConnection
 import com.sw.gurumemo.retrofit.Shop
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -50,10 +52,10 @@ class SearchFragment : Fragment(), View.OnClickListener {
     private lateinit var retrofitAPI: HotPepperService
 
 
-    //    private var isLoading = false
+//    private var isLoading = false
     private var query: String? = null
     private var currentPage = 1
-    private var range = 3 // 検索範囲 (初期値: 1000m)
+    private var range = 1 // 検索範囲 (初期値: 1000m)
     private var order = 4 // 1:店名かな順 / 2:ジャンルコード順 / 3:小エリアコード順 / 4:おススメ順
     private val PAGE_SIZE = 30
 
@@ -87,8 +89,25 @@ class SearchFragment : Fragment(), View.OnClickListener {
         binding?.rvShopList?.layoutManager = layoutManager
         binding?.rvShopList?.adapter = adapter
 
+
+        binding?.rvShopList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val lastVisibleItemPosition =
+                    (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                val itemTotalCount = recyclerView.adapter!!.itemCount - 1
+
+                if (!recyclerView.canScrollVertically(1) && lastVisibleItemPosition == itemTotalCount) {
+                    currentPage++
+                    performSearch(query.orEmpty())
+                }
+            }
+        })
+
         binding?.etSearchBar?.addTextChangedListener(
             object : TextWatcher {
+                private var searchJob: Job? = null
                 override fun beforeTextChanged(
                     s: CharSequence?,
                     start: Int,
@@ -98,7 +117,11 @@ class SearchFragment : Fragment(), View.OnClickListener {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    performSearch(s.toString())
+                    searchJob?.cancel()
+                    searchJob = lifecycleScope.launch {
+//                        delay(500) // 예: 500ms 딜레이를 두고 검색 수행
+                        performSearch(s.toString() ?: "")
+                    }
                 }
 
                 override fun afterTextChanged(s: Editable?) {
@@ -117,8 +140,8 @@ class SearchFragment : Fragment(), View.OnClickListener {
         binding?.root?.setOnClickListener(this)
         binding?.etSearchBar?.setOnClickListener(this)
 
-        binding?.tvWithin300m?.setOnClickListener(this)
         binding?.tvWithin500m?.setOnClickListener(this)
+        binding?.tvWithin1km?.setOnClickListener(this)
         binding?.tvWithin2km?.setOnClickListener(this)
         binding?.tvWithin3km?.setOnClickListener(this)
 
@@ -183,7 +206,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
                         Log.e(TAG, "Error: ${e.message}")
                     }
                 }
-                binding?.rvShopList?.smoothScrollToPosition(0)
+                binding?.rvShopList?.scrollToPosition(0)
             }
 
             R.id.fragment_search -> {
@@ -195,28 +218,28 @@ class SearchFragment : Fragment(), View.OnClickListener {
             }
 
             // range buttons
-            R.id.tv_within_300m -> {
-                range = 1
-                performSearch(query)
-                binding?.rvShopList?.smoothScrollToPosition(0)
-            }
-
             R.id.tv_within_500m -> {
                 range = 2
                 performSearch(query)
-                binding?.rvShopList?.smoothScrollToPosition(0)
+                binding?.rvShopList?.scrollToPosition(0)
+            }
+
+            R.id.tv_within_1km -> {
+                range = 3
+                performSearch(query)
+                binding?.rvShopList?.scrollToPosition(0)
             }
 
             R.id.tv_within_2km -> {
                 range = 4
                 performSearch(query)
-                binding?.rvShopList?.smoothScrollToPosition(0)
+                binding?.rvShopList?.scrollToPosition(0)
             }
 
             R.id.tv_within_3km -> {
                 range = 5
                 performSearch(query)
-                binding?.rvShopList?.smoothScrollToPosition(0)
+                binding?.rvShopList?.scrollToPosition(0)
             }
 
             // filter buttons
@@ -224,27 +247,27 @@ class SearchFragment : Fragment(), View.OnClickListener {
             R.id.tv_filter_1 -> {
                 order = 1
                 performSearch(query)
-                binding?.rvShopList?.smoothScrollToPosition(0)
+                binding?.rvShopList?.scrollToPosition(0)
             }
 
             // 小エリア順
             R.id.tv_filter_2 -> {
                 order = 2
                 performSearch(query)
-                binding?.rvShopList?.smoothScrollToPosition(0)
+                binding?.rvShopList?.scrollToPosition(0)
             }
 
             // ジャンル順
             R.id.tv_filter_3 -> {
                 order = 3
                 performSearch(query)
-                binding?.rvShopList?.smoothScrollToPosition(0)
+                binding?.rvShopList?.scrollToPosition(0)
             }
             // 店名かな順
             R.id.tv_filter_4 -> {
                 order = 4
                 performSearch(query)
-                binding?.rvShopList?.smoothScrollToPosition(0)
+                binding?.rvShopList?.scrollToPosition(0)
             }
         }
     }
@@ -309,7 +332,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun updateUI(shops: List<Shop>, isReplaced: Boolean) {
+    private suspend fun updateUI(shops: List<Shop>, isReplaced: Boolean) {
         if (isReplaced) {
             adapter.setData(shops)
         } else {

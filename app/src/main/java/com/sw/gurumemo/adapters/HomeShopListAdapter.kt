@@ -35,7 +35,7 @@ class HomeShopListAdapter(private val context: Context) :
         holder.bind(shop)
         holder.itemView.setOnClickListener {
             val intent = Intent(context, ShopDetailActivity::class.java)
-            intent.putExtra("sliderShopData", shop)
+            intent.putExtra("shopData", shop)
             context.startActivity(intent)
         }
     }
