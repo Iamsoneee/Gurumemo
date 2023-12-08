@@ -37,6 +37,8 @@
     <!--  BookmarkFragment  -->
     <string name="user_name">Gurumemo</string>
     <string name="memo">メモを残す</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

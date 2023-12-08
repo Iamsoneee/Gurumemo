@@ -18,6 +18,7 @@ interface HotPepperService {
         @Query("start") start: Int? = 1,  // 検索スタート位置
         @Query("count") count: Int? = 5,  // ページあたりの結果数
         @Query("range") range: Int? = 3,  // 検索範囲
+        @Query("genre") genre: String? = null,  // ジャンル別
         @Query("large_area") largeArea: String? = null, // 例）東京
         @Query("middle_area") middleArea: String? = null, // 例）銀座・有楽町・新橋・築地・月島
         @Query("small_area") smallArea: String? = null, // 例）新橋
