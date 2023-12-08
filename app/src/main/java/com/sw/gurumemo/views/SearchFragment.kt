@@ -30,7 +30,6 @@ class SearchFragment : Fragment(), View.OnClickListener {
     //    Passing latitude, longitude data from MainActivity to SearchFragment
     companion object {
         private val TAG = "SearchFragment"
-        private val DEFAULT_QUERY = "東京"
         private const val ARG_LATITUDE = "latitude"
         private const val ARG_LONGITUDE = "longitude"
 
@@ -50,7 +49,9 @@ class SearchFragment : Fragment(), View.OnClickListener {
     private lateinit var adapter: SearchShopListAdapter
     private lateinit var retrofitAPI: HotPepperService
 
+
     //    private var isLoading = false
+    private var query: String? = null
     private var currentPage = 1
     private var range = 3 // 検索範囲 (初期値: 1000m)
     private var order = 4 // 1:店名かな順 / 2:ジャンルコード順 / 3:小エリアコード順 / 4:おススメ順
@@ -86,8 +87,6 @@ class SearchFragment : Fragment(), View.OnClickListener {
         binding?.rvShopList?.layoutManager = layoutManager
         binding?.rvShopList?.adapter = adapter
 
-//        performSearch(inputString)
-
         binding?.etSearchBar?.addTextChangedListener(
             object : TextWatcher {
                 override fun beforeTextChanged(
@@ -99,13 +98,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (s.toString().isNotEmpty()) {
-                        performSearch(s.toString())
-                    } else {
-                        performSearch(DEFAULT_QUERY)
-                        // Handle empty query case if needed
-                    }
-
+                    performSearch(s.toString())
                 }
 
                 override fun afterTextChanged(s: Editable?) {
@@ -114,10 +107,8 @@ class SearchFragment : Fragment(), View.OnClickListener {
                     } else {
                         binding?.ivEraseButton?.visibility = View.INVISIBLE
                     }
-
-
+                    query = s.toString()
                 }
-
             })
 
         binding?.ivBackButton?.setOnClickListener(this)
@@ -135,11 +126,11 @@ class SearchFragment : Fragment(), View.OnClickListener {
         binding?.tvFilter2?.setOnClickListener(this)
         binding?.tvFilter3?.setOnClickListener(this)
         binding?.tvFilter4?.setOnClickListener(this)
-
     }
 
 
     override fun onClick(v: View?) {
+        val query: String = binding?.etSearchBar?.text.toString()
         when (v?.id) {
             R.id.iv_back_button -> {
                 (requireActivity() as MainActivity).binding.bottomNavigationView.selectedItemId =
@@ -151,75 +142,48 @@ class SearchFragment : Fragment(), View.OnClickListener {
                 binding?.llNoResult?.visibility = View.GONE
             }
 
+            // current location button
             R.id.ll_current_location -> {
                 locationProvider = LocationProvider(requireContext())
-
-//                lifecycleScope.launch {
-//                    try {
-//                        val address = withContext(Dispatchers.IO) {
-//                            locationProvider.getCurrentAddress(currentLatitude, currentLongitude)
-//                        }
-//
-//                        address?.let {
-//                            Log.e(TAG, "사용 가능한 주소: $it")
-//                            if (it.countryCode.equals("JPN", ignoreCase = true) || it.countryCode.equals("JP", ignoreCase = true)) {
-//                                currentLatitude = withContext(Dispatchers.IO) {
-//                                    locationProvider.getLocationLatitude()
-//                                }
-//                                currentLongitude = withContext(Dispatchers.IO) {
-//                                    locationProvider.getLocationLongitude()
-//                                }
-//                                Log.e(TAG, "현재 위치는 일본입니다: $currentLatitude $currentLongitude")
-//                            } else {
-//                                currentLatitude = Constants.DEFAULT_LATITUDE_JP
-//                                currentLongitude = Constants.DEFAULT_LONGITUDE_JP
-//                                Log.e(TAG, "일본이 아닌 위치에 대한 기본값 설정.")
-//                            }
-//                        } ?: run {
-//                            currentLatitude = Constants.DEFAULT_LATITUDE_JP
-//                            currentLongitude = Constants.DEFAULT_LONGITUDE_JP
-//                            Log.e(TAG, "현재 위치에서 위도, 경도를 가져올 수 없습니다. 기본값이 설정되었습니다.")
-//                        }
-//
-//                        val query = binding?.etSearchBar?.text.toString()
-//                        currentPage = 1
-//                        val response = withContext(Dispatchers.IO) {
-//                            searchWithQuery(query, currentPage, range, order)
-//                        }
-//                        Log.e(TAG, "현재 위치 아이콘 클릭 후 위치: $currentLatitude $currentLongitude")
-//                        Log.e(TAG, "현재 위치 아이콘 클릭 후 응답: $response")
-//                    } catch (e: Exception) {
-//                        Log.e(TAG, "오류 발생: ${e.message}")
-//                    }
-//                }
-
-                val address = locationProvider.getCurrentAddress(currentLatitude, currentLongitude)
-                Log.e(TAG, "Current address before country code check: $address")
-                address?.let {
-                    if (address.countryCode.equals("JPN") || address.countryCode.equals("JP")) {
-                        currentLatitude = address.latitude
-                        currentLongitude = address.longitude
-                        Log.e(TAG, "Current location in Japan: $currentLatitude $currentLongitude")
-                    } else {
+                lifecycleScope.launch {
+                    try {
+                        val address = withContext(Dispatchers.IO) {
+                            locationProvider.getCurrentAddress(currentLatitude, currentLongitude)
+                        }
+                        Log.e(TAG, "Current address before country code check: $address")
+                        address?.let {
+                            if (address.countryCode.equals("JPN") || address.countryCode.equals("JP")) {
+                                currentLatitude = address.latitude
+                                currentLongitude = address.longitude
+                                Log.e(
+                                    TAG,
+                                    "Current location in Japan: $currentLatitude $currentLongitude"
+                                )
+                            } else {
 //                    setting default value in case user doesn't reside in Japan.
-                        currentLatitude = Constants.DEFAULT_LATITUDE_JP
-                        currentLongitude = Constants.DEFAULT_LONGITUDE_JP
+                                currentLatitude = Constants.DEFAULT_LATITUDE_JP
+                                currentLongitude = Constants.DEFAULT_LONGITUDE_JP
+                            }
+                        } ?: run {
+                            currentLatitude = Constants.DEFAULT_LATITUDE_JP
+                            currentLongitude = Constants.DEFAULT_LONGITUDE_JP
+                            Log.e(
+                                TAG,
+                                "Couldn't get latitude, longitude from current location. Default values are set."
+                            )
+                        }
+                        val response = performSearch(query)
+//                val response = performSearch(DEFAULT_QUERY)
+                        Log.e(
+                            TAG,
+                            "Location after the location icon is clicked: $currentLatitude $currentLongitude"
+                        )
+                        Log.e(TAG, "Response after the location icon is clicked: $response")
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error: ${e.message}")
                     }
-                } ?: run {
-                    currentLatitude = Constants.DEFAULT_LATITUDE_JP
-                    currentLongitude = Constants.DEFAULT_LONGITUDE_JP
-                    Log.e(
-                        TAG,
-                        "Couldn't get latitude, longitude from current location. Default values are set."
-                    )
                 }
-//                val response = searchWithQuery(inputString, currentPage, range, order)
-                val response = performSearch(DEFAULT_QUERY)
-                Log.e(
-                    TAG,
-                    "Location after the location icon is clicked: $currentLatitude $currentLongitude"
-                )
-                Log.e(TAG, "Response after the location icon is clicked: $response")
+                binding?.rvShopList?.smoothScrollToPosition(0)
             }
 
             R.id.fragment_search -> {
@@ -229,35 +193,29 @@ class SearchFragment : Fragment(), View.OnClickListener {
             R.id.et_search_bar -> {
                 binding?.etSearchBar?.isCursorVisible = true
             }
-        }
 
-        val buttonId = v?.id
-        val query: String = binding?.etSearchBar?.text.toString()
-        val currentPage = 1 // to initialize the page
-
-        when (buttonId) {
             // range buttons
             R.id.tv_within_300m -> {
                 range = 1
-                searchWithQuery(query, currentPage, range, order)
+                performSearch(query)
                 binding?.rvShopList?.smoothScrollToPosition(0)
             }
 
             R.id.tv_within_500m -> {
                 range = 2
-                searchWithQuery(query, currentPage, range, order)
+                performSearch(query)
                 binding?.rvShopList?.smoothScrollToPosition(0)
             }
 
             R.id.tv_within_2km -> {
                 range = 4
-                searchWithQuery(query, currentPage, range, order)
+                performSearch(query)
                 binding?.rvShopList?.smoothScrollToPosition(0)
             }
 
             R.id.tv_within_3km -> {
                 range = 5
-                searchWithQuery(query, currentPage, range, order)
+                performSearch(query)
                 binding?.rvShopList?.smoothScrollToPosition(0)
             }
 
@@ -265,27 +223,27 @@ class SearchFragment : Fragment(), View.OnClickListener {
             // おすすめ順
             R.id.tv_filter_1 -> {
                 order = 1
-                searchWithQuery(query, currentPage, range, order)
+                performSearch(query)
                 binding?.rvShopList?.smoothScrollToPosition(0)
             }
 
             // 小エリア順
             R.id.tv_filter_2 -> {
                 order = 2
-                searchWithQuery(query, currentPage, range, order)
+                performSearch(query)
                 binding?.rvShopList?.smoothScrollToPosition(0)
             }
 
             // ジャンル順
             R.id.tv_filter_3 -> {
                 order = 3
-                searchWithQuery(query, currentPage, range, order)
+                performSearch(query)
                 binding?.rvShopList?.smoothScrollToPosition(0)
             }
             // 店名かな順
             R.id.tv_filter_4 -> {
                 order = 4
-                searchWithQuery(query, currentPage, range, order)
+                performSearch(query)
                 binding?.rvShopList?.smoothScrollToPosition(0)
             }
         }
@@ -295,10 +253,19 @@ class SearchFragment : Fragment(), View.OnClickListener {
         if (query.isNotEmpty()) {
             // 초기화
             currentPage = 1
-            searchWithQuery(query, currentPage, range, order)
-        } else {
-            // Handle empty query case if needed
 
+            locationProvider = LocationProvider(requireContext())
+            val location = locationProvider.getCurrentAddress(currentLatitude, currentLongitude)
+            Log.e(TAG, "Location before searching: $currentLatitude $currentLongitude $location")
+            Log.e(TAG, "Query before searching: $query")
+            Log.e(TAG, "Range before searching: $range")
+            Log.e(TAG, "Order before searching: $order")
+
+            searchWithQuery(query, currentPage, range, order)
+            Log.e(TAG, "Search with query")
+        } else {
+            Log.e(TAG, "Search without query")
+            searchWithQuery(query, currentPage, range, order)
         }
     }
 
@@ -306,14 +273,12 @@ class SearchFragment : Fragment(), View.OnClickListener {
         retrofitAPI = RetrofitConnection.getInstance().create(HotPepperService::class.java)
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-//                isLoading = true
-
                 val response = retrofitAPI.getGourmetData(
                     apiKey = Constants.HOTPEPPER_API_KEY,
                     lat = currentLatitude.toString(),
                     lng = currentLongitude.toString(),
-                    name = query, // 가게 이름 검색
-                    nameKana = query,
+//                    name = query, // 가게 이름 검색
+//                    nameKana = query,
                     nameAny = query, // 가게 이름 일부
                     keyword = query, // 키워드 검색
                     order = order,
@@ -321,52 +286,35 @@ class SearchFragment : Fragment(), View.OnClickListener {
                     start = (page - 1) * PAGE_SIZE + 1,
                     count = PAGE_SIZE
                 )
+                Log.d(TAG, "API request for search response: $response")
 
                 withContext(Dispatchers.Main) {
-                    Log.d(TAG, "API request for search response: $response")
-
-                    if (page == 1) {
-                        updateUI(response.results.shop, isReplaced = true)
+                    if (response.results.shop.isNotEmpty()) {
+                        if (page == 1) {
+                            updateUI(response.results.shop, isReplaced = true)
+                        } else {
+                            updateUI(response.results.shop, isReplaced = false)
+                        }
+                        binding?.llNoResult?.visibility = View.GONE
                     } else {
-                        updateUI(response.results.shop, isReplaced = false)
+                        adapter.clearData()
+                        binding?.llNoResult?.visibility = View.VISIBLE
                     }
-
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Log.e(TAG, "API request error: ${e.message}", e)
-//                    binding?.llNoResult?.visibility = View.VISIBLE
                 }
             }
         }
     }
 
-
     private fun updateUI(shops: List<Shop>, isReplaced: Boolean) {
-
-        if (shops.isNotEmpty()) {
-            if (isReplaced) {
-                adapter.setData(shops)
-            } else {
-                adapter.addData(shops)
-            }
-            binding?.llNoResult?.visibility = View.GONE
+        if (isReplaced) {
+            adapter.setData(shops)
         } else {
-//            binding?.llNoResult?.visibility = View.VISIBLE
-            if (!isReplaced) {
-                // 이전 아이템을 유지하고 데이터가 없는 경우
-                adapter.addData(emptyList())
-            } else {
-                // 새로운 검색 결과가 없는 경우
-                adapter.clearData()
-                binding?.llNoResult?.visibility = View.VISIBLE
-            }
+            adapter.addData(shops)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
     }
 
     override fun onDestroyView() {

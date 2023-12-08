@@ -15,13 +15,17 @@ import com.sw.gurumemo.MainActivity
 import com.sw.gurumemo.R
 import com.sw.gurumemo.adapters.HomeShopListAdapter
 import com.sw.gurumemo.databinding.FragmentHomeBinding
+import com.sw.gurumemo.retrofit.HotPepperResponse
 import com.sw.gurumemo.retrofit.HotPepperService
 import com.sw.gurumemo.retrofit.RetrofitConnection
+import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.invoke
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.DecimalFormat
 
 class HomeFragment : Fragment() {
 
@@ -53,8 +57,9 @@ class HomeFragment : Fragment() {
     private var currentLatitude: Double = 0.0
     private var currentLongitude: Double = 0.0
 
-    private var autoScrollJob: Job? = null
+    private var autoScrollJob: Job = Job()
     private var autoScrollEnabled = true
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -91,14 +96,25 @@ class HomeFragment : Fragment() {
 
     private fun getShopImagesByCurrentLocation() {
         val retrofitAPI = RetrofitConnection.getInstance().create(HotPepperService::class.java)
-        lifecycleScope.launch(Dispatchers.IO) {
+
+        // to show random shop images by genre code (G001 ~ G015)
+        val genreList = arrayListOf<String>()
+        lateinit var formattedNumber: String
+        for (i: Int in 1..15) {
+            formattedNumber = DecimalFormat("000").format(i)
+            genreList.add("G$formattedNumber")
+        }
+
+        lifecycleScope.launch {
             try {
-                val response = retrofitAPI.getGourmetData(
-                    apiKey = Constants.HOTPEPPER_API_KEY,
-                    lat = currentLatitude.toString(),
-                    lng = currentLongitude.toString()
-                )
-                val shopData = response.results.shop
+                val response = withContext(Dispatchers.IO) {
+                    retrofitAPI.getGourmetData(
+                        apiKey = Constants.HOTPEPPER_API_KEY,
+                        lat = currentLatitude.toString(),
+                        lng = currentLongitude.toString(),
+                        genre = genreList.random()
+                    )
+                }
                 Log.e(TAG, "Image slider response: $response")
                 Log.e(TAG, "Request data by: $currentLatitude $currentLongitude")
 
@@ -141,8 +157,25 @@ class HomeFragment : Fragment() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        autoScrollEnabled = false
+        autoScrollJob.cancel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(autoScrollJob.isCancelled) {
+            autoScrollJob = Job()
+            autoScrollJob = lifecycleScope.launch {
+                autoScrollEnabled = true
+                autoScroll()
+            }
+        }
+    }
+
     override fun onDestroyView() {
-        autoScrollJob?.cancel()
+//        autoScrollJob.cancel()
         binding = null
         super.onDestroyView()
     }

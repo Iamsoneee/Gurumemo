@@ -13,25 +13,26 @@ import com.sw.gurumemo.retrofit.Shop
 
 class SearchShopListAdapter(private val context: Context) :
     RecyclerView.Adapter<SearchShopListAdapter.ViewHolder>() {
-     private val shops: MutableList<Shop> = mutableListOf()
+    private val shops: MutableList<Shop> = mutableListOf()
 
-     class ViewHolder(private val binding: ItemShopBinding) : RecyclerView.ViewHolder(binding.root){
-         fun bind(shop: Shop){
-             binding.apply {
-                 Glide.with(itemView.context).load(shop.logo_image).into(ivThumbnailImage)
-                 binding.tvShopName.text = shop.name
-                 binding.tvAccess.text = shop.access
+    class ViewHolder(private val binding: ItemShopBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(shop: Shop) {
+            binding.apply {
+                Glide.with(itemView.context).load(shop.logo_image).into(ivThumbnailImage)
+                binding.tvShopName.text = shop.name
+                binding.tvAccess.text = shop.access
 
-                 if (shop.genre.catch.isBlank()){
-                 binding.tvCatchPhrase.text = shop.catch
-                 }else{
-                     binding.tvCatchPhrase.text = shop.genre.catch
-                 }
-             }
-         }
-     }
+                if (shop.genre.catch.isBlank()) {
+                    binding.tvCatchPhrase.text = shop.catch
+                } else {
+                    binding.tvCatchPhrase.text = shop.genre.catch
+                }
+            }
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemShopBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val binding = ItemShopBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -60,7 +61,7 @@ class SearchShopListAdapter(private val context: Context) :
         notifyDataSetChanged()
     }
 
-    fun clearData() {
+    fun clearData(){
         shops.clear()
         notifyDataSetChanged()
     }
