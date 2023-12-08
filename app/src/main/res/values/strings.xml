@@ -33,6 +33,7 @@
     <string name="opening_hours">営業時間</string>
     <string name="address">住所</string>
     <string name="address_detail">〒100-0005 東京都千代田区丸の内一丁目</string>
+    <string name="shareMessage">ホットペッパーのリンクを共有</string>
 
     <!--  BookmarkFragment  -->
     <string name="user_name">Gurumemo</string>

@@ -100,8 +100,21 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
+
+
+        binding.ivShareIcon.setOnClickListener {
+            val chooserTitle = ""
+            val sendIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, shop.urls.pc)
+            }
+            startActivity(Intent.createChooser(sendIntent,R.string.shareMessage.toString()))
+        }
     }
 
+
+    // setting google maps fragment
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -136,10 +149,6 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 marker?.let { marker -> marker.position = shopLocation }
             }
         }
-    }
-
-    private fun updateUI() {
-
     }
 
 }
