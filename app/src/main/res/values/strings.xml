@@ -20,10 +20,10 @@
     <string name="within_2km">~2km</string>
     <string name="within_3km">~3km</string>
     <string name="search_by_filter">条件から探す</string>
-    <string name="search_filter_1">おススメ順</string>
-    <string name="search_filter_2">小エリア順</string>
-    <string name="search_filter_3">ジャンル順</string>
-    <string name="search_filter_4">店名かな順</string>
+    <string name="search_filter_1">居酒屋</string>
+    <string name="search_filter_2">韓国料理</string>
+    <string name="search_filter_3">イタリアン・フレンチ</string>
+    <string name="search_filter_4">中華</string>
     <string name="shop_name">店舗名称</string>
     <string name="catch_phrase">キャッチフレーズ</string>
     <string name="access">アクセス</string>

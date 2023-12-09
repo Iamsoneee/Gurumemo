@@ -1,6 +1,5 @@
 package com.sw.gurumemo.adapters
 
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -8,23 +7,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sw.gurumemo.ShopDetailActivity
-import com.sw.gurumemo.databinding.ItemImageSliderBinding
-import com.sw.gurumemo.databinding.ItemLoadingBinding
 import com.sw.gurumemo.databinding.ItemShopBinding
-import com.sw.gurumemo.retrofit.Budget
-import com.sw.gurumemo.retrofit.Genre
-import com.sw.gurumemo.retrofit.PC
-import com.sw.gurumemo.retrofit.Photo
 import com.sw.gurumemo.retrofit.Shop
 
 class SearchShopListAdapter(private val context: Context) :
     RecyclerView.Adapter<SearchShopListAdapter.ViewHolder>() {
     private val shops: MutableList<Shop> = mutableListOf()
-    private val VIEW_TYPE_ITEM = 0
-    private val VIEW_TYPE_LOADING = -1
-    private var isLoading = false
 
-    inner class ViewHolder(private val binding: ItemShopBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ItemShopBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(shop: Shop) {
             binding.apply {
                 Glide.with(itemView.context).load(shop.logo_image).into(ivThumbnailImage)

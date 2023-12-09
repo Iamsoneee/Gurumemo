@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="search_filters">
+        <item>店名かな順</item>
+        <item>ジャンル順</item>
+        <item>小エリア順</item>
+        <item>おススメ順</item>
+    </string-array>
+</resources>

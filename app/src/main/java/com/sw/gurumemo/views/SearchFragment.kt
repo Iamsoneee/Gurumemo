@@ -7,8 +7,8 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnTouchListener
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +16,7 @@ import com.sw.gurumemo.Constants
 import com.sw.gurumemo.LocationProvider
 import com.sw.gurumemo.MainActivity
 import com.sw.gurumemo.R
+import com.sw.gurumemo.adapters.CustomSpinnerAdapter
 import com.sw.gurumemo.adapters.SearchShopListAdapter
 import com.sw.gurumemo.databinding.FragmentSearchBinding
 import com.sw.gurumemo.retrofit.HotPepperService
@@ -23,7 +24,6 @@ import com.sw.gurumemo.retrofit.RetrofitConnection
 import com.sw.gurumemo.retrofit.Shop
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -52,11 +52,12 @@ class SearchFragment : Fragment(), View.OnClickListener {
     private lateinit var retrofitAPI: HotPepperService
 
 
-//    private var isLoading = false
-    private var query: String? = null
+    //    private var isLoading = false
+    private var query: String? = ""
     private var currentPage = 1
-    private var range = 1 // 検索範囲 (初期値: 1000m)
-    private var order = 4 // 1:店名かな順 / 2:ジャンルコード順 / 3:小エリアコード順 / 4:おススメ順
+    private var range = 1 // 検索範囲 (初期値: 300m)
+    private var order = 1 // 1:店名かな順 / 2:ジャンル順 / 3:小エリ順 / 4:おススメ順
+    private var genre = ""
     private val PAGE_SIZE = 30
 
     private var currentLatitude: Double = 0.0
@@ -74,9 +75,9 @@ class SearchFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // to initialize parameter values
-        range = 3
-        order = 4
+//        // to initialize parameter values
+//        range = 3
+//        order = 4
 
         val arguments = arguments
         if (arguments != null) {
@@ -120,7 +121,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
                     searchJob?.cancel()
                     searchJob = lifecycleScope.launch {
 //                        delay(500) // 예: 500ms 딜레이를 두고 검색 수행
-                        performSearch(s.toString() ?: "")
+                        performSearch(s.toString())
                     }
                 }
 
@@ -149,6 +150,36 @@ class SearchFragment : Fragment(), View.OnClickListener {
         binding?.tvFilter2?.setOnClickListener(this)
         binding?.tvFilter3?.setOnClickListener(this)
         binding?.tvFilter4?.setOnClickListener(this)
+
+        val spinner = binding?.spinner
+        val searchFiltersArray = resources.getStringArray(R.array.search_filters)
+        val adapter =
+            CustomSpinnerAdapter(requireContext(), searchFiltersArray)
+
+        spinner?.adapter = adapter
+        spinner?.setSelection(0)
+
+        spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                when (position) {
+                    0 -> order = 1
+                    1 -> order = 2
+                    2 -> order = 3
+                    3 -> order = 4
+                }
+                lifecycleScope.launch { query?.let { performSearch(it) } }
+                binding?.rvShopList?.scrollToPosition(0)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+        }
     }
 
 
@@ -243,29 +274,29 @@ class SearchFragment : Fragment(), View.OnClickListener {
             }
 
             // filter buttons
-            // おすすめ順
+            // 居酒屋
             R.id.tv_filter_1 -> {
-                order = 1
+                genre = "G001"
                 performSearch(query)
                 binding?.rvShopList?.scrollToPosition(0)
             }
 
-            // 小エリア順
+            // 韓国料理
             R.id.tv_filter_2 -> {
-                order = 2
+                genre = "G017"
                 performSearch(query)
                 binding?.rvShopList?.scrollToPosition(0)
             }
 
-            // ジャンル順
+            // イタリアン・フレンチ
             R.id.tv_filter_3 -> {
-                order = 3
+                genre = "G006"
                 performSearch(query)
                 binding?.rvShopList?.scrollToPosition(0)
             }
-            // 店名かな順
+            // 中華
             R.id.tv_filter_4 -> {
-                order = 4
+                genre = "G007"
                 performSearch(query)
                 binding?.rvShopList?.scrollToPosition(0)
             }
@@ -273,7 +304,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
     }
 
     private fun performSearch(query: String) {
-        if (query.isNotEmpty()) {
+//        if (query.isNotEmpty()) {
             // 초기화
             currentPage = 1
 
@@ -284,19 +315,19 @@ class SearchFragment : Fragment(), View.OnClickListener {
             Log.e(TAG, "Range before searching: $range")
             Log.e(TAG, "Order before searching: $order")
 
-            searchWithQuery(query, currentPage, range, order)
+            searchWithQuery(query, currentPage, range, order, genre)
             Log.e(TAG, "Search with query")
-        } else {
-            Log.e(TAG, "Search without query")
-            searchWithQuery(query, currentPage, range, order)
-        }
+//        } else {
+//            Log.e(TAG, "Search without query")
+//            searchWithQuery(query, currentPage, range, order, genre)
+//        }
     }
 
-    private fun searchWithQuery(query: String, page: Int, range: Int, order: Int) {
+    private fun searchWithQuery(query: String, page: Int, range: Int, order: Int, genre: String) {
         retrofitAPI = RetrofitConnection.getInstance().create(HotPepperService::class.java)
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch {
             try {
-                val response = retrofitAPI.getGourmetData(
+                val response = withContext(Dispatchers.IO){ retrofitAPI.getGourmetData(
                     apiKey = Constants.HOTPEPPER_API_KEY,
                     lat = currentLatitude.toString(),
                     lng = currentLongitude.toString(),
@@ -307,8 +338,9 @@ class SearchFragment : Fragment(), View.OnClickListener {
                     order = order,
                     range = range, // 검색 범위 설정
                     start = (page - 1) * PAGE_SIZE + 1,
+                    genre = genre,
                     count = PAGE_SIZE
-                )
+                )}
                 Log.d(TAG, "API request for search response: $response")
 
                 withContext(Dispatchers.Main) {
@@ -320,7 +352,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
                         }
                         binding?.llNoResult?.visibility = View.GONE
                     } else {
-                        adapter.clearData()
+//                        adapter.clearData()
                         binding?.llNoResult?.visibility = View.VISIBLE
                     }
                 }
