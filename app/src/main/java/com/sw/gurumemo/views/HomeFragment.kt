@@ -1,31 +1,30 @@
 package com.sw.gurumemo.views
 
 
+import android.graphics.Rect
+import com.sw.gurumemo.R
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.sw.gurumemo.Constants
 import com.sw.gurumemo.LocationProvider
 import com.sw.gurumemo.MainActivity
-import com.sw.gurumemo.R
 import com.sw.gurumemo.adapters.HomeShopListAdapter
 import com.sw.gurumemo.databinding.FragmentHomeBinding
-import com.sw.gurumemo.retrofit.HotPepperResponse
 import com.sw.gurumemo.retrofit.HotPepperService
 import com.sw.gurumemo.retrofit.RetrofitConnection
-import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.invoke
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.DecimalFormat
 
 class HomeFragment : Fragment() {
 
@@ -59,7 +58,6 @@ class HomeFragment : Fragment() {
 
     private var autoScrollJob: Job = Job()
     private var autoScrollEnabled = true
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -97,14 +95,6 @@ class HomeFragment : Fragment() {
     private fun getShopImagesByCurrentLocation() {
         val retrofitAPI = RetrofitConnection.getInstance().create(HotPepperService::class.java)
 
-        // to show random shop images by genre code (G001 ~ G015)
-        val genreList = arrayListOf<String>()
-        lateinit var formattedNumber: String
-        for (i: Int in 1..15) {
-            formattedNumber = DecimalFormat("000").format(i)
-            genreList.add("G$formattedNumber")
-        }
-
         lifecycleScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
@@ -112,7 +102,6 @@ class HomeFragment : Fragment() {
                         apiKey = Constants.HOTPEPPER_API_KEY,
                         lat = currentLatitude.toString(),
                         lng = currentLongitude.toString(),
-//                        genre = genreList.random()
                     )
                 }
                 Log.e(TAG, "Image slider response: $response")
@@ -122,7 +111,6 @@ class HomeFragment : Fragment() {
                     adapter.setData(response.results.shop.shuffled().take(5))
                 }
 
-
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Log.e(TAG, "API request error: ${e.message}", e)
@@ -131,22 +119,41 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private suspend fun autoScroll() {
-        while (autoScrollEnabled) {
-            val itemCount = adapter.itemCount
-            if (itemCount > 0) {
-                Log.e(TAG, "Image slider item count: $itemCount")
-                val currentItem = binding?.vpImageSlider?.currentItem ?: 0
-                val nextItem = (currentItem + 1) % itemCount
-                binding?.vpImageSlider?.setCurrentItem(nextItem, true)
-            }
-            delay(2000)  // Move to next every 2 seconds.
-        }
-    }
-
     private fun setViewPagerWithAutoScroll() {
         val springDotsIndicator = binding?.springDotsIndicator
         val viewPager = binding?.vpImageSlider
+
+        val currentVisibleItemPx = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            70f,
+            resources.displayMetrics
+        ).toInt()
+
+        viewPager?.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State
+            ) {
+                outRect.right = currentVisibleItemPx
+                outRect.left = currentVisibleItemPx
+            }
+        })
+
+        val nextVisibleItemPx = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            50f,
+            resources.displayMetrics
+        ).toInt()
+        val pageTranslationX = nextVisibleItemPx + currentVisibleItemPx
+
+        viewPager?.offscreenPageLimit = 1
+
+        viewPager?.setPageTransformer { page, position ->
+            page.translationX = -pageTranslationX * (position)
+        }
+
         adapter = HomeShopListAdapter(this.requireContext())
         viewPager?.adapter = adapter
         viewPager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
@@ -158,6 +165,21 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private suspend fun autoScroll() {
+        while (autoScrollEnabled) {
+            val itemCount = adapter.itemCount
+            if (itemCount > 0) {
+                Log.e(TAG, "Image slider item count: $itemCount")
+                val currentItem = binding?.vpImageSlider?.currentItem ?: 0
+                val nextItem = (currentItem + 1) % itemCount
+                binding?.vpImageSlider?.setCurrentItem(nextItem, true)
+
+            }
+            delay(2000)  // Move to next every 2 seconds.
+
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         autoScrollEnabled = false
@@ -166,7 +188,7 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if(autoScrollJob.isCancelled) {
+        if (!autoScrollJob.isActive) {
             autoScrollJob = Job()
             autoScrollJob = lifecycleScope.launch {
                 autoScrollEnabled = true
@@ -176,7 +198,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-//        autoScrollJob.cancel()
+        autoScrollJob.cancel()
         binding = null
         super.onDestroyView()
     }

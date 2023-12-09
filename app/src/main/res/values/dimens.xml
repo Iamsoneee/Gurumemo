@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 페이지 간격 정의 -->
+    <dimen name="page_margin">20dp</dimen>
+    <!-- 페이지 너비 정의 -->
+    <dimen name="page_width">200dp</dimen>
+</resources>

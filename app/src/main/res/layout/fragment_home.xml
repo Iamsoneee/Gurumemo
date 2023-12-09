@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorSecondary"
-    android:padding="20dp"
     tools:context=".views.HomeFragment">
 
     <LinearLayout
@@ -35,18 +34,19 @@
 
     </LinearLayout>
 
-
     <Button
         android:id="@+id/btn_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
+        android:layout_marginHorizontal="20dp"
+        android:paddingLeft="16dp"
         android:background="@drawable/search_bar_background"
         android:drawableLeft="@drawable/ic_search_with_search_bar"
         android:drawablePadding="8dp"
         android:drawableTint="@color/colorAccent"
         android:hint="@string/search_bar_hint"
-        android:paddingLeft="16dp"
+
         android:textAlignment="textStart"
         android:textColorHint="@color/offWhite"
         android:textStyle="bold"
@@ -59,6 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
+        android:paddingHorizontal="20dp"
         android:text="@string/geocoder_thoroughfare"
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
@@ -69,6 +70,7 @@
         android:id="@+id/ll_geocoder_bottom_text_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         app:layout_constraintTop_toBottomOf="@id/tv_geocoder_thoroughfare">
@@ -101,9 +103,10 @@
         android:layout_width="match_parent"
         android:layout_height="240dp"
         android:layout_marginTop="14dp"
-        android:background="@color/gray"
         android:clipChildren="false"
         android:clipToPadding="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_geocoder_bottom_text_area" />
 
     <com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator
