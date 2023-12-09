@@ -52,7 +52,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
     private lateinit var retrofitAPI: HotPepperService
 
 
-    //    private var isLoading = false
+    private var isLoading = false
     private var query: String? = ""
     private var currentPage = 1
     private var range = 1 // 検索範囲 (初期値: 300m)
@@ -101,7 +101,10 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
                 if (!recyclerView.canScrollVertically(1) && lastVisibleItemPosition == itemTotalCount) {
                     currentPage++
+                    isLoading = true
                     performSearch(query.orEmpty())
+                } else {
+                    isLoading = false
                 }
             }
         })
@@ -251,24 +254,29 @@ class SearchFragment : Fragment(), View.OnClickListener {
             // range buttons
             R.id.tv_within_500m -> {
                 range = 2
+                currentPage = 1
                 performSearch(query)
                 binding?.rvShopList?.scrollToPosition(0)
             }
 
             R.id.tv_within_1km -> {
                 range = 3
+                currentPage = 1
                 performSearch(query)
                 binding?.rvShopList?.scrollToPosition(0)
             }
 
             R.id.tv_within_2km -> {
                 range = 4
+                currentPage = 1
+                Log.e(TAG, "current page: $currentPage")
                 performSearch(query)
                 binding?.rvShopList?.scrollToPosition(0)
             }
 
             R.id.tv_within_3km -> {
                 range = 5
+                currentPage = 1
                 performSearch(query)
                 binding?.rvShopList?.scrollToPosition(0)
             }
@@ -277,6 +285,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
             // 居酒屋
             R.id.tv_filter_1 -> {
                 genre = "G001"
+                currentPage = 1
                 performSearch(query)
                 binding?.rvShopList?.scrollToPosition(0)
             }
@@ -284,6 +293,8 @@ class SearchFragment : Fragment(), View.OnClickListener {
             // 韓国料理
             R.id.tv_filter_2 -> {
                 genre = "G017"
+                currentPage = 1
+                Log.e(TAG, "current page: $currentPage")
                 performSearch(query)
                 binding?.rvShopList?.scrollToPosition(0)
             }
@@ -291,12 +302,14 @@ class SearchFragment : Fragment(), View.OnClickListener {
             // イタリアン・フレンチ
             R.id.tv_filter_3 -> {
                 genre = "G006"
+                currentPage = 1
                 performSearch(query)
                 binding?.rvShopList?.scrollToPosition(0)
             }
             // 中華
             R.id.tv_filter_4 -> {
                 genre = "G007"
+                currentPage = 1
                 performSearch(query)
                 binding?.rvShopList?.scrollToPosition(0)
             }
@@ -305,42 +318,53 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
     private fun performSearch(query: String) {
 //        if (query.isNotEmpty()) {
-            // 초기화
-            currentPage = 1
-
+        if (currentPage != 1) {
+            currentPage++
             locationProvider = LocationProvider(requireContext())
             val location = locationProvider.getCurrentAddress(currentLatitude, currentLongitude)
-            Log.e(TAG, "Location before searching: $currentLatitude $currentLongitude $location")
+            Log.e(
+                TAG,
+                "Location before searching: $currentLatitude $currentLongitude $location"
+            )
             Log.e(TAG, "Query before searching: $query")
             Log.e(TAG, "Range before searching: $range")
             Log.e(TAG, "Order before searching: $order")
 
             searchWithQuery(query, currentPage, range, order, genre)
-            Log.e(TAG, "Search with query")
+//                Log.e(TAG, "Search with query")
+        } else {
+            // 초기화
+            currentPage = 1
+            searchWithQuery(query, currentPage, range, order, genre)
+        }
 //        } else {
 //            Log.e(TAG, "Search without query")
+//            Log.e(TAG, "currentPage: $currentPage")
 //            searchWithQuery(query, currentPage, range, order, genre)
 //        }
     }
+
 
     private fun searchWithQuery(query: String, page: Int, range: Int, order: Int, genre: String) {
         retrofitAPI = RetrofitConnection.getInstance().create(HotPepperService::class.java)
         lifecycleScope.launch {
             try {
-                val response = withContext(Dispatchers.IO){ retrofitAPI.getGourmetData(
-                    apiKey = Constants.HOTPEPPER_API_KEY,
-                    lat = currentLatitude.toString(),
-                    lng = currentLongitude.toString(),
+                val response = withContext(Dispatchers.IO) {
+                    retrofitAPI.getGourmetData(
+                        apiKey = Constants.HOTPEPPER_API_KEY,
+                        lat = currentLatitude.toString(),
+                        lng = currentLongitude.toString(),
 //                    name = query, // 가게 이름 검색
 //                    nameKana = query,
-                    nameAny = query, // 가게 이름 일부
-                    keyword = query, // 키워드 검색
-                    order = order,
-                    range = range, // 검색 범위 설정
-                    start = (page - 1) * PAGE_SIZE + 1,
-                    genre = genre,
-                    count = PAGE_SIZE
-                )}
+                        nameAny = query, // 가게 이름 일부
+                        keyword = query, // 키워드 검색
+                        order = order,
+                        range = range, // 검색 범위 설정
+                        start = (page - 1) * PAGE_SIZE + 1,
+                        genre = genre,
+                        count = PAGE_SIZE
+                    )
+                }
                 Log.d(TAG, "API request for search response: $response")
 
                 withContext(Dispatchers.Main) {
@@ -352,8 +376,13 @@ class SearchFragment : Fragment(), View.OnClickListener {
                         }
                         binding?.llNoResult?.visibility = View.GONE
                     } else {
-//                        adapter.clearData()
-                        binding?.llNoResult?.visibility = View.VISIBLE
+                        if (!isLoading) {
+                            adapter.clearData()
+                            binding?.llNoResult?.visibility = View.VISIBLE
+                        } else {
+
+                        }
+
                     }
                 }
             } catch (e: Exception) {
