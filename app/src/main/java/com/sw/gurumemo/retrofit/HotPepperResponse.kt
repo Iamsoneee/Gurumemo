@@ -22,6 +22,7 @@ data class Shop(
     val keyword: String,
     val budget: Budget,
     val genre: Genre,
+    val sub_genre: SubGenre,
     val catch: String,
     val access: String,
     val mobile_access: String,
@@ -30,13 +31,19 @@ data class Shop(
     val lat: Double?,
     val lng: Double?,
     val urls: Urls,
+    val small_area: SmallArea,
+    val station_name: String
 ) : Serializable
 
 data class Genre(
-    val name: String,
+    val name: String?,
     val catch: String,
     val code: String
 ) : Serializable
+
+data class SubGenre(
+    val name: String?,
+): Serializable
 
 data class Budget(
     val name: String,
@@ -54,4 +61,6 @@ data class Urls(
     val pc: String,
 ) : Serializable
 
-
+data class SmallArea(
+    val name: String
+):Serializable

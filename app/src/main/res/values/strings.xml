@@ -27,6 +27,7 @@
     <string name="shop_name">店舗名称</string>
     <string name="catch_phrase">キャッチフレーズ</string>
     <string name="access">アクセス</string>
+    <string name="station_name">最寄り駅</string>
 
     <!--  ShopDetailFragment  -->
     <string name="budget">予算</string>

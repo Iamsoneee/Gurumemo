@@ -56,12 +56,20 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_bookmark_icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/selector_bookmark_button"/>
+  <TextView
+      android:id="@+id/tv_station_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/station_name"
+      android:background="@drawable/filter_background_filled"
+      android:backgroundTint="@color/colorAccentTransparent30"
+      android:textSize="12sp"
+      android:paddingHorizontal="8dp"
+      android:layout_marginTop="16dp"
+      android:layout_marginEnd="16dp"
+      android:textStyle="bold"
+      android:autoSizeTextType="uniform"
+      android:maxLines="1"
+      android:textColor="@color/white"/>
 
 </LinearLayout>

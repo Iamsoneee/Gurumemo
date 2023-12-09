@@ -11,5 +11,6 @@
     <color name="colorPrimary">#FFECA922</color>
     <color name="colorPrimaryTransparent30">#4DECA922</color>
     <color name="colorAccent">#FFD32212</color>
+    <color name="colorAccentTransparent30">#4DD32212</color>
     <color name="colorSecondary">#FFFBF8F4</color>
 </resources>
