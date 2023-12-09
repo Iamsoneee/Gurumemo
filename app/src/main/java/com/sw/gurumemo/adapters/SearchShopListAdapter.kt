@@ -2,10 +2,16 @@ package com.sw.gurumemo.adapters
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
+import com.sw.gurumemo.R
 import com.sw.gurumemo.ShopDetailActivity
 import com.sw.gurumemo.databinding.ItemShopBinding
 import com.sw.gurumemo.retrofit.Shop
@@ -16,6 +22,9 @@ class SearchShopListAdapter(private val context: Context) :
 
     inner class ViewHolder(private val binding: ItemShopBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        val buttonItem: Button = binding.btnBookmarkIcon
+
         fun bind(shop: Shop) {
             binding.apply {
                 Glide.with(itemView.context).load(shop.logo_image).into(ivThumbnailImage)
@@ -29,6 +38,9 @@ class SearchShopListAdapter(private val context: Context) :
                 }
             }
         }
+
+
+
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -39,6 +51,16 @@ class SearchShopListAdapter(private val context: Context) :
             intent.putExtra("shopData", shop)
             context.startActivity(intent)
         }
+
+        holder.buttonItem.setOnClickListener {
+        holder.buttonItem.isSelected = !holder.buttonItem.isSelected
+            if (holder.buttonItem.isSelected) {
+                Log.e("SearchShopListAdapter", "BOOKMARK ADDED")
+            } else {
+                Log.e("SearchShopListAdapter", "BOOKMARK REMOVED")
+            }
+        }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

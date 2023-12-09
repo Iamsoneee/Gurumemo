@@ -56,16 +56,12 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/iv_bookmark_icon"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:layout_weight="1"
-        android:layout_marginTop="14dp"
-        android:background="@drawable/ripple_unbounded"
-        android:clickable="true"
-        android:src="@drawable/ic_bookmark"
-        app:tint="@color/offWhite" />
+    <Button
+        android:id="@+id/btn_bookmark_icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/selector_bookmark_button"/>
 
 </LinearLayout>

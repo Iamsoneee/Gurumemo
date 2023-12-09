@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import com.bumptech.glide.Glide
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.snackbar.Snackbar
 import com.sw.gurumemo.databinding.ActivityShopDetailBinding
 import com.sw.gurumemo.databinding.ActivitySplashBinding
 import com.sw.gurumemo.retrofit.Shop
@@ -31,6 +33,8 @@ import kotlinx.coroutines.withContext
 
 class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
+    private val TAG = "ShopDetailActivity"
+
     private lateinit var binding: ActivityShopDetailBinding
 
     private var backPressedTime = 0L
@@ -40,6 +44,7 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private var shopLongitude: Double = 0.0
     private var shopName: String = ""
     private var shopLocation = LatLng(shopLatitude, shopLongitude)
+    private var isBookmarked = false
 
     val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -72,7 +77,7 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbarShopDetailActivity)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true) //set back button
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = null
 
         binding.toolbarShopDetailActivity.setNavigationOnClickListener {
@@ -101,15 +106,30 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
+        binding.btnBookmarkIcon.setOnClickListener {
+            toggleFavoriteState(binding.btnBookmarkIcon)
+        }
 
         binding.ivShareIcon.setOnClickListener {
-            val chooserTitle = ""
             val sendIntent = Intent().apply {
                 action = Intent.ACTION_SEND
                 type = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, shop.urls.pc)
             }
             startActivity(Intent.createChooser(sendIntent,R.string.shareMessage.toString()))
+        }
+    }
+
+    private fun toggleFavoriteState(button: Button) {
+        button.isSelected = !button.isSelected
+        if (button.isSelected) {
+            // 즐겨찾기 추가할 때 수행할 동작
+            Log.e(TAG, "BOOKMARK ADDED")
+            Toast.makeText(applicationContext, "Bookmark added!", Toast.LENGTH_SHORT).show()
+        } else {
+            // 즐겨찾기 제거할 때 수행할 동작
+            Log.e(TAG, "BOOKMARK REMOVED")
+            Toast.makeText(applicationContext, "Bookmark removed!", Toast.LENGTH_SHORT).show()
         }
     }
 
