@@ -8,6 +8,7 @@ interface HotPepperService {
     @GET("gourmet/v1/")
     suspend fun getGourmetData(
         @Query("key") apiKey: String,
+        @Query("id") id: String? = null,
         @Query("lat") lat: String = Constants.DEFAULT_LATITUDE_JP.toString(), // 東京駅
         @Query("lng") lng: String = Constants.DEFAULT_LONGITUDE_JP.toString(), // 東京駅
         @Query("name") name: String? = null, // 掲載店名

@@ -62,14 +62,14 @@ class MainActivity : AppCompatActivity() {
 
     private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            if (System.currentTimeMillis() - backPressedTime >= 2000) {
+            if (System.currentTimeMillis() - backPressedTime >= 1500) {
                 backPressedTime = System.currentTimeMillis()
                 Toast.makeText(
                     this@MainActivity,
                     "뒤로 버튼을 한번 더 누르면 앱을 종료합니다.",
                     Toast.LENGTH_SHORT
                 ).show()
-            } else if (System.currentTimeMillis() - backPressedTime < 2000) {
+            } else if (System.currentTimeMillis() - backPressedTime < 1500) {
                 finish()
             }
         }

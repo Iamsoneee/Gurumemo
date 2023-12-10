@@ -12,6 +12,6 @@ data class BookmarkEntity (
     @ColumnInfo(name = "catch_phrase") val catchPhrase: String,
     @ColumnInfo(name = "access") val access: String,
     @ColumnInfo(name = "is_bookmarked") val isBookmarked: Boolean = true,
-    @ColumnInfo(name = "memo") val memo: String? = null
+    @ColumnInfo(name = "memo") var memo: String? = null
 
 )
