@@ -75,10 +75,6 @@ class SearchFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        // to initialize parameter values
-//        range = 3
-//        order = 4
-
         val arguments = arguments
         if (arguments != null) {
             currentLatitude = arguments.getDouble(SearchFragment.ARG_LATITUDE, 0.0)

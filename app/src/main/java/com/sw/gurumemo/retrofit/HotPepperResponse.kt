@@ -16,7 +16,7 @@ data class Results(
 data class Shop(
     val id: String,
     val name: String,
-    val logo_image: String?,
+    val logo_image: String,
     val name_kana: String,
     val address: String,
     val keyword: String,

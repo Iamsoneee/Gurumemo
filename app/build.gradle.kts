@@ -45,9 +45,17 @@ android {
 
 dependencies {
 
+    // Room Dependencies
+    val room_version = "2.5.0"
+
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+
+
     // Coroutine Dependencies
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0-RC")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0-RC")
+    ksp("androidx.room:room-compiler:$room_version")
 
     // to enable back button
     implementation("androidx.activity:activity:1.6.0-alpha05")

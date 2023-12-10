@@ -11,26 +11,24 @@
         android:id="@+id/ll_logo_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="28dp"
-        android:orientation="vertical"
         android:gravity="center"
-        >
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
         <ImageView
             android:id="@+id/iv_logo_text"
             android:layout_width="200dp"
             android:layout_height="80dp"
             android:padding="10dp"
-            android:src="@drawable/logo_text_accent"
-         />
+            android:src="@drawable/logo_text_accent" />
 
 
         <ImageView
             android:id="@+id/iv_logo"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/ic_logo"
-            />
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_logo" />
 
     </LinearLayout>
 
@@ -38,14 +36,14 @@
         android:id="@+id/btn_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
         android:layout_marginHorizontal="20dp"
-        android:paddingLeft="16dp"
+        android:layout_marginTop="14dp"
         android:background="@drawable/search_bar_background"
         android:drawableLeft="@drawable/ic_search_with_search_bar"
         android:drawablePadding="8dp"
         android:drawableTint="@color/colorAccent"
         android:hint="@string/search_bar_hint"
+        android:paddingLeft="16dp"
 
         android:textAlignment="textStart"
         android:textColorHint="@color/offWhite"
@@ -70,18 +68,17 @@
         android:id="@+id/ll_geocoder_bottom_text_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="20dp"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
         app:layout_constraintTop_toBottomOf="@id/tv_geocoder_thoroughfare">
 
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_location"
-            app:tint="@color/gray"
             android:layout_marginEnd="4dp"
-            />
+            android:src="@drawable/ic_location"
+            app:tint="@color/gray" />
 
         <TextView
             android:id="@+id/tv_geocoder_country_name"
@@ -101,30 +98,29 @@
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp_image_slider"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:layout_marginTop="14dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="22dp"
         android:clipChildren="false"
         android:clipToPadding="false"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_geocoder_bottom_text_area" />
 
     <com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator
         android:id="@+id/spring_dots_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         app:dampingRatio="0.5"
+        app:dotsColor="@color/colorPrimary"
         app:dotsCornerRadius="20dp"
         app:dotsSize="10dp"
         app:dotsSpacing="6dp"
-        app:dotsStrokeWidth="1dp"
-        app:stiffness="300"
-        app:dotsColor="@color/colorPrimary"
         app:dotsStrokeColor="@color/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@id/vp_image_slider"
-        app:layout_constraintStart_toStartOf="parent"
+        app:dotsStrokeWidth="1dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/vp_image_slider"
+        app:stiffness="300" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

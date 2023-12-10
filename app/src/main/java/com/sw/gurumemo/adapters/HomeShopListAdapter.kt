@@ -19,7 +19,7 @@ class HomeShopListAdapter(private val context: Context) :
         fun bind(shop: Shop) {
             binding.apply {
                 Glide.with(itemView.context).load(shop.photo.pc.l).into(ivShop)
-                binding.tvShopName.text = shop.name
+                tvShopName.text = shop.name
             }
         }
     }

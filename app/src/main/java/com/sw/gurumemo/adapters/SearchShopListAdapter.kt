@@ -25,17 +25,21 @@ class SearchShopListAdapter(private val context: Context) :
 
         fun bind(shop: Shop) {
             binding.apply {
+                if(!shop.logo_image.contains("m30_img_noimage")){
                 Glide.with(itemView.context).load(shop.logo_image).into(ivThumbnailImage)
-                binding.tvShopName.text = shop.name
-                binding.tvAccess.text = shop.access
+                }else{
+                    Glide.with(itemView.context).load(R.drawable.profile_image_default).into(ivThumbnailImage)
+                }
+                tvShopName.text = shop.name
+                tvAccess.text = shop.access
 
                 if (shop.genre.catch.isBlank()) {
-                    binding.tvCatchPhrase.text = shop.catch
+                    tvCatchPhrase.text = shop.catch
                 } else {
-                    binding.tvCatchPhrase.text = shop.genre.catch
+                    tvCatchPhrase.text = shop.genre.catch
                 }
 
-                binding.tvStationName.text = "${shop.station_name}駅"
+                tvStationName.text = "${shop.station_name}駅"
             }
         }
     }
