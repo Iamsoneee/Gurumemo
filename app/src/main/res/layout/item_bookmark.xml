@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_marginVertical="14dp"
     android:orientation="vertical"
-    card_view:cardBackgroundColor="@color/colorPrimaryTransparent30"
     card_view:cardCornerRadius="12dp"
     card_view:cardElevation="3dp"
     card_view:contentPadding="20dp">
@@ -14,6 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/whiteTransparent30"
         android:orientation="vertical">
 
         <LinearLayout
@@ -103,10 +103,12 @@
             <EditText
                 android:id="@+id/et_memo"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
+                android:minHeight="50dp"
                 android:background="@color/colorSecondary"
                 android:hint="@string/memo"
                 android:paddingHorizontal="14dp"
+                android:imeOptions="actionDone"
                 android:textColorHint="@color/offWhite"
                 android:textSize="14sp" />
 

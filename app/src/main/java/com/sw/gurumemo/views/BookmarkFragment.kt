@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sw.gurumemo.Constants
@@ -113,6 +115,12 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
     override fun onCheckIconClick(v: View, position: Int, memo: String) {
         updateMemo(position, memo)
     }
+
+//    override fun onInputClick(v: View, position: Int) {
+//        val layoutManager = binding?.rvBookmarkList?.layoutManager as LinearLayoutManager
+//        layoutManager.scrollToPositionWithOffset(position,0)
+//        binding?.rvBookmarkList?.smoothScrollToPosition(position)
+//    }
 
     private fun deleteBookmark(position: Int) {
         lifecycleScope.launch {

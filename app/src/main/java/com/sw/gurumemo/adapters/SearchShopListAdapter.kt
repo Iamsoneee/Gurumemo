@@ -2,15 +2,10 @@ package com.sw.gurumemo.adapters
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.android.material.snackbar.Snackbar
 import com.sw.gurumemo.R
 import com.sw.gurumemo.ShopDetailActivity
 import com.sw.gurumemo.databinding.ItemShopBinding
@@ -28,7 +23,7 @@ class SearchShopListAdapter(private val context: Context) :
                 if(!shop.logo_image.contains("m30_img_noimage")){
                 Glide.with(itemView.context).load(shop.logo_image).into(ivThumbnailImage)
                 }else{
-                    Glide.with(itemView.context).load(R.drawable.profile_image_default).into(ivThumbnailImage)
+                    Glide.with(itemView.context).load(R.drawable.default_shop_logo).into(ivThumbnailImage)
                 }
                 tvShopName.text = shop.name
                 tvAccess.text = shop.access

@@ -1,17 +1,13 @@
 package com.sw.gurumemo.adapters
 
-import android.content.Context
-import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sw.gurumemo.R
-import com.sw.gurumemo.ShopDetailActivity
 import com.sw.gurumemo.databinding.ItemBookmarkBinding
 import com.sw.gurumemo.db.BookmarkEntity
 
@@ -75,13 +71,21 @@ class BookmarkListAdapter(
             Glide.with(holder.itemView.context).load(bookmarkData.logoImage)
                 .into(holder.iv_thumbnail_image)
         } else {
-            Glide.with(holder.itemView.context).load(R.drawable.profile_image_default)
+            Glide.with(holder.itemView.context).load(R.drawable.default_shop_logo)
                 .into(holder.iv_thumbnail_image)
         }
 
 
         holder.tv_shop_name.text = bookmarkData.shopName
-        holder.tv_catch_phrase.text = bookmarkData.catchPhrase
+
+        if (bookmarkData.catchPhrase.isNotEmpty()) {
+            holder.tv_catch_phrase.text = bookmarkData.catchPhrase
+        } else {
+//            holder.tv_catch_phrase.text = R.string.no_catch_phrase.toString()
+            holder.tv_catch_phrase.text = "─── ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ───"
+        }
+
+
         holder.tv_access.text = bookmarkData.access
         when (bookmarkData.isBookmarked) {
             true -> holder.btn_bookmark_icon.isSelected = true
@@ -97,6 +101,18 @@ class BookmarkListAdapter(
         }
 
         holder.et_memo.setText(bookmarkData.memo)
+//        holder.et_memo.setOnEditorActionListener{_, actionId, _ ->
+//            if(actionId == EditorInfo.IME_ACTION_DONE){
+//                // 키패드 내리기
+//                val inputMethodManager = holder.et_memo.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//                inputMethodManager.hideSoftInputFromWindow(holder.et_memo.windowToken, 0)
+//            } else {
+//                false
+//            }
+//        }
+//        holder.et_memo.setOnClickListener {
+//            listener.onInputClick(it, position)
+//        }
 
         holder.root.setOnClickListener {
             listener.onItemClick(it, position, bookmarkData.shopId)
@@ -111,9 +127,11 @@ class BookmarkListAdapter(
     interface OnItemClickListener {
         fun onBookmarkIconClick(v: View, position: Int)
 
-        fun onItemClick(v:View, position: Int, shopId: String)
+        fun onItemClick(v: View, position: Int, shopId: String)
 
         fun onCheckIconClick(v: View, position: Int, memo: String)
+
+//        fun onInputClick(v: View, position: Int)
     }
 
 //    fun setItemClickListener(onItemClickListener: OnItemClickListener){

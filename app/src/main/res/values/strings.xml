@@ -40,6 +40,7 @@
     <string name="user_name">Gurumemo</string>
     <string name="memo">メモを残す</string>
     <string name="no_bookmark">データがありません</string>
+    <string name="no_catch_phrase">▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀</string>
     <!--    Bookmark Delete Alert    -->
     <string name="delete_bookmark_alert_title">ブックマークを削除</string>
     <string name="delete_bookmark_alert_message">本当にブックマークを削除しても \n よろしいでしょうか</string>
