@@ -11,8 +11,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sw.gurumemo.Constants
@@ -74,6 +72,14 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
             withContext(Dispatchers.IO) {
                 bookmarkList = ArrayList(bookmarkDao.getAll())
             }
+            Log.e(TAG,"$bookmarkList")
+            withContext(Dispatchers.Main){
+                if (bookmarkList.isNullOrEmpty()) {
+                    binding?.llNoBookmark?.visibility = View.VISIBLE
+                }else{
+                binding?.llNoBookmark?.visibility = View.GONE
+                }
+            }
             setRecyclerView()
         }
     }
@@ -84,13 +90,12 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
                 adapter = BookmarkListAdapter(bookmarkList, this@BookmarkFragment)
                 binding?.rvBookmarkList?.adapter = adapter
                 binding?.rvBookmarkList?.layoutManager = LinearLayoutManager(requireContext())
-
+//                if (bookmarkList.isNullOrEmpty()) {
+//                    binding?.llNoBookmark?.visibility = View.VISIBLE
+//                }
+//                binding?.llNoBookmark?.visibility = View.GONE
             }
         }
-        if (bookmarkList.isNullOrEmpty()) {
-            binding?.llNoBookmark?.visibility = View.VISIBLE
-        }
-        binding?.llNoBookmark?.visibility = View.GONE
     }
 
     override fun onBookmarkIconClick(v: View, position: Int) {
@@ -108,12 +113,13 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
         builder.show()
     }
 
-    override fun onItemClick(v: View, position: Int, shopId: String) {
-        getShopInfo(shopId)
+    override fun onItemClick(v: View, position: Int, shopId: String, shopName: String) {
+        getShopInfo(shopId, shopName)
     }
 
     override fun onCheckIconClick(v: View, position: Int, memo: String) {
         updateMemo(position, memo)
+        v.visibility = View.INVISIBLE
     }
 
 //    override fun onInputClick(v: View, position: Int) {
@@ -129,6 +135,11 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
                 bookmarkList.removeAt(position)
                 withContext(Dispatchers.Main) {
                     adapter.notifyDataSetChanged()
+                    if (bookmarkList.isNullOrEmpty()) {
+                        binding?.llNoBookmark?.visibility = View.VISIBLE
+                    }else{
+                        binding?.llNoBookmark?.visibility = View.GONE
+                    }
                     Toast.makeText(requireContext(), "ブックマークの削除が完了しました。", Toast.LENGTH_SHORT)
                         .show()
                 }
@@ -148,7 +159,7 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
         }
     }
 
-    private fun getShopInfo(id: String) {
+    private fun getShopInfo(shopId: String, shopName: String) {
         val retrofitAPI = RetrofitConnection.getInstance().create(HotPepperService::class.java)
 
         lifecycleScope.launch {
@@ -156,13 +167,20 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
                 val response = withContext(Dispatchers.IO) {
                     retrofitAPI.getGourmetData(
                         apiKey = Constants.HOTPEPPER_API_KEY,
-                        id = id
+                        id = shopId,
+                        nameAny = shopName
                     )
                 }
-                shop = response.results.shop.firstOrNull()
-                val intent = Intent(requireContext(), ShopDetailActivity::class.java)
-                intent.putExtra("shopData", shop)
-                startActivity(intent)
+               val isShopEmpty = response.results.shop.isEmpty()
+                if (!isShopEmpty) {
+                    shop = response.results.shop[0]
+                    val intent = Intent(requireContext(), ShopDetailActivity::class.java)
+                    intent.putExtra("shopData", shop)
+                    startActivity(intent)
+                } else {
+                    Log.e(TAG, "No data found from API request.")
+                    Toast.makeText(requireContext(), "店舗情報が見つかりませんでした。", Toast.LENGTH_SHORT).show()
+                }
 
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
@@ -170,6 +188,11 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getAllBookmarkList()
     }
 
     override fun onDestroyView() {

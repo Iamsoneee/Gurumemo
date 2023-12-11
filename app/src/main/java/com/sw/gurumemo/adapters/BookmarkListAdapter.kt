@@ -33,25 +33,29 @@ class BookmarkListAdapter(
         private val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // Before Text Changed
+                iv_check_icon.visibility = View.INVISIBLE
+
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 // On Text Changed
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                // After Text Changed
                 if (s?.length!! > 0) {
                     iv_check_icon.visibility = View.VISIBLE
                 } else {
                     iv_check_icon.visibility = View.INVISIBLE
                 }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // After Text Changed
+
                 bookmarkList[adapterPosition].memo = s.toString()
             }
         }
 
         init {
             et_memo.addTextChangedListener(textWatcher)
+
         }
     }
 
@@ -115,7 +119,7 @@ class BookmarkListAdapter(
 //        }
 
         holder.root.setOnClickListener {
-            listener.onItemClick(it, position, bookmarkData.shopId)
+            listener.onItemClick(it, position, bookmarkData.shopId, bookmarkData.shopName)
         }
 
     }
@@ -127,7 +131,7 @@ class BookmarkListAdapter(
     interface OnItemClickListener {
         fun onBookmarkIconClick(v: View, position: Int)
 
-        fun onItemClick(v: View, position: Int, shopId: String)
+        fun onItemClick(v: View, position: Int, shopId: String, shopName: String)
 
         fun onCheckIconClick(v: View, position: Int, memo: String)
 

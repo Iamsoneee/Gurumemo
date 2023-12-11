@@ -43,7 +43,7 @@
     <string name="no_catch_phrase">▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀</string>
     <!--    Bookmark Delete Alert    -->
     <string name="delete_bookmark_alert_title">ブックマークを削除</string>
-    <string name="delete_bookmark_alert_message">本当にブックマークを削除しても \n よろしいでしょうか</string>
+    <string name="delete_bookmark_alert_message">本当にブックマークを削除しても\nよろしいでしょうか</string>
     <string name="delete_bookmark_alert_cancel">キャンセル</string>
     <string name="delete_bookmark_alert_proceed">リストから削除</string>
 

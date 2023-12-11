@@ -33,7 +33,6 @@ class SearchShopListAdapter(private val context: Context) :
                 } else {
                     tvCatchPhrase.text = shop.genre.catch
                 }
-
                 tvStationName.text = "${shop.station_name}駅"
             }
         }

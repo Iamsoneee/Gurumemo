@@ -78,6 +78,7 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         val intent = intent
         val shop = intent.getSerializableExtra("shopData") as Shop
 
+
         shopId = shop.id
         shopName = shop.name
         shopLatitude = shop.lat!!
@@ -87,7 +88,9 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.tvShopName.text = shop.name
 
         if (shop.genre.catch.isBlank()) {
-            binding.tvCatchPhrase.text = shop.catch ?: shop.genre.catch
+            binding.tvCatchPhrase.text = shop.catch
+        } else {
+            binding.tvCatchPhrase.text = shop.genre.catch
         }
 
         binding.tvBudget.text = shop.budget.name
@@ -137,12 +140,12 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             // 즐겨찾기 추가할 때 수행할 동작
             Log.e(TAG, "BOOKMARK ADDED")
             this.isBookmarked = true
-            Toast.makeText(applicationContext, "Bookmark added!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "ブックマークを保存しました。", Toast.LENGTH_SHORT).show()
         } else {
             // 즐겨찾기 제거할 때 수행할 동작
             Log.e(TAG, "BOOKMARK REMOVED")
             this.isBookmarked = false
-            Toast.makeText(applicationContext, "Bookmark removed!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "ブックマークを削除しました", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -163,7 +166,6 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 )
             }
         }
-        Toast.makeText(applicationContext, "Bookmark has saved in database!", Toast.LENGTH_SHORT).show()
     }
 
     private fun deleteBookmark(shopId: String) {
