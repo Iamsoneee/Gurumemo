@@ -51,9 +51,4 @@ class HomeShopListAdapter(private val context: Context) :
         notifyDataSetChanged()
     }
 
-    fun addData(newShops: List<Shop>) {
-        shops.addAll(newShops)
-        notifyDataSetChanged()
-    }
-
 }

@@ -1,6 +1,5 @@
 package com.sw.gurumemo.retrofit
 
-import android.os.Parcelable
 import java.io.Serializable
 
 data class HotPepperResponse(

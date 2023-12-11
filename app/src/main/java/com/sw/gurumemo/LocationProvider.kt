@@ -59,12 +59,12 @@ class LocationProvider(private val context: Context) {
                 }
 
                 if (gpsLocation != null && networkLocation != null) {
-                    if (gpsLocation.accuracy > networkLocation.accuracy) {
+                    return if (gpsLocation.accuracy > networkLocation.accuracy) {
                         location = gpsLocation
-                        return gpsLocation
+                        gpsLocation
                     } else {
                         location = networkLocation
-                        return networkLocation
+                        networkLocation
                     }
                 } else {
                     if (gpsLocation != null) {
@@ -96,15 +96,15 @@ class LocationProvider(private val context: Context) {
         val addresses: List<Address>? = try {
             geocoder.getFromLocation(latitude, longitude, 1)
         } catch (ioException: IOException) {
-            Log.e("LocationProvider", "지오코더 서비스 사용 불가", ioException)
+            Log.e("LocationProvider", "Geocoder is not available", ioException)
             return null
         } catch (illegalArgumentException: IllegalArgumentException) {
-            Log.e("LocationProvider", "잘못된 위도, 경도", illegalArgumentException)
+            Log.e("LocationProvider", "Wrong latitude, longitude", illegalArgumentException)
             return null
         }
 
         if (addresses.isNullOrEmpty()) {
-            Log.e("LocationProvider", "주소가 발견되지 않았습니다.")
+            Log.e("LocationProvider", "Address has not been found")
             return null
         }
 

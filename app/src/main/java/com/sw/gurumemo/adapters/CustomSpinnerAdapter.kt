@@ -17,7 +17,7 @@ class CustomSpinnerAdapter(private val context: Context, private val list: Array
     }
 
     override fun getItem(position: Int): Any {
-        return list.get(position)
+        return list[position]
     }
 
     override fun getItemId(position: Int): Long {

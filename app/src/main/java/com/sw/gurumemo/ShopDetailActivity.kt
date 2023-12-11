@@ -1,15 +1,11 @@
 package com.sw.gurumemo
 
 import android.content.Intent
-import com.sw.gurumemo.R
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -47,21 +43,6 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private var shopLocation = LatLng(shopLatitude, shopLongitude)
     private var isBookmarked = false
 
-//    val callback = object : OnBackPressedCallback(true) {
-//        override fun handleOnBackPressed() {
-//            if (System.currentTimeMillis() - backPressedTime >= 2000) {
-//                backPressedTime = System.currentTimeMillis()
-//                Toast.makeText(
-//                    this@ShopDetailActivity,
-//                    "뒤로 버튼을 한번 더 누르면 앱을 종료합니다.",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            } else if (System.currentTimeMillis() - backPressedTime < 2000) {
-//                finish()
-//            }
-//        }
-//    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityShopDetailBinding.inflate(layoutInflater)
@@ -87,9 +68,11 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         Glide.with(this).load(shop.photo.pc.l).into(binding.ivMainImage)
         binding.tvShopName.text = shop.name
 
+        var catchPhrase = shop.catch
         if (shop.genre.catch.isBlank()) {
             binding.tvCatchPhrase.text = shop.catch
         } else {
+            catchPhrase = shop.genre.catch
             binding.tvCatchPhrase.text = shop.genre.catch
         }
 
@@ -98,10 +81,10 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.tvAddressDetail.text = shop.address
 
         val logoUrl = shop.logo_image
-        val catchPhrase = shop.catch ?: shop.genre.catch
+
         val access = shop.access
 
-        db = AppDatabase.getInstance(this)!!
+        db = AppDatabase.getInstance(this)
         bookmarkDao = db.getBookmarkDao()
 
         lifecycleScope.launch { isBookmarked = withContext(Dispatchers.IO){
@@ -138,14 +121,14 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         button.isSelected = !button.isSelected
         if (button.isSelected) {
             // 즐겨찾기 추가할 때 수행할 동작
-            Log.e(TAG, "BOOKMARK ADDED")
+            Log.d(TAG, "Bookmark added")
             this.isBookmarked = true
             Toast.makeText(applicationContext, "ブックマークを保存しました。", Toast.LENGTH_SHORT).show()
         } else {
             // 즐겨찾기 제거할 때 수행할 동작
-            Log.e(TAG, "BOOKMARK REMOVED")
+            Log.d(TAG, "Bookmark removed")
             this.isBookmarked = false
-            Toast.makeText(applicationContext, "ブックマークを削除しました", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "ブックマークを削除しました。", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -174,7 +157,7 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 bookmarkDao.deleteBookmark(shopId)
             }
         }
-        Toast.makeText(applicationContext, "Bookmark has deleted from database!", Toast.LENGTH_SHORT).show()
+        Log.d(TAG,"Bookmark has deleted from database")
     }
 
 
@@ -191,9 +174,7 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 it.setMaxZoomPreference(20.0f)
                 it.setMinZoomPreference(12.0f)
                 it.moveCamera(CameraUpdateFactory.newLatLngZoom(shopLocation, 16f))
-
             }
-
             setMarker()
         }
     }

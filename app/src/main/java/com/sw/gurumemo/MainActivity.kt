@@ -3,7 +3,6 @@ package com.sw.gurumemo
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
@@ -32,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     private val PERMISSIONS_REQUEST_CODE = 100
 
-    var REQUIRED_PERMISSIONS = arrayOf(
+    private var REQUIRED_PERMISSIONS = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
@@ -66,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                 backPressedTime = System.currentTimeMillis()
                 Toast.makeText(
                     this@MainActivity,
-                    "뒤로 버튼을 한번 더 누르면 앱을 종료합니다.",
+                    "終了する場合は、もう一度バックボタンを押してください。",
                     Toast.LENGTH_SHORT
                 ).show()
             } else if (System.currentTimeMillis() - backPressedTime < 1500) {
@@ -131,7 +130,7 @@ class MainActivity : AppCompatActivity() {
         latitude = locationProvider.getLocationLatitude()
         longitude = locationProvider.getLocationLongitude()
 
-        Log.e(TAG,"Current location before country code check: $latitude $longitude")
+        Log.d(TAG,"Current location before country code check: $latitude $longitude")
 
         if (latitude != 0.0 || longitude != 0.0) {
 
@@ -141,7 +140,7 @@ class MainActivity : AppCompatActivity() {
                 if(address.countryCode.equals("JPN")||address.countryCode.equals("JP")){
                     latitude = locationProvider.getLocationLatitude()
                     longitude = locationProvider.getLocationLongitude()
-                    Log.e(TAG,"Current location in Japan: $latitude $longitude")
+                    Log.d(TAG,"Current location in Japan: $latitude $longitude")
                 }else{
 //                    setting default value in case user doesn't reside in Japan.
                     latitude = Constants.DEFAULT_LATITUDE_JP
@@ -160,7 +159,7 @@ class MainActivity : AppCompatActivity() {
             longitude = Constants.DEFAULT_LONGITUDE_JP
         }
         val finalLocation = locationProvider.getCurrentAddress(latitude,longitude)?.countryCode
-        Log.e(TAG, "Final location: $latitude $longitude $finalLocation")
+        Log.d(TAG, "Final location: $latitude $longitude $finalLocation")
     }
 
 
@@ -251,20 +250,20 @@ class MainActivity : AppCompatActivity() {
         builder.setTitle("位置情報の使用を許可しますか？")
         builder.setMessage("位置サービスがオフになっています。アプリの利用には設定が必要です。")
         builder.setCancelable(true)
-        builder.setPositiveButton("設定", DialogInterface.OnClickListener { _, _ ->
+        builder.setPositiveButton("設定") { _, _ ->
             val callGPSSettingIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             getGPSPermissionLauncher.launch(callGPSSettingIntent)
-        })
-        builder.setNegativeButton("キャンセル",
-            DialogInterface.OnClickListener { dialog, _ ->
-                dialog.cancel()
-                Toast.makeText(
-                    this@MainActivity,
-                    "デバイスで位置サービス（GPS）を設定してからご利用ください。",
-                    Toast.LENGTH_SHORT
-                ).show()
-                finish()
-            })
+        }
+        builder.setNegativeButton("キャンセル"
+        ) { dialog, _ ->
+            dialog.cancel()
+            Toast.makeText(
+                this@MainActivity,
+                "デバイスで位置サービス（GPS）を設定してからご利用ください。",
+                Toast.LENGTH_SHORT
+            ).show()
+            finish()
+        }
         builder.create().show()
     }
 

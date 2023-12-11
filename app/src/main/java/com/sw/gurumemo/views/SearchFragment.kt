@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,9 +30,9 @@ import kotlinx.coroutines.withContext
 
 class SearchFragment : Fragment(), View.OnClickListener {
 
-    //    Passing latitude, longitude data from MainActivity to SearchFragment
+    // Passing latitude, longitude data from MainActivity to SearchFragment
     companion object {
-        private val TAG = "SearchFragment"
+        private const val TAG = "SearchFragment"
         private const val ARG_LATITUDE = "latitude"
         private const val ARG_LONGITUDE = "longitude"
 
@@ -58,10 +59,13 @@ class SearchFragment : Fragment(), View.OnClickListener {
     private var range = 1 // 検索範囲 (初期値: 300m)
     private var order = 1 // 1:店名かな順 / 2:ジャンル順 / 3:小エリ順 / 4:おススメ順
     private var genre = ""
-    private val PAGE_SIZE = 30
+    private val pageSize = 30
 
     private var currentLatitude: Double = 0.0
     private var currentLongitude: Double = 0.0
+
+    private var selectedRange = 0
+    private var selectedFilter = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,8 +81,8 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
         val arguments = arguments
         if (arguments != null) {
-            currentLatitude = arguments.getDouble(SearchFragment.ARG_LATITUDE, 0.0)
-            currentLongitude = arguments.getDouble(SearchFragment.ARG_LONGITUDE, 0.0)
+            currentLatitude = arguments.getDouble(ARG_LATITUDE, 0.0)
+            currentLongitude = arguments.getDouble(ARG_LONGITUDE, 0.0)
         }
 
         adapter = SearchShopListAdapter(this.requireContext())
@@ -119,7 +123,6 @@ class SearchFragment : Fragment(), View.OnClickListener {
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     searchJob?.cancel()
                     searchJob = lifecycleScope.launch {
-//                        delay(500) // 예: 500ms 딜레이를 두고 검색 수행
                         performSearch(s.toString())
                     }
                 }
@@ -176,8 +179,59 @@ class SearchFragment : Fragment(), View.OnClickListener {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                TODO("Not yet implemented")
             }
+        }
+    }
+
+    private fun updateSelectedRange(newRange: Int) {
+        selectedRange = if (selectedRange == newRange) {
+            // 既に選択した検索範囲を再選択すると解除
+            0
+        } else {
+            // 選択されていない検索範囲をクリックすると選択状態に変更
+            newRange
+        }
+        val colorAccent = ContextCompat.getColor(requireContext(), R.color.colorAccent)
+        val colorSecondary = ContextCompat.getColor(requireContext(), R.color.colorSecondary)
+
+        // すべての検索範囲ボタンの選択状態を初期化
+        binding?.tvWithin500m?.setTextColor(colorSecondary)
+        binding?.tvWithin1km?.setTextColor(colorSecondary)
+        binding?.tvWithin2km?.setTextColor(colorSecondary)
+        binding?.tvWithin3km?.setTextColor(colorSecondary)
+
+        // 現在選択された検索範囲ボタンのテキストカラーを再設定
+        when (selectedRange) {
+            1 -> binding?.tvWithin500m?.setTextColor(colorAccent)
+            2 -> binding?.tvWithin1km?.setTextColor(colorAccent)
+            3 -> binding?.tvWithin2km?.setTextColor(colorAccent)
+            4 -> binding?.tvWithin3km?.setTextColor(colorAccent)
+        }
+    }
+
+    private fun updateSelectedFilter(newFilter: Int) {
+        selectedFilter = if (selectedFilter == newFilter) {
+            // 既に選択した検索範囲を再選択すると解除
+            0
+        } else {
+            // 選択されていない検索範囲をクリックすると選択状態に変更
+            newFilter
+        }
+        val colorAccent = ContextCompat.getColor(requireContext(), R.color.colorAccent)
+        val colorPrimary = ContextCompat.getColor(requireContext(), R.color.colorPrimary)
+
+        // すべての検索範囲ボタンの選択状態を初期化
+        binding?.tvFilter1?.setTextColor(colorPrimary)
+        binding?.tvFilter2?.setTextColor(colorPrimary)
+        binding?.tvFilter3?.setTextColor(colorPrimary)
+        binding?.tvFilter4?.setTextColor(colorPrimary)
+
+        // 現在選択された検索範囲ボタンのテキストカラーを再設定
+        when (selectedFilter) {
+            1 -> binding?.tvFilter1?.setTextColor(colorAccent)
+            2 -> binding?.tvFilter2?.setTextColor(colorAccent)
+            3 -> binding?.tvFilter3?.setTextColor(colorAccent)
+            4 -> binding?.tvFilter4?.setTextColor(colorAccent)
         }
     }
 
@@ -203,12 +257,12 @@ class SearchFragment : Fragment(), View.OnClickListener {
                         val address = withContext(Dispatchers.IO) {
                             locationProvider.getCurrentAddress(currentLatitude, currentLongitude)
                         }
-                        Log.e(TAG, "Current address before country code check: $address")
+                        Log.d(TAG, "Current address before country code check: $address")
                         address?.let {
                             if (address.countryCode.equals("JPN") || address.countryCode.equals("JP")) {
                                 currentLatitude = address.latitude
                                 currentLongitude = address.longitude
-                                Log.e(
+                                Log.d(
                                     TAG,
                                     "Current location in Japan: $currentLatitude $currentLongitude"
                                 )
@@ -227,11 +281,11 @@ class SearchFragment : Fragment(), View.OnClickListener {
                         }
                         val response = performSearch(query)
 //                val response = performSearch(DEFAULT_QUERY)
-                        Log.e(
+                        Log.d(
                             TAG,
                             "Location after the location icon is clicked: $currentLatitude $currentLongitude"
                         )
-                        Log.e(TAG, "Response after the location icon is clicked: $response")
+                        Log.d(TAG, "Response after the location icon is clicked: $response")
                     } catch (e: Exception) {
                         Log.e(TAG, "Error: ${e.message}")
                     }
@@ -249,6 +303,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
             // range buttons
             R.id.tv_within_500m -> {
+                updateSelectedRange(1)
                 range = 2
                 currentPage = 1
                 performSearch(query)
@@ -256,6 +311,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
             }
 
             R.id.tv_within_1km -> {
+                updateSelectedRange(2)
                 range = 3
                 currentPage = 1
                 performSearch(query)
@@ -263,14 +319,15 @@ class SearchFragment : Fragment(), View.OnClickListener {
             }
 
             R.id.tv_within_2km -> {
+                updateSelectedRange(3)
                 range = 4
                 currentPage = 1
-                Log.e(TAG, "current page: $currentPage")
                 performSearch(query)
                 binding?.rvShopList?.scrollToPosition(0)
             }
 
             R.id.tv_within_3km -> {
+                updateSelectedRange(4)
                 range = 5
                 currentPage = 1
                 performSearch(query)
@@ -280,6 +337,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
             // filter buttons
             // 居酒屋
             R.id.tv_filter_1 -> {
+                updateSelectedFilter(1)
                 genre = "G001"
                 currentPage = 1
                 performSearch(query)
@@ -288,15 +346,16 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
             // 韓国料理
             R.id.tv_filter_2 -> {
+                updateSelectedFilter(2)
                 genre = "G017"
                 currentPage = 1
-                Log.e(TAG, "current page: $currentPage")
                 performSearch(query)
                 binding?.rvShopList?.scrollToPosition(0)
             }
 
             // イタリアン・フレンチ
             R.id.tv_filter_3 -> {
+                updateSelectedFilter(3)
                 genre = "G006"
                 currentPage = 1
                 performSearch(query)
@@ -304,6 +363,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
             }
             // 中華
             R.id.tv_filter_4 -> {
+                updateSelectedFilter(4)
                 genre = "G007"
                 currentPage = 1
                 performSearch(query)
@@ -313,31 +373,24 @@ class SearchFragment : Fragment(), View.OnClickListener {
     }
 
     private fun performSearch(query: String) {
-//        if (query.isNotEmpty()) {
         if (currentPage != 1) {
             currentPage++
             locationProvider = LocationProvider(requireContext())
             val location = locationProvider.getCurrentAddress(currentLatitude, currentLongitude)
-            Log.e(
+            Log.d(
                 TAG,
                 "Location before searching: $currentLatitude $currentLongitude $location"
             )
-            Log.e(TAG, "Query before searching: $query")
-            Log.e(TAG, "Range before searching: $range")
-            Log.e(TAG, "Order before searching: $order")
-
+            Log.d(TAG, "Query before searching: $query")
+            Log.d(TAG, "Range before searching: $range")
+            Log.d(TAG, "Order before searching: $order")
             searchWithQuery(query, currentPage, range, order, genre)
-//                Log.e(TAG, "Search with query")
         } else {
-            // 초기화
+            // ページ初期化
             currentPage = 1
             searchWithQuery(query, currentPage, range, order, genre)
         }
-//        } else {
-//            Log.e(TAG, "Search without query")
-//            Log.e(TAG, "currentPage: $currentPage")
-//            searchWithQuery(query, currentPage, range, order, genre)
-//        }
+
     }
 
 
@@ -350,15 +403,15 @@ class SearchFragment : Fragment(), View.OnClickListener {
                         apiKey = Constants.HOTPEPPER_API_KEY,
                         lat = currentLatitude.toString(),
                         lng = currentLongitude.toString(),
-//                    name = query, // 가게 이름 검색
+//                    name = query, // 店舗名称
 //                    nameKana = query,
-                        nameAny = query, // 가게 이름 일부
-                        keyword = query, // 키워드 검색
+                        nameAny = query, // 店舗名称一部
+                        keyword = query, // キーワード検索
                         order = order,
-                        range = range, // 검색 범위 설정
-                        start = (page - 1) * PAGE_SIZE + 1,
+                        range = range, // 検索範囲設定
+                        start = (page - 1) * pageSize + 1,
                         genre = genre,
-                        count = PAGE_SIZE
+                        count = pageSize
                     )
                 }
                 Log.d(TAG, "API request for search response: $response")
@@ -389,7 +442,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private suspend fun updateUI(shops: List<Shop>, isReplaced: Boolean) {
+    private fun updateUI(shops: List<Shop>, isReplaced: Boolean) {
         if (isReplaced) {
             adapter.setData(shops)
         } else {

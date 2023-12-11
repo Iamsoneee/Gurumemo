@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.sw.gurumemo.R
 import com.sw.gurumemo.databinding.ItemBookmarkBinding
 import com.sw.gurumemo.db.BookmarkEntity
@@ -28,17 +30,12 @@ class BookmarkListAdapter(
         val btn_bookmark_icon = binding.btnBookmarkIcon
         val iv_check_icon = binding.ivCheckIcon
         var et_memo = binding.etMemo
+        val fl_edit_memo_area= binding.flEditMemoArea
 
-        // TextWatcher 객체 정의
+        // TextWatcher オブジェクト定義
         private val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // Before Text Changed
-                iv_check_icon.visibility = View.INVISIBLE
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // On Text Changed
                 if (s?.length!! > 0) {
                     iv_check_icon.visibility = View.VISIBLE
                 } else {
@@ -46,16 +43,18 @@ class BookmarkListAdapter(
                 }
             }
 
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // On Text Changed
+            }
+
             override fun afterTextChanged(s: Editable?) {
                 // After Text Changed
-
                 bookmarkList[adapterPosition].memo = s.toString()
             }
         }
 
         init {
             et_memo.addTextChangedListener(textWatcher)
-
         }
     }
 
@@ -75,7 +74,11 @@ class BookmarkListAdapter(
             Glide.with(holder.itemView.context).load(bookmarkData.logoImage)
                 .into(holder.iv_thumbnail_image)
         } else {
-            Glide.with(holder.itemView.context).load(R.drawable.default_shop_logo)
+            Glide.with(holder.itemView.context).load(R.drawable.default_shop_logo).apply(
+                RequestOptions()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+            )
                 .into(holder.iv_thumbnail_image)
         }
 
@@ -85,7 +88,6 @@ class BookmarkListAdapter(
         if (bookmarkData.catchPhrase.isNotEmpty()) {
             holder.tv_catch_phrase.text = bookmarkData.catchPhrase
         } else {
-//            holder.tv_catch_phrase.text = R.string.no_catch_phrase.toString()
             holder.tv_catch_phrase.text = "─── ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ───"
         }
 
@@ -102,24 +104,17 @@ class BookmarkListAdapter(
 
         holder.iv_check_icon.setOnClickListener {
             listener.onCheckIconClick(it, position, holder.et_memo.text.toString())
+            holder.et_memo.clearFocus()
+            holder.fl_edit_memo_area.focusable = View.FOCUSABLE
+            holder.fl_edit_memo_area.isFocusableInTouchMode = true
+            holder.fl_edit_memo_area.requestFocus()
         }
 
         holder.et_memo.setText(bookmarkData.memo)
-//        holder.et_memo.setOnEditorActionListener{_, actionId, _ ->
-//            if(actionId == EditorInfo.IME_ACTION_DONE){
-//                // 키패드 내리기
-//                val inputMethodManager = holder.et_memo.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//                inputMethodManager.hideSoftInputFromWindow(holder.et_memo.windowToken, 0)
-//            } else {
-//                false
-//            }
-//        }
-//        holder.et_memo.setOnClickListener {
-//            listener.onInputClick(it, position)
-//        }
 
         holder.root.setOnClickListener {
             listener.onItemClick(it, position, bookmarkData.shopId, bookmarkData.shopName)
+
         }
 
     }
@@ -134,14 +129,5 @@ class BookmarkListAdapter(
         fun onItemClick(v: View, position: Int, shopId: String, shopName: String)
 
         fun onCheckIconClick(v: View, position: Int, memo: String)
-
-//        fun onInputClick(v: View, position: Int)
     }
-
-//    fun setItemClickListener(onItemClickListener: OnItemClickListener){
-//        this.itemClickListener = onItemClickListener
-//    }
-//
-//    private lateinit var itemClickListener: OnItemClickListener
-
 }

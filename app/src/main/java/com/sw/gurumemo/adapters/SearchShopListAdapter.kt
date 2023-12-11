@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.sw.gurumemo.R
 import com.sw.gurumemo.ShopDetailActivity
 import com.sw.gurumemo.databinding.ItemShopBinding
@@ -23,7 +25,11 @@ class SearchShopListAdapter(private val context: Context) :
                 if(!shop.logo_image.contains("m30_img_noimage")){
                 Glide.with(itemView.context).load(shop.logo_image).into(ivThumbnailImage)
                 }else{
-                    Glide.with(itemView.context).load(R.drawable.default_shop_logo).into(ivThumbnailImage)
+                    Glide.with(itemView.context).load(R.drawable.default_shop_logo).apply(
+                        RequestOptions()
+                            .skipMemoryCache(true)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    ).into(ivThumbnailImage)
                 }
                 tvShopName.text = shop.name
                 tvAccess.text = shop.access

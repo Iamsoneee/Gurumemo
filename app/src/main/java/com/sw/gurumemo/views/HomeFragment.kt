@@ -30,8 +30,7 @@ class HomeFragment : Fragment() {
 
     //    Passing latitude, longitude data from MainActivity to SearchFragment
     companion object {
-        private val TAG = "HomeFragment"
-
+        private const val TAG = "HomeFragment"
         private const val ARG_LATITUDE = "latitude"
         private const val ARG_LONGITUDE = "longitude"
 
@@ -104,8 +103,8 @@ class HomeFragment : Fragment() {
                         lng = currentLongitude.toString(),
                     )
                 }
-                Log.e(TAG, "Image slider response: $response")
-                Log.e(TAG, "Request data by: $currentLatitude $currentLongitude")
+                Log.d(TAG, "Image slider response: $response")
+                Log.d(TAG, "Request data by: $currentLatitude $currentLongitude")
 
                 withContext(Dispatchers.Main) {
                     adapter.setData(response.results.shop.shuffled().take(5))
@@ -169,7 +168,7 @@ class HomeFragment : Fragment() {
         while (autoScrollEnabled) {
             val itemCount = adapter.itemCount
             if (itemCount > 0) {
-                Log.e(TAG, "Image slider item count: $itemCount")
+                Log.d(TAG, "Image slider item count: $itemCount")
                 val currentItem = binding?.vpImageSlider?.currentItem ?: 0
                 val nextItem = (currentItem + 1) % itemCount
                 binding?.vpImageSlider?.setCurrentItem(nextItem, true)

@@ -1,11 +1,10 @@
 package com.sw.gurumemo.db
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
+
 
 @Dao
 interface BookmarkDao {
@@ -24,6 +23,4 @@ interface BookmarkDao {
     @Query("UPDATE BookmarkEntity SET memo = :newMemo WHERE shop_id = :shopId")
     fun updateMemo(shopId: String, newMemo: String)
 
-//    @Delete
-//    fun deleteBookmark(bookmark: BookmarkEntity)
 }

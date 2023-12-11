@@ -60,7 +60,7 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
             title = resources.getString(R.string.bookmark)
         }
 
-        db = AppDatabase.getInstance(requireContext())!!
+        db = AppDatabase.getInstance(requireContext())
         bookmarkDao = db.getBookmarkDao()
 
         getAllBookmarkList()
@@ -72,9 +72,9 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
             withContext(Dispatchers.IO) {
                 bookmarkList = ArrayList(bookmarkDao.getAll())
             }
-            Log.e(TAG,"$bookmarkList")
+            Log.d(TAG,"$bookmarkList")
             withContext(Dispatchers.Main){
-                if (bookmarkList.isNullOrEmpty()) {
+                if (bookmarkList.isEmpty()) {
                     binding?.llNoBookmark?.visibility = View.VISIBLE
                 }else{
                 binding?.llNoBookmark?.visibility = View.GONE
@@ -90,10 +90,6 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
                 adapter = BookmarkListAdapter(bookmarkList, this@BookmarkFragment)
                 binding?.rvBookmarkList?.adapter = adapter
                 binding?.rvBookmarkList?.layoutManager = LinearLayoutManager(requireContext())
-//                if (bookmarkList.isNullOrEmpty()) {
-//                    binding?.llNoBookmark?.visibility = View.VISIBLE
-//                }
-//                binding?.llNoBookmark?.visibility = View.GONE
             }
         }
     }
@@ -122,12 +118,6 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
         v.visibility = View.INVISIBLE
     }
 
-//    override fun onInputClick(v: View, position: Int) {
-//        val layoutManager = binding?.rvBookmarkList?.layoutManager as LinearLayoutManager
-//        layoutManager.scrollToPositionWithOffset(position,0)
-//        binding?.rvBookmarkList?.smoothScrollToPosition(position)
-//    }
-
     private fun deleteBookmark(position: Int) {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
@@ -135,7 +125,7 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
                 bookmarkList.removeAt(position)
                 withContext(Dispatchers.Main) {
                     adapter.notifyDataSetChanged()
-                    if (bookmarkList.isNullOrEmpty()) {
+                    if (bookmarkList.isEmpty()) {
                         binding?.llNoBookmark?.visibility = View.VISIBLE
                     }else{
                         binding?.llNoBookmark?.visibility = View.GONE

@@ -98,6 +98,7 @@
             android:background="@color/offWhite" />
 
         <FrameLayout
+            android:id="@+id/fl_edit_memo_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
