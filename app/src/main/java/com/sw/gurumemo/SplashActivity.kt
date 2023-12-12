@@ -18,7 +18,8 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        CoroutineScope(Dispatchers.IO).launch {
+
+        CoroutineScope(Dispatchers.Main).launch {
             delay(time)
 
             val intent = Intent(applicationContext, MainActivity::class.java)

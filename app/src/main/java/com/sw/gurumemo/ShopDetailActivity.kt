@@ -8,6 +8,8 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -65,7 +67,11 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         shopLatitude = shop.lat!!
         shopLongitude = shop.lng!!
 
-        Glide.with(this).load(shop.photo.pc.l).into(binding.ivMainImage)
+        Glide.with(this).load(shop.photo.pc.l).apply(
+            RequestOptions()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+        ).into(binding.ivMainImage)
         binding.tvShopName.text = shop.name
 
         var catchPhrase = shop.catch

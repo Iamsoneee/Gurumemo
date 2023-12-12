@@ -34,7 +34,8 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:paddingVertical="12dp"
-                android:paddingStart="8dp">
+                android:paddingStart="8dp"
+                android:paddingEnd="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -43,7 +44,7 @@
 
                     <TextView
                         android:id="@+id/tv_shop_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:autoSizeMinTextSize="14sp"
@@ -60,6 +61,7 @@
                         android:id="@+id/btn_bookmark_icon"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
+                        android:contentDescription="@string/bookmark_function"
                         android:background="@drawable/selector_bookmark_button" />
 
                 </LinearLayout>
@@ -93,13 +95,13 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:layout_centerInParent="true"
             android:layout_marginTop="14dp"
             android:background="@color/offWhite" />
 
         <FrameLayout
             android:id="@+id/fl_edit_memo_area"
             android:layout_width="match_parent"
+            android:layout_gravity="center"
             android:layout_height="wrap_content">
 
             <EditText
@@ -109,6 +111,8 @@
                 android:minHeight="50dp"
                 android:background="@color/colorSecondary"
                 android:hint="@string/memo"
+                android:importantForAutofill="no"
+                android:inputType="none"
                 android:paddingStart="14dp"
                 android:paddingEnd="40dp"
                 android:imeOptions="actionDone"
@@ -121,6 +125,7 @@
                 android:layout_height="32dp"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="8dp"
+                android:contentDescription="@string/fragment_bookmark_check_icon"
                 android:visibility="invisible"
                 android:src="@drawable/ic_check"
                 app:tint="@color/colorPrimary" />

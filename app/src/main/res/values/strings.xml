@@ -48,4 +48,19 @@
     <string name="delete_bookmark_alert_proceed">リストから削除</string>
 
 
+
+    <string name="activity_shop_detail_restaurant_image">Restaurant image</string>
+    <string name="activity_shop_detail_share_icon">Share the Hot Pepper restaurant page link to other apps.</string>
+    <string name="bookmark_function">Bookmark function</string>
+    <string name="hotpepper_api_credit_logo">Hotpepper API credit logo</string>
+    <string name="gurumemo_logo_image">Gurumemo logo image</string>
+    <string name="gurumemo_logo_text">Gurumemo_logo_text</string>
+    <string name="fragment_home_current_location_icon">Current location icon</string>
+    <string name="fragment_search_current_location_icon">Set the current location by GPS</string>
+    <string name="fragment_search_back_button">Back to home screen</string>
+    <string name="erase_icon_to_empty_the_search_query">Empty the search query by clicking here</string>
+    <string name="fragment_bookmark_check_icon">Click here to save the memo to database</string>
+    <string name="fragment_home_shop_image_slider">Shop image from image slider on home screen</string>
+
+
 </resources>

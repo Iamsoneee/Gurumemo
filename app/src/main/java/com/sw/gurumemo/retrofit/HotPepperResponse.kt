@@ -49,10 +49,15 @@ data class Budget(
 ) : Serializable
 
 data class Photo(
-    val pc: PC,
+    val pc: Pc,
+    val mobile: Mobile
 ) : Serializable
 
-data class PC(
+data class Pc(
+    val l: String
+) : Serializable
+
+data class Mobile(
     val l: String
 ) : Serializable
 

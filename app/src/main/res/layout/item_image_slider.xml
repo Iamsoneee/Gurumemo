@@ -9,8 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:contentDescription="@string/fragment_home_shop_image_slider"
         android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher">
+        android:tintMode="src_atop"
+        android:src="@mipmap/ic_launcher_gurumemo">
 
     </ImageView>
 

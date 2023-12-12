@@ -18,6 +18,7 @@
 
         <ImageView
             android:id="@+id/iv_logo_text"
+            android:contentDescription="@string/gurumemo_logo_text"
             android:layout_width="200dp"
             android:layout_height="80dp"
             android:padding="10dp"
@@ -26,6 +27,7 @@
 
         <ImageView
             android:id="@+id/iv_logo"
+            android:contentDescription="@string/gurumemo_logo_image"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:src="@drawable/ic_logo" />
@@ -34,17 +36,16 @@
 
     <Button
         android:id="@+id/btn_search"
-        android:layout_width="match_parent"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
         android:layout_marginTop="14dp"
         android:background="@drawable/search_bar_background"
-        android:drawableLeft="@drawable/ic_search_with_search_bar"
+        android:drawableStart="@drawable/ic_search_with_search_bar"
         android:drawablePadding="8dp"
         android:drawableTint="@color/colorAccent"
         android:hint="@string/search_bar_hint"
-        android:paddingLeft="16dp"
-
+        android:paddingStart="16dp"
+        android:paddingEnd="0dp"
         android:textAlignment="textStart"
         android:textColorHint="@color/offWhite"
         android:textStyle="bold"
@@ -77,6 +78,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="4dp"
+            android:contentDescription="@string/fragment_home_current_location_icon"
             android:src="@drawable/ic_location"
             app:tint="@color/gray" />
 

@@ -39,6 +39,7 @@
 
                 <Button
                     android:id="@+id/btn_bookmark_icon"
+                    android:contentDescription="@string/bookmark_function"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginEnd="14dp"
@@ -48,6 +49,7 @@
                     android:id="@+id/iv_share_icon"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:contentDescription="@string/activity_shop_detail_share_icon"
                     android:background="@drawable/ripple_unbounded"
                     android:clickable="true"
                     android:src="@drawable/ic_share"
@@ -60,8 +62,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="4dp"
+                android:contentDescription="@string/activity_shop_detail_restaurant_image"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/ic_launcher" />
+                android:tintMode="src_atop"
+                android:src="@mipmap/ic_launcher_gurumemo" />
 
             <TextView
                 android:id="@+id/tv_shop_name"
@@ -96,7 +100,6 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_centerInParent="true"
                 android:layout_marginTop="4dp"
                 android:background="@color/offBlack" />
 
