@@ -1,7 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- 페이지 간격 정의 -->
-    <dimen name="page_margin">20dp</dimen>
-    <!-- 페이지 너비 정의 -->
-    <dimen name="page_width">200dp</dimen>
+
+    <!--  Drawable  -->
+    <dimen name="ripple_inset">2dp</dimen>
+    <dimen name="ripple_radius">30dp</dimen>
+    <dimen name="search_filter_background_stroke_width">1dp</dimen>
+    <dimen name="search_filter_background_radius">100dp</dimen>
+    <dimen name="fragment_home_search_bar_background_radius">30dp</dimen>
+
+    <!--  Layout  -->
+    <dimen name="bottom_navigation_height">60dp</dimen>
+
+    <!--  Splash Activity  -->
+    <dimen name="splash_logo_image_size">180dp</dimen>
+    <dimen name="splash_logo_text_size">160dp</dimen>
+    <dimen name="splash_hot_pepper_credit_height">17dp</dimen>
+    <dimen name="splash_hot_pepper_credit_width">135dp</dimen>
+
+    <!--  Home Fragment  -->
+    <dimen name="fragment_home_logo_text_width">200dp</dimen>
+    <dimen name="fragment_home_logo_text_height">80dp</dimen>
+    <dimen name="fragment_home_logo_image_size">120dp</dimen>
+    <dimen name="fragment_home_search_bar_width">340dp</dimen>
+    <dimen name="fragment_home_location_title">20sp</dimen>
+    <dimen name="fragment_home_location_icon_size">24dp</dimen>
+    <dimen name="fragment_home_image_slider_height">260dp</dimen>
+    <dimen name="fragment_home_indicator_dots_size">10dp</dimen>
+    <dimen name="fragment_home_indicator_dots_spacing">6dp</dimen>
+
+    <!--  Image Slider Item (Home Fragment)  -->
+    <dimen name="item_image_slider_shop_name">18sp</dimen>
+
+    <!--  Search Fragment  -->
+    <dimen name="fragment_search_back_icon_size">24dp</dimen>
+    <dimen name="fragment_search_search_area_width">320dp</dimen>
+    <dimen name="fragment_search_search_hint_size">14sp</dimen>
+    <dimen name="fragment_search_erase_icon_size">24dp</dimen>
+    <dimen name="fragment_search_location_icon_size">24dp</dimen>
+    <dimen name="fragment_search_location_text_size">12sp</dimen>
+    <dimen name="fragment_search_filter_text_size">12sp</dimen>
+    <dimen name="fragment_search_search_by_filter_text_size">12sp</dimen>
+    <dimen name="fragment_search_logo_image_size">120dp</dimen>
+    <dimen name="fragment_search_logo_text_size">24sp</dimen>
+    <dimen name="fragment_search_hint_text_size">14sp</dimen>
+
+    <!--  Shop Item (Search Fragment)  -->
+    <dimen name="item_shop_shop_name">16sp</dimen>
+    <dimen name="item_shop_station_name">12sp</dimen>
+
+    <!--  Spinner Item (Search Fragment)  -->
+    <dimen name="item_spinner_height">40dp</dimen>
+    <dimen name="item_spinner_text_size">12sp</dimen>
+
+    <!--  Bookmark Fragment  -->
+    <dimen name="fragment_bookmark_profile_image_size">120dp</dimen>
+    <dimen name="fragment_bookmark_user_name_size">20sp</dimen>
+    <dimen name="fragment_bookmark_line_divider_height">1dp</dimen>
+    <dimen name="fragment_bookmark_line_no_result_image_size">120dp</dimen>
+    <dimen name="fragment_bookmark_line_no_result_text_size">24sp</dimen>
+
+    <!--  Bookmark Item (Bookmark Fragment)  -->
+    <dimen name="item_bookmark_thumbnail_image_size">120dp</dimen>
+    <dimen name="item_bookmark_shop_name">16sp</dimen>
+    <dimen name="item_bookmark_bookmark_icon_size">32dp</dimen>
+    <dimen name="item_bookmark_line_divider_height">2dp</dimen>
+    <dimen name="item_bookmark_memo_text_size">14sp</dimen>
+    <dimen name="item_bookmark_check_icon">32dp</dimen>
+
+    <!--  Shop Detail Activity  -->
+    <dimen name="activity_shop_detail_bookmark_icon">32dp</dimen>
+    <dimen name="activity_shop_detail_share_icon">32dp</dimen>
+    <dimen name="activity_shop_detail_shop_image_height">260dp</dimen>
+    <dimen name="activity_shop_detail_shop_name_size">18sp</dimen>
+    <dimen name="activity_shop_detail_address_title_size">14sp</dimen>
+    <dimen name="activity_shop_detail_line_divider_height">1dp</dimen>
+    <dimen name="activity_shop_detail_map_fragment_height">260dp</dimen>
+
 </resources>

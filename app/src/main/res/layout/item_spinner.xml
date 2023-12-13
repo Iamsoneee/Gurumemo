@@ -2,8 +2,8 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/spinner_text"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
+    android:layout_height="@dimen/item_spinner_height"
     android:gravity="center"
     android:paddingHorizontal="8dp"
-    android:textSize="12sp">
+    android:textSize="@dimen/item_spinner_text_size">
 </TextView>

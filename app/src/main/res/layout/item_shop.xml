@@ -32,7 +32,7 @@
             android:paddingVertical="4dp"
             android:maxLines="1"
             android:text="@string/shop_name"
-            android:textSize="16sp"
+            android:textSize="@dimen/item_shop_shop_name"
             android:textStyle="bold" />
 
         <TextView
@@ -62,7 +62,7 @@
       android:text="@string/station_name"
       android:background="@drawable/filter_background_filled"
       android:backgroundTint="@color/colorAccentTransparent30"
-      android:textSize="12sp"
+      android:textSize="@dimen/item_shop_station_name"
       android:paddingHorizontal="8dp"
       android:layout_marginTop="16dp"
       android:textStyle="bold"

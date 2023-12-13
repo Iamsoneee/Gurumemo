@@ -47,8 +47,7 @@
     <string name="delete_bookmark_alert_cancel">キャンセル</string>
     <string name="delete_bookmark_alert_proceed">リストから削除</string>
 
-
-
+    <!--  Content Description  -->
     <string name="activity_shop_detail_restaurant_image">Restaurant image</string>
     <string name="activity_shop_detail_share_icon">Share the Hot Pepper restaurant page link to other apps.</string>
     <string name="bookmark_function">Bookmark function</string>

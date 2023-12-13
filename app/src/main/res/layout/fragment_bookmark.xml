@@ -19,8 +19,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/civ_profile_image"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="@dimen/fragment_bookmark_profile_image_size"
+        android:layout_height="@dimen/fragment_bookmark_profile_image_size"
         android:layout_marginTop="14dp"
         android:src="@drawable/default_profile_image"
         app:civ_border_color="@color/colorPrimary"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/user_name"
-        android:textSize="20sp"
+        android:textSize="@dimen/fragment_bookmark_user_name_size"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
     <View
         android:id="@+id/line_divider"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/fragment_bookmark_line_divider_height"
         android:layout_centerInParent="true"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="14dp"
@@ -66,10 +66,10 @@
         android:id="@+id/ll_no_bookmark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="visible"
-        android:layout_marginTop="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -78,10 +78,10 @@
 
         <ImageView
             android:id="@+id/iv_no_bookmark"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="@dimen/fragment_bookmark_line_no_result_image_size"
+            android:layout_height="@dimen/fragment_bookmark_line_no_result_image_size"
             android:contentDescription="@string/bookmark_function"
-            android:src="@drawable/ic_bookmark_accent"
+            android:src="@drawable/ic_bookmark"
             app:tint="@color/offWhiteTransparent30" />
 
         <TextView
@@ -90,7 +90,7 @@
             android:layout_height="wrap_content"
             android:text="@string/no_bookmark"
             android:textColor="@color/offWhiteTransparent30"
-            android:textSize="24sp" />
+            android:textSize="@dimen/fragment_bookmark_line_no_result_text_size" />
 
     </LinearLayout>
 

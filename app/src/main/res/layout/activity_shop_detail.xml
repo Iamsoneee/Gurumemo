@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorSecondary"
+    android:orientation="vertical"
     tools:context=".ShopDetailActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -19,8 +19,8 @@
         android:id="@+id/sv_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="20dp"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:padding="20dp">
 
         <LinearLayout
             android:id="@+id/ll_shop_detail_area"
@@ -33,25 +33,25 @@
                 android:id="@+id/ll_icons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end"
                 android:layout_marginBottom="8dp"
+                android:gravity="end"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/btn_bookmark_icon"
-                    android:contentDescription="@string/bookmark_function"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="@dimen/activity_shop_detail_bookmark_icon"
+                    android:layout_height="@dimen/activity_shop_detail_bookmark_icon"
                     android:layout_marginEnd="14dp"
-                    android:background="@drawable/selector_bookmark_button"/>
+                    android:background="@drawable/selector_bookmark_button"
+                    android:contentDescription="@string/bookmark_function" />
 
                 <ImageView
                     android:id="@+id/iv_share_icon"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:contentDescription="@string/activity_shop_detail_share_icon"
+                    android:layout_width="@dimen/activity_shop_detail_share_icon"
+                    android:layout_height="@dimen/activity_shop_detail_share_icon"
                     android:background="@drawable/ripple_unbounded"
                     android:clickable="true"
+                    android:contentDescription="@string/activity_shop_detail_share_icon"
                     android:src="@drawable/ic_share"
                     app:tint="@color/offBlack" />
 
@@ -60,12 +60,12 @@
             <ImageView
                 android:id="@+id/iv_main_image"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="@dimen/activity_shop_detail_shop_image_height"
                 android:layout_marginTop="4dp"
                 android:contentDescription="@string/activity_shop_detail_restaurant_image"
                 android:scaleType="centerCrop"
-                android:tintMode="src_atop"
-                android:src="@mipmap/ic_launcher_gurumemo" />
+                android:src="@mipmap/ic_launcher_gurumemo"
+                android:tintMode="src_atop" />
 
             <TextView
                 android:id="@+id/tv_shop_name"
@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:text="@string/shop_name"
-                android:textSize="18sp"
+                android:textSize="@dimen/activity_shop_detail_shop_name_size"
                 android:textStyle="bold" />
 
             <TextView
@@ -99,15 +99,15 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="4dp"
+                android:layout_height="@dimen/activity_shop_detail_line_divider_height"
+                android:layout_marginTop="14dp"
                 android:background="@color/offBlack" />
 
             <TextView
                 android:id="@+id/tv_address_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="@dimen/activity_shop_detail_address_title_size"
                 android:text="@string/address"
                 android:textStyle="bold" />
 
@@ -122,7 +122,7 @@
                 android:id="@+id/map"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="@dimen/activity_shop_detail_map_fragment_height"
                 android:layout_marginTop="14dp" />
 
         </LinearLayout>

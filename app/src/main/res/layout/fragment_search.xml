@@ -21,16 +21,16 @@
 
         <ImageView
             android:id="@+id/iv_back_button"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:contentDescription="@string/fragment_search_back_button"
+            android:layout_width="@dimen/fragment_search_back_icon_size"
+            android:layout_height="@dimen/fragment_search_back_icon_size"
             android:background="@drawable/ripple_unbounded"
             android:clickable="true"
+            android:contentDescription="@string/fragment_search_back_button"
             android:focusable="true"
             android:src="@drawable/ic_back_arrow" />
 
         <FrameLayout
-            android:layout_width="320dp"
+            android:layout_width="@dimen/fragment_home_search_bar_width"
             android:layout_height="wrap_content">
 
             <EditText
@@ -38,7 +38,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="4dp"
-                android:importantForAutofill="no"
                 android:backgroundTint="@color/colorAccent"
                 android:drawableStart="@drawable/ic_search_with_search_bar"
                 android:drawablePadding="8dp"
@@ -46,19 +45,20 @@
                 android:focusedByDefault="true"
                 android:hint="@string/search_bar_hint"
                 android:imeOptions="actionSearch"
+                android:importantForAutofill="no"
                 android:inputType="text"
                 android:maxLines="1"
                 android:textColor="@color/offBlack"
-                android:textSize="14sp" />
+                android:textSize="@dimen/fragment_search_hint_text_size" />
 
             <ImageView
                 android:id="@+id/iv_erase_button"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/fragment_search_erase_icon_size"
+                android:layout_height="@dimen/fragment_search_erase_icon_size"
                 android:layout_gravity="end|center_vertical"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="8dp"
                 android:contentDescription="@string/erase_icon_to_empty_the_search_query"
-                android:paddingStart="0dp"
-                android:paddingEnd="4dp"
                 android:paddingBottom="2dp"
                 android:src="@drawable/ic_cancel"
                 android:visibility="invisible"
@@ -89,8 +89,8 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/fragment_search_location_icon_size"
+                android:layout_height="@dimen/fragment_search_location_icon_size"
                 android:contentDescription="@string/fragment_search_current_location_icon"
                 android:src="@drawable/ic_setting_current_location"
                 app:tint="@color/colorAccent" />
@@ -100,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/current_location"
                 android:textColor="@color/colorAccent"
-                android:textSize="12sp"
+                android:textSize="@dimen/fragment_search_location_text_size"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -124,7 +124,7 @@
                 android:text="@string/within_300m"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="12sp"
+                android:textSize="@dimen/fragment_search_filter_text_size"
                 android:textStyle="bold" />
 
             <TextView
@@ -140,7 +140,7 @@
                 android:text="@string/within_500m"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="12sp"
+                android:textSize="@dimen/fragment_search_filter_text_size"
                 android:textStyle="bold" />
 
             <TextView
@@ -156,7 +156,7 @@
                 android:text="@string/within_2km"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="12sp"
+                android:textSize="@dimen/fragment_search_filter_text_size"
                 android:textStyle="bold" />
 
             <TextView
@@ -172,7 +172,7 @@
                 android:text="@string/within_3km"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="12sp"
+                android:textSize="@dimen/fragment_search_filter_text_size"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -196,7 +196,7 @@
             android:layout_weight="1"
             android:autoSizeTextType="uniform"
             android:text="@string/search_by_filter"
-            android:textSize="12sp"
+            android:textSize="@dimen/fragment_search_search_by_filter_text_size"
             android:textStyle="bold" />
 
 
@@ -225,7 +225,7 @@
                     android:text="@string/search_filter_1"
                     android:textAlignment="center"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/fragment_search_filter_text_size"
                     android:textStyle="bold|italic" />
 
                 <TextView
@@ -242,7 +242,7 @@
                     android:text="@string/search_filter_2"
                     android:textAlignment="center"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/fragment_search_filter_text_size"
                     android:textStyle="bold|italic" />
             </LinearLayout>
 
@@ -264,7 +264,7 @@
                     android:text="@string/search_filter_3"
                     android:textAlignment="center"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/fragment_search_filter_text_size"
                     android:textStyle="bold|italic" />
 
                 <TextView
@@ -281,7 +281,7 @@
                     android:text="@string/search_filter_4"
                     android:textAlignment="center"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/fragment_search_filter_text_size"
                     android:textStyle="bold|italic" />
             </LinearLayout>
 
@@ -323,10 +323,10 @@
 
 
         <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:src="@drawable/ic_logo"
+            android:layout_width="@dimen/fragment_search_logo_image_size"
+            android:layout_height="@dimen/fragment_search_logo_image_size"
             android:contentDescription="@string/gurumemo_logo_image"
+            android:src="@drawable/ic_logo"
             android:tintMode="src_atop"
             app:tint="@color/whiteTransparent30" />
 
@@ -335,7 +335,7 @@
             android:layout_height="wrap_content"
             android:text="@string/no_result_message"
             android:textColor="@color/colorAccentTransparent30"
-            android:textSize="24sp"
+            android:textSize="@dimen/fragment_search_logo_text_size"
             android:textStyle="bold" />
 
     </LinearLayout>

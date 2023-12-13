@@ -24,8 +24,8 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/iv_thumbnail_image"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="@dimen/item_bookmark_thumbnail_image_size"
+                android:layout_height="@dimen/item_bookmark_thumbnail_image_size"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/ic_launcher" />
 
@@ -54,13 +54,13 @@
                         android:gravity="center_vertical"
                         android:maxLines="1"
                         android:text="@string/shop_name"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/item_bookmark_shop_name"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/btn_bookmark_icon"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="@dimen/item_bookmark_bookmark_icon_size"
+                        android:layout_height="@dimen/item_bookmark_bookmark_icon_size"
                         android:contentDescription="@string/bookmark_function"
                         android:background="@drawable/selector_bookmark_button" />
 
@@ -94,7 +94,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="@dimen/item_bookmark_line_divider_height"
             android:layout_marginTop="14dp"
             android:background="@color/offWhite" />
 
@@ -121,8 +121,8 @@
 
             <ImageView
                 android:id="@+id/iv_check_icon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="@dimen/item_bookmark_check_icon"
+                android:layout_height="@dimen/item_bookmark_check_icon"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="8dp"
                 android:contentDescription="@string/fragment_bookmark_check_icon"
