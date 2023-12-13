@@ -19,10 +19,14 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.sw.gurumemo.databinding.ActivityMainBinding
 import com.sw.gurumemo.views.SearchFragment
 import com.sw.gurumemo.views.HomeFragment
 import com.sw.gurumemo.views.BookmarkFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
@@ -49,11 +53,11 @@ class MainActivity : AppCompatActivity() {
         this.onBackPressedDispatcher.addCallback(this, callback)
         checkAllPermissions()
         setupUI()
-
         setupBottomNavigationView()
         if (savedInstanceState == null) {
             binding.bottomNavigationView.selectedItemId = R.id.fragment_home
         }
+
 
     }
 
@@ -130,18 +134,20 @@ class MainActivity : AppCompatActivity() {
         latitude = locationProvider.getLocationLatitude()
         longitude = locationProvider.getLocationLongitude()
 
-        Log.d(TAG,"Current location before country code check: $latitude $longitude")
+        Log.d(TAG, "Current location before country code check: $latitude $longitude")
 
         if (latitude != 0.0 || longitude != 0.0) {
 
-            val address = locationProvider.getCurrentAddress(latitude, longitude)
+            val address =
+                locationProvider.getCurrentAddress(latitude, longitude)
+
             address?.let {
 
-                if(address.countryCode.equals("JPN")||address.countryCode.equals("JP")){
+                if (address.countryCode.equals("JPN") || address.countryCode.equals("JP")) {
                     latitude = locationProvider.getLocationLatitude()
                     longitude = locationProvider.getLocationLongitude()
-                    Log.d(TAG,"Current location in Japan: $latitude $longitude")
-                }else{
+                    Log.d(TAG, "Current location in Japan: $latitude $longitude")
+                } else {
 //                    setting default value in case user doesn't reside in Japan.
                     latitude = Constants.DEFAULT_LATITUDE_JP
                     longitude = Constants.DEFAULT_LONGITUDE_JP
@@ -158,7 +164,7 @@ class MainActivity : AppCompatActivity() {
             latitude = Constants.DEFAULT_LATITUDE_JP
             longitude = Constants.DEFAULT_LONGITUDE_JP
         }
-        val finalLocation = locationProvider.getCurrentAddress(latitude,longitude)?.countryCode
+        val finalLocation = locationProvider.getCurrentAddress(latitude, longitude)?.countryCode
         Log.d(TAG, "Final location: $latitude $longitude $finalLocation")
     }
 
@@ -225,7 +231,7 @@ class MainActivity : AppCompatActivity() {
                 "権現が拒否されました。アプリを再起動して権限を許可してください。",
                 Toast.LENGTH_SHORT
             ).show()
-            finish()
+//            finish()
         }
     }
 
@@ -254,7 +260,8 @@ class MainActivity : AppCompatActivity() {
             val callGPSSettingIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             getGPSPermissionLauncher.launch(callGPSSettingIntent)
         }
-        builder.setNegativeButton("キャンセル"
+        builder.setNegativeButton(
+            "キャンセル"
         ) { dialog, _ ->
             dialog.cancel()
             Toast.makeText(

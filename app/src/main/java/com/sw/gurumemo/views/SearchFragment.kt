@@ -25,6 +25,7 @@ import com.sw.gurumemo.retrofit.RetrofitConnection
 import com.sw.gurumemo.retrofit.Shop
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -184,12 +185,19 @@ class SearchFragment : Fragment(), View.OnClickListener {
     }
 
     private fun updateSelectedRange(newRange: Int) {
-        selectedRange = if (selectedRange == newRange) {
-            // 既に選択した検索範囲を再選択すると解除
-            0
+//        selectedRange = if (selectedRange == newRange) {
+//            // 既に選択した検索範囲を再選択すると解除
+//            0
+//        } else {
+//            // 選択されていない検索範囲をクリックすると選択状態に変更
+//            newRange
+//        }
+        if (selectedRange == newRange) {
+            selectedRange = 0
+            range = 1
+            performSearch(query.orEmpty())
         } else {
-            // 選択されていない検索範囲をクリックすると選択状態に変更
-            newRange
+            selectedRange = newRange
         }
         val colorAccent = ContextCompat.getColor(requireContext(), R.color.colorAccent)
         val colorSecondary = ContextCompat.getColor(requireContext(), R.color.colorSecondary)
@@ -202,37 +210,73 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
         // 現在選択された検索範囲ボタンのテキストカラーを再設定
         when (selectedRange) {
-            1 -> binding?.tvWithin500m?.setTextColor(colorAccent)
-            2 -> binding?.tvWithin1km?.setTextColor(colorAccent)
-            3 -> binding?.tvWithin2km?.setTextColor(colorAccent)
-            4 -> binding?.tvWithin3km?.setTextColor(colorAccent)
+            1 -> {
+                binding?.tvWithin500m?.setTextColor(colorAccent)
+                range = 2
+            }
+
+            2 -> {
+                binding?.tvWithin1km?.setTextColor(colorAccent)
+                range = 3
+            }
+
+            3 -> {
+                binding?.tvWithin2km?.setTextColor(colorAccent)
+                range = 4
+            }
+
+            4 -> {
+                binding?.tvWithin3km?.setTextColor(colorAccent)
+                range = 5
+            }
         }
+        currentPage = 1
+        performSearch(query.orEmpty())
+        binding?.rvShopList?.scrollToPosition(0)
     }
 
     private fun updateSelectedFilter(newFilter: Int) {
-        selectedFilter = if (selectedFilter == newFilter) {
-            // 既に選択した検索範囲を再選択すると解除
-            0
+        if (selectedFilter == newFilter) {
+            selectedFilter = 0
+            genre = ""
+            performSearch(query.orEmpty())
         } else {
-            // 選択されていない検索範囲をクリックすると選択状態に変更
-            newFilter
+            selectedFilter = newFilter
         }
         val colorAccent = ContextCompat.getColor(requireContext(), R.color.colorAccent)
         val colorPrimary = ContextCompat.getColor(requireContext(), R.color.colorPrimary)
 
-        // すべての検索範囲ボタンの選択状態を初期化
+        // すべての検索条件ボタンの選択状態を初期化
         binding?.tvFilter1?.setTextColor(colorPrimary)
         binding?.tvFilter2?.setTextColor(colorPrimary)
         binding?.tvFilter3?.setTextColor(colorPrimary)
         binding?.tvFilter4?.setTextColor(colorPrimary)
 
-        // 現在選択された検索範囲ボタンのテキストカラーを再設定
+        // 現在選択された検索条件ボタンのテキストカラーを再設定
         when (selectedFilter) {
-            1 -> binding?.tvFilter1?.setTextColor(colorAccent)
-            2 -> binding?.tvFilter2?.setTextColor(colorAccent)
-            3 -> binding?.tvFilter3?.setTextColor(colorAccent)
-            4 -> binding?.tvFilter4?.setTextColor(colorAccent)
+            1 -> {
+                binding?.tvFilter1?.setTextColor(colorAccent)
+                genre = "G001"
+            }
+
+            2 -> {
+                binding?.tvFilter2?.setTextColor(colorAccent)
+                genre = "G017"
+            }
+
+            3 -> {
+                binding?.tvFilter3?.setTextColor(colorAccent)
+                genre = "G006"
+            }
+
+            4 -> {
+                binding?.tvFilter4?.setTextColor(colorAccent)
+                genre = "G007"
+            }
         }
+        currentPage = 1
+        performSearch(query.orEmpty())
+        binding?.rvShopList?.scrollToPosition(0)
     }
 
 
@@ -304,70 +348,38 @@ class SearchFragment : Fragment(), View.OnClickListener {
             // range buttons
             R.id.tv_within_500m -> {
                 updateSelectedRange(1)
-                range = 2
-                currentPage = 1
-                performSearch(query)
-                binding?.rvShopList?.scrollToPosition(0)
             }
 
             R.id.tv_within_1km -> {
                 updateSelectedRange(2)
-                range = 3
-                currentPage = 1
-                performSearch(query)
-                binding?.rvShopList?.scrollToPosition(0)
             }
 
             R.id.tv_within_2km -> {
                 updateSelectedRange(3)
-                range = 4
-                currentPage = 1
-                performSearch(query)
-                binding?.rvShopList?.scrollToPosition(0)
             }
 
             R.id.tv_within_3km -> {
                 updateSelectedRange(4)
-                range = 5
-                currentPage = 1
-                performSearch(query)
-                binding?.rvShopList?.scrollToPosition(0)
             }
 
             // filter buttons
             // 居酒屋
             R.id.tv_filter_1 -> {
                 updateSelectedFilter(1)
-                genre = "G001"
-                currentPage = 1
-                performSearch(query)
-                binding?.rvShopList?.scrollToPosition(0)
             }
 
             // 韓国料理
             R.id.tv_filter_2 -> {
                 updateSelectedFilter(2)
-                genre = "G017"
-                currentPage = 1
-                performSearch(query)
-                binding?.rvShopList?.scrollToPosition(0)
             }
 
             // イタリアン・フレンチ
             R.id.tv_filter_3 -> {
                 updateSelectedFilter(3)
-                genre = "G006"
-                currentPage = 1
-                performSearch(query)
-                binding?.rvShopList?.scrollToPosition(0)
             }
             // 中華
             R.id.tv_filter_4 -> {
                 updateSelectedFilter(4)
-                genre = "G007"
-                currentPage = 1
-                performSearch(query)
-                binding?.rvShopList?.scrollToPosition(0)
             }
         }
     }
@@ -384,6 +396,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
             Log.d(TAG, "Query before searching: $query")
             Log.d(TAG, "Range before searching: $range")
             Log.d(TAG, "Order before searching: $order")
+            Log.d(TAG, "Genre before searching: $genre")
             searchWithQuery(query, currentPage, range, order, genre)
         } else {
             // ページ初期化
@@ -400,11 +413,8 @@ class SearchFragment : Fragment(), View.OnClickListener {
             try {
                 val response = withContext(Dispatchers.IO) {
                     retrofitAPI.getGourmetData(
-                        apiKey = Constants.HOTPEPPER_API_KEY,
                         lat = currentLatitude.toString(),
                         lng = currentLongitude.toString(),
-//                    name = query, // 店舗名称
-//                    nameKana = query,
                         nameAny = query, // 店舗名称一部
                         keyword = query, // キーワード検索
                         order = order,
@@ -425,12 +435,18 @@ class SearchFragment : Fragment(), View.OnClickListener {
                         }
                         binding?.llNoResult?.visibility = View.GONE
                     } else {
-                        if (!isLoading) {
+                        if (page == 1) {
                             adapter.clearData()
                             binding?.llNoResult?.visibility = View.VISIBLE
-                        } else {
-
                         }
+
+
+//                        if (!isLoading) {
+//                            adapter.clearData()
+//                            binding?.llNoResult?.visibility = View.VISIBLE
+//                        } else {
+//
+//                        }
 
                     }
                 }

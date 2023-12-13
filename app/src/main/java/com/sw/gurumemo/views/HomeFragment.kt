@@ -80,11 +80,14 @@ class HomeFragment : Fragment() {
         if (arguments != null) {
             currentLatitude = arguments.getDouble(ARG_LATITUDE, 0.0)
             currentLongitude = arguments.getDouble(ARG_LONGITUDE, 0.0)
-            val currentAddress =
-                locationProvider.getCurrentAddress(currentLatitude, currentLongitude)
-            binding?.tvGeocoderThoroughfare?.text = currentAddress?.thoroughfare ?: "Welcome!"
-            binding?.tvGeocoderCountryName?.text = currentAddress?.countryName ?: "周辺のおすすめスポット"
-            binding?.tvGeocoderAdminArea?.text = currentAddress?.adminArea ?: ""
+            viewLifecycleOwner.lifecycleScope.launch {
+                val currentAddress = withContext(Dispatchers.IO) {
+                    locationProvider.getCurrentAddress(currentLatitude, currentLongitude)
+                }
+                binding?.tvGeocoderTitle?.text = currentAddress?.thoroughfare ?: "Welcome!"
+                binding?.tvGeocoderCountryName?.text = currentAddress?.countryName ?: "周辺のおすすめスポット"
+                binding?.tvGeocoderAdminArea?.text = currentAddress?.adminArea ?: ""
+            }
         }
 
         getShopImagesByCurrentLocation()
@@ -98,7 +101,6 @@ class HomeFragment : Fragment() {
             try {
                 val response = withContext(Dispatchers.IO) {
                     retrofitAPI.getGourmetData(
-                        apiKey = Constants.HOTPEPPER_API_KEY,
                         lat = currentLatitude.toString(),
                         lng = currentLongitude.toString(),
                     )
@@ -107,7 +109,12 @@ class HomeFragment : Fragment() {
                 Log.d(TAG, "Request data by: $currentLatitude $currentLongitude")
 
                 withContext(Dispatchers.Main) {
-                    adapter.setData(response.results.shop.shuffled().take(5))
+                    if (response.results.shop.isNotEmpty()) {
+                    adapter.setData(response.results.shop.take(5).shuffled())
+                    } else {
+                        Log.d(TAG,"There is no shop data")
+                        adapter.setData(emptyList())
+                    }
                 }
 
             } catch (e: Exception) {
@@ -167,8 +174,8 @@ class HomeFragment : Fragment() {
     private suspend fun autoScroll() {
         while (autoScrollEnabled) {
             val itemCount = adapter.itemCount
+//                Log.d(TAG, "Image slider item count: $itemCount")
             if (itemCount > 0) {
-                Log.d(TAG, "Image slider item count: $itemCount")
                 val currentItem = binding?.vpImageSlider?.currentItem ?: 0
                 val nextItem = (currentItem + 1) % itemCount
                 binding?.vpImageSlider?.setCurrentItem(nextItem, true)
