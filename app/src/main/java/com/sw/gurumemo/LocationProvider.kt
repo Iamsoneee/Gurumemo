@@ -59,11 +59,9 @@ class LocationProvider(private val context: Context) {
                 }
 
                 if (gpsLocation != null && networkLocation != null) {
-                    return if (gpsLocation.accuracy > networkLocation.accuracy) {
-                        location = gpsLocation
+                    location = if (gpsLocation.accuracy > networkLocation.accuracy) {
                         gpsLocation
                     } else {
-                        location = networkLocation
                         networkLocation
                     }
                 } else {
@@ -90,24 +88,36 @@ class LocationProvider(private val context: Context) {
         return location?.longitude ?: 0.0
     }
 
-    fun getCurrentAddress(latitude: Double, longitude: Double): Address? {
+   fun getCurrentAddress(latitude: Double, longitude: Double): Address? {
         val geocoder = Geocoder(context, Locale.getDefault())
 
-        val addresses: List<Address>? = try {
-            geocoder.getFromLocation(latitude, longitude, 1)
-        } catch (ioException: IOException) {
-            Log.e("LocationProvider", "Geocoder is not available", ioException)
-            return null
-        } catch (illegalArgumentException: IllegalArgumentException) {
-            Log.e("LocationProvider", "Wrong latitude, longitude", illegalArgumentException)
-            return null
-        }
+//        val addresses: List<Address>? = try {
+//            geocoder.getFromLocation(latitude, longitude, 1)
+//
+//        } catch (ioException: IOException) {
+//            Log.e("LocationProvider", "Geocoder is not available", ioException)
+//            return null
+//        } catch (illegalArgumentException: IllegalArgumentException) {
+//            Log.e("LocationProvider", "Wrong latitude, longitude", illegalArgumentException)
+//            return null
+//        }
+//
+//        if (addresses.isNullOrEmpty()) {
+//            Log.e("LocationProvider", "Address has not been found")
+//            return null
+//        }
+//        return addresses[0]
+       return try {
+           geocoder.getFromLocation(latitude, longitude, 1)?.firstOrNull()
+       } catch (e: IOException) {
+           Log.e("LocationProvider", "Geocoder IOException", e)
+           e.printStackTrace()
+           null
+       } catch (e: IllegalArgumentException) {
+           Log.e("LocationProvider", "Wrong latitude, longitude", e)
+           e.printStackTrace()
+           null
+       }
 
-        if (addresses.isNullOrEmpty()) {
-            Log.e("LocationProvider", "Address has not been found")
-            return null
-        }
-
-        return addresses[0]
     }
 }

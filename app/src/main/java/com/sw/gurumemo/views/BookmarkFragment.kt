@@ -158,7 +158,7 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
                     retrofitAPI.getGourmetData(
                         apiKey = Constants.HOTPEPPER_API_KEY,
                         id = shopId,
-                        nameAny = shopName
+                        nameAny = null
                     )
                 }
                val isShopEmpty = response.results.shop.isEmpty()
@@ -167,8 +167,10 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
                     val intent = Intent(requireContext(), ShopDetailActivity::class.java)
                     intent.putExtra("shopData", shop)
                     startActivity(intent)
+                    Log.e(TAG,"$shop")
+                    Log.e(TAG, "Data has found BY using shop id: ${shopId}, shop name: ${shopName}")
                 } else {
-                    Log.e(TAG, "No data found from API request.")
+                    Log.e(TAG, "No data found from API request by using shop id: ${shopId}, shop name: ${shopName}")
                     Toast.makeText(requireContext(), "店舗情報が見つかりませんでした。", Toast.LENGTH_SHORT).show()
                 }
 

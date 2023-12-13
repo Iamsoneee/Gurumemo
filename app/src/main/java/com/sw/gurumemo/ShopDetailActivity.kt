@@ -1,6 +1,7 @@
 package com.sw.gurumemo
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -35,6 +36,7 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var db: AppDatabase
     private lateinit var bookmarkDao: BookmarkDao
+    private lateinit var shop: Shop
     private lateinit var shopId: String
 
     private var mMap: GoogleMap? = null
@@ -59,13 +61,16 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         val intent = intent
-        val shop = intent.getSerializableExtra("shopData") as Shop
-
+        shop = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getSerializableExtra("shopData", Shop::class.java)!!
+        } else {
+            intent.getSerializableExtra("shopData") as Shop
+        }
 
         shopId = shop.id
         shopName = shop.name
-        shopLatitude = shop.lat!!
-        shopLongitude = shop.lng!!
+        shopLatitude = shop.lat ?: 0.0
+        shopLongitude = shop.lng ?: 0.0
 
         Glide.with(this).load(shop.photo.pc.l).apply(
             RequestOptions()
@@ -93,9 +98,11 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         db = AppDatabase.getInstance(this)
         bookmarkDao = db.getBookmarkDao()
 
-        lifecycleScope.launch { isBookmarked = withContext(Dispatchers.IO){
-            bookmarkDao.isShopBookmarked(shopId)
-        } }
+        lifecycleScope.launch {
+            isBookmarked = withContext(Dispatchers.IO) {
+                bookmarkDao.isShopBookmarked(shopId)
+            }
+        }
 
 
         binding.btnBookmarkIcon.setOnClickListener {
@@ -110,7 +117,9 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(this)
+        mapFragment?.let {
+            it.getMapAsync(this)
+        }
 
         binding.ivShareIcon.setOnClickListener {
             val sendIntent = Intent().apply {
@@ -163,7 +172,7 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 bookmarkDao.deleteBookmark(shopId)
             }
         }
-        Log.d(TAG,"Bookmark has deleted from database")
+        Log.d(TAG, "Bookmark has deleted from database")
     }
 
 
@@ -173,8 +182,7 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         CoroutineScope(Dispatchers.Main).launch {
-            shopLocation =
-                LatLng(shopLatitude, shopLongitude)
+            shopLocation = LatLng(shopLatitude, shopLongitude)
 
             mMap?.let {
                 it.setMaxZoomPreference(20.0f)
@@ -210,8 +218,10 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 bookmarkDao.isShopBookmarked(shopId)
             }
 
-            binding.btnBookmarkIcon.isSelected = isShopBookmarked
-            isBookmarked = isShopBookmarked
+            withContext(Dispatchers.Main) {
+                binding.btnBookmarkIcon.isSelected = isShopBookmarked
+                isBookmarked = isShopBookmarked
+            }
         }
     }
 
