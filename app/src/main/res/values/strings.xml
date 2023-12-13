@@ -7,6 +7,16 @@
     <string name="search">検索</string>
     <string name="bookmark">ブックマーク</string>
 
+    <!--  MainActivity  -->
+    <string name="permission_denial_message">権現が拒否されました。アプリを再起動して権限を許可してください。</string>
+    <string name="gps_unavailable_messsage">位置情報サービス（GPS）を利用できません。</string>
+    <string name="gps_request_question">位置情報の使用を許可しますか？</string>
+    <string name="gps_request_guide_message">位置情報サービス（GPS）がオフになっています。アプリの利用には設定が必要です。</string>
+    <string name="gps_permission_dialog_positive_button">設定</string>
+    <string name="gps_permission_dialog_negative_button">キャンセル</string>
+    <string name="gps_permission_dialog_negative_button_message">デバイスで位置情報サービス（GPS）を設定してからご利用ください。</string>
+    <string name="back_button_message">もう一度タップして終了する</string>
+
     <!-- HomeFragment   -->
     <string name="geocoder_country_name">日本</string>
     <string name="geocoder_admin_area">東京都</string>
@@ -41,13 +51,16 @@
     <string name="memo">メモを残す</string>
     <string name="no_bookmark">データがありません</string>
     <string name="no_catch_phrase">▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀</string>
+    <string name="bookmark_saved_message">ブックマークを保存しました。</string>
+    <string name="bookmark_deleted_message">ブックマークを削除しました。</string>
+
     <!--    Bookmark Delete Alert    -->
     <string name="delete_bookmark_alert_title">ブックマークを削除</string>
     <string name="delete_bookmark_alert_message">本当にブックマークを削除しても\nよろしいでしょうか</string>
     <string name="delete_bookmark_alert_cancel">キャンセル</string>
     <string name="delete_bookmark_alert_proceed">リストから削除</string>
 
-    <!--  Content Description  -->
+    <!--  Content Description in XML  -->
     <string name="activity_shop_detail_restaurant_image">Restaurant image</string>
     <string name="activity_shop_detail_share_icon">Share the Hot Pepper restaurant page link to other apps.</string>
     <string name="bookmark_function">Bookmark function</string>
@@ -60,6 +73,13 @@
     <string name="erase_icon_to_empty_the_search_query">Empty the search query by clicking here</string>
     <string name="fragment_bookmark_check_icon">Click here to save the memo to database</string>
     <string name="fragment_home_shop_image_slider">Shop image from image slider on home screen</string>
+    <string name="fragment_bookmark_no_shop_has_found">店舗情報が見つかりませんでした。</string>
+    <string name="fragment_home_location_title">Welcome!</string>
+    <string name="fragment_home_location_subtitle">周辺のおすすめスポット</string>
+
+
+
+
 
 
 </resources>

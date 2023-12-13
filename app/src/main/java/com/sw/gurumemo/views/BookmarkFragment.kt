@@ -70,7 +70,7 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
     private fun getAllBookmarkList() {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
-                bookmarkList = ArrayList(bookmarkDao.getAll())
+                bookmarkList = ArrayList(bookmarkDao.getAllBookmarks())
             }
             Log.d(TAG,"$bookmarkList")
             withContext(Dispatchers.Main){
@@ -158,7 +158,8 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
                     retrofitAPI.getGourmetData(
                         apiKey = Constants.HOTPEPPER_API_KEY,
                         id = shopId,
-                        nameAny = null
+                        nameAny = shopName
+
                     )
                 }
                val isShopEmpty = response.results.shop.isEmpty()
@@ -168,10 +169,9 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
                     intent.putExtra("shopData", shop)
                     startActivity(intent)
                     Log.e(TAG,"$shop")
-                    Log.e(TAG, "Data has found BY using shop id: ${shopId}, shop name: ${shopName}")
                 } else {
-                    Log.e(TAG, "No data found from API request by using shop id: ${shopId}, shop name: ${shopName}")
-                    Toast.makeText(requireContext(), "店舗情報が見つかりませんでした。", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.fragment_bookmark_no_shop_has_found), Toast.LENGTH_SHORT).show()
                 }
 
             } catch (e: Exception) {

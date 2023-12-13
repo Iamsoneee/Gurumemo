@@ -123,7 +123,8 @@
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/activity_shop_detail_map_fragment_height"
-                android:layout_marginTop="14dp" />
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="20dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

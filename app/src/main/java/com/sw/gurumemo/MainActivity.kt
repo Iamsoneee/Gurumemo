@@ -19,29 +19,28 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.sw.gurumemo.databinding.ActivityMainBinding
 import com.sw.gurumemo.views.SearchFragment
 import com.sw.gurumemo.views.HomeFragment
 import com.sw.gurumemo.views.BookmarkFragment
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
+
     private val TAG = "MainActivity"
 
     lateinit var binding: ActivityMainBinding
+    private lateinit var getGPSPermissionLauncher: ActivityResultLauncher<Intent>
+    private lateinit var locationProvider: LocationProvider
 
+    //　ランタイム権限要請コード
     private val PERMISSIONS_REQUEST_CODE = 100
 
+    //　要請する権限リスト
     private var REQUIRED_PERMISSIONS = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
 
-    private lateinit var getGPSPermissionLauncher: ActivityResultLauncher<Intent>
-    private lateinit var locationProvider: LocationProvider
 
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
@@ -50,14 +49,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         this.onBackPressedDispatcher.addCallback(this, callback)
+
         checkAllPermissions()
+
         setupUI()
+
+        // Bottom Navigation Setting (初期値 - HomeFragment)
         setupBottomNavigationView()
         if (savedInstanceState == null) {
             binding.bottomNavigationView.selectedItemId = R.id.fragment_home
         }
-
 
     }
 
@@ -69,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                 backPressedTime = System.currentTimeMillis()
                 Toast.makeText(
                     this@MainActivity,
-                    "終了する場合は、もう一度バックボタンを押してください。",
+                    getString(R.string.back_button_message),
                     Toast.LENGTH_SHORT
                 ).show()
             } else if (System.currentTimeMillis() - backPressedTime < 1500) {
@@ -143,12 +146,13 @@ class MainActivity : AppCompatActivity() {
 
             address?.let {
 
+                // countryCode に 'JPN' または 'JP' が含まれている場合、ユーザーが日本に居住しているものとみなす
                 if (address.countryCode.equals("JPN") || address.countryCode.equals("JP")) {
                     latitude = locationProvider.getLocationLatitude()
                     longitude = locationProvider.getLocationLongitude()
-                    Log.d(TAG, "Current location in Japan: $latitude $longitude")
+                    Log.d(TAG, "Current location in Japan: $latitude $longitude ${address.countryCode}")
                 } else {
-//                    setting default value in case user doesn't reside in Japan.
+                    // ユーザーが日本に居住していない場合のデフォルト値の設定
                     latitude = Constants.DEFAULT_LATITUDE_JP
                     longitude = Constants.DEFAULT_LONGITUDE_JP
                 }
@@ -156,7 +160,10 @@ class MainActivity : AppCompatActivity() {
                     TAG,
                     address.countryName + address.adminArea + address.thoroughfare + address.countryCode
                 )
-                Log.d(TAG, "Current location after country code check: $latitude $longitude")
+                Log.d(
+                    TAG,
+                    "Current location after country code check: $latitude $longitude"
+                )
 
             }
         } else {
@@ -164,17 +171,20 @@ class MainActivity : AppCompatActivity() {
             latitude = Constants.DEFAULT_LATITUDE_JP
             longitude = Constants.DEFAULT_LONGITUDE_JP
         }
-        val finalLocation = locationProvider.getCurrentAddress(latitude, longitude)?.countryCode
+        val finalLocation =
+            locationProvider.getCurrentAddress(latitude, longitude)?.countryCode
         Log.d(TAG, "Final location: $latitude $longitude $finalLocation")
     }
 
 
-//    Getting GPS permission from user
-
+    // ユーザーにGPS権限をリクエスト
     private fun checkAllPermissions() {
+        //　位置情報（GPS）の設定を確認
         if (!isLocationServiceAvailable()) {
             showDialogForLocationServiceSetting()
-        } else {
+        }
+        //　ランタイム権限を確認
+        else {
             isRunTimePermissionsGranted()
         }
     }
@@ -198,6 +208,8 @@ class MainActivity : AppCompatActivity() {
             this@MainActivity,
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
+
+        // 権限が一つでもない場合は、パーミッションのリクエストを行う
         if (hasFineLocationPermission != PackageManager.PERMISSION_GRANTED || hasCoarseLocationPermission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 this@MainActivity,
@@ -214,25 +226,30 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        var checkResult = true
-        for (result in grantResults) {
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                checkResult = false
-                break
+        //　リクエストコードが PERMISSIONS_REQUEST_CODE であり、リクエストされたパーミッションの数だけ受信された場合
+        if (requestCode == PERMISSIONS_REQUEST_CODE && grantResults.size == REQUIRED_PERMISSIONS.size) {
+            var checkResult = true
+            for (result in grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    checkResult = false
+                    break
+                }
+            }
+            if (checkResult) {
+                setupUI()
+                setupBottomNavigationView()
+                binding.bottomNavigationView.selectedItemId = R.id.fragment_home
+            } else {
+                // パーミッションが拒否された場合はアプリを終了
+                Toast.makeText(
+                    this@MainActivity,
+                    getString(R.string.permission_denial_message),
+                    Toast.LENGTH_SHORT
+                ).show()
+                finish()
             }
         }
-        if (checkResult) {
-            setupUI()
-            setupBottomNavigationView()
-            binding.bottomNavigationView.selectedItemId = R.id.fragment_home
-        } else {
-            Toast.makeText(
-                this@MainActivity,
-                "権現が拒否されました。アプリを再起動して権限を許可してください。",
-                Toast.LENGTH_SHORT
-            ).show()
-//            finish()
-        }
+
     }
 
     private fun showDialogForLocationServiceSetting() {
@@ -242,9 +259,10 @@ class MainActivity : AppCompatActivity() {
                     if (isLocationServiceAvailable()) {
                         isRunTimePermissionsGranted()
                     } else {
+                        //　位置情報サービス（GPS）が許可されていない場合は、アクティビティを終了
                         Toast.makeText(
                             this@MainActivity,
-                            "位置情報サービスを利用できません。",
+                            getString(R.string.gps_unavailable_messsage),
                             Toast.LENGTH_SHORT
                         )
                             .show()
@@ -252,21 +270,23 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+
+        //
         val builder: AlertDialog.Builder = AlertDialog.Builder(this@MainActivity)
-        builder.setTitle("位置情報の使用を許可しますか？")
-        builder.setMessage("位置サービスがオフになっています。アプリの利用には設定が必要です。")
+        builder.setTitle(getString(R.string.gps_request_question))
+        builder.setMessage(getString(R.string.gps_request_guide_message))
         builder.setCancelable(true)
-        builder.setPositiveButton("設定") { _, _ ->
+        builder.setPositiveButton(getString(R.string.gps_permission_dialog_positive_button)) { _, _ ->
             val callGPSSettingIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             getGPSPermissionLauncher.launch(callGPSSettingIntent)
         }
         builder.setNegativeButton(
-            "キャンセル"
+            getString(R.string.gps_permission_dialog_negative_button)
         ) { dialog, _ ->
             dialog.cancel()
             Toast.makeText(
                 this@MainActivity,
-                "デバイスで位置サービス（GPS）を設定してからご利用ください。",
+                getString(R.string.gps_permission_dialog_negative_button_message),
                 Toast.LENGTH_SHORT
             ).show()
             finish()

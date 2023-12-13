@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 
 @Database(
-    entities = [BookmarkEntity::class], version = 3)
+    entities = [BookmarkEntity::class], version = 4)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getBookmarkDao(): BookmarkDao
 

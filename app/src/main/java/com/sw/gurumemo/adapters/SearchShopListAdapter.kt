@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.sw.gurumemo.R
@@ -22,9 +23,9 @@ class SearchShopListAdapter(private val context: Context) :
 
         fun bind(shop: Shop) {
             binding.apply {
-                if(!shop.logo_image.contains("m30_img_noimage")){
-                Glide.with(itemView.context).load(shop.logo_image).into(ivThumbnailImage)
-                }else{
+                if (!shop.logo_image.contains("m30_img_noimage")) {
+                    Glide.with(itemView.context).load(shop.logo_image).into(ivThumbnailImage)
+                } else {
                     Glide.with(itemView.context).load(R.drawable.default_shop_logo).apply(
                         RequestOptions()
                             .skipMemoryCache(true)

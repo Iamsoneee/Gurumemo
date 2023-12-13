@@ -9,7 +9,7 @@ import androidx.room.Query
 @Dao
 interface BookmarkDao {
     @Query("SELECT * FROM BookmarkEntity")
-    fun getAll() : List<BookmarkEntity>
+    fun getAllBookmarks() : List<BookmarkEntity>
 
     @Query("SELECT COUNT(*) FROM BookmarkEntity WHERE shop_id = :shopId")
     fun isShopBookmarked(shopId: String): Boolean

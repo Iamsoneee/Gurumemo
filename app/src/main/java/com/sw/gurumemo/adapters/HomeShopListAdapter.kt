@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -29,33 +30,19 @@ class HomeShopListAdapter(private val context: Context) :
         fun bind(shop: Shop) {
             binding.apply {
                 Glide.with(itemView.context).load(shop.photo.pc.l)
-                    .apply(
-                        RequestOptions()
-                            .skipMemoryCache(true)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    ).into(ivShop)
-                Log.d("HomeShopAdapter", shop.photo.mobile.l)
+                    .into(ivShop)
                 tvShopName.text = shop.name
             }
         }
 
-
-        // 추가: 디폴트 이미지를 보여주는 bind 메서드
+        // 日本に住んでいるが、周辺半径に提供できる店舗情報がない場合、デフォルトの画像を設定
         fun bindDefaultImage() {
             binding.apply {
                 Glide.with(itemView.context)
-                    .load(R.drawable.default_shop_logo)
-                    .apply(
-                        RequestOptions()
-                            .skipMemoryCache(true)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    )
+                    .load(R.drawable.default_unavailable_guide_image)
                     .into(ivShop)
-                tvShopName.text = "no shop data"
             }
         }
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -65,21 +52,13 @@ class HomeShopListAdapter(private val context: Context) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-//        val shop = shops[position]
-//        holder.bind(shop)
-//        holder.itemView.setOnClickListener {
-//            val intent = Intent(context, ShopDetailActivity::class.java)
-//            intent.putExtra("shopData", shop)
-//            context.startActivity(intent)
-//        }
 
         if (shops.isNullOrEmpty()) {
-            Log.e("HomeShopListAdapter", "Default image setting")
-            // 데이터가 없을 때 디폴트 이미지를 보여주도록 처리
+            holder.itemView.visibility = View.GONE
             holder.bindDefaultImage()
         } else {
-            // 데이터가 있을 때 Shop 객체를 bind
             val shop = shops[position]
+            holder.itemView.visibility = View.VISIBLE
             holder.bind(shop)
             holder.itemView.setOnClickListener {
                 val intent = Intent(context, ShopDetailActivity::class.java)
@@ -92,7 +71,7 @@ class HomeShopListAdapter(private val context: Context) :
     }
 
     override fun getItemCount(): Int {
-        return shops.size
+        return if (shops.isEmpty()) 1 else shops.size
     }
 
 

@@ -9,8 +9,6 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -33,7 +31,6 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private val TAG = "ShopDetailActivity"
 
     private lateinit var binding: ActivityShopDetailBinding
-
     private lateinit var db: AppDatabase
     private lateinit var bookmarkDao: BookmarkDao
     private lateinit var shop: Shop
@@ -60,6 +57,8 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             finish()
         }
 
+        //　homeFragment(viewPager slider), searchFragment(list item), bookmarkFragment(list item)
+        // から Shop オブジェクトの情報を取得
         val intent = intent
         shop = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("shopData", Shop::class.java)!!
@@ -72,38 +71,36 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         shopLatitude = shop.lat ?: 0.0
         shopLongitude = shop.lng ?: 0.0
 
-        Glide.with(this).load(shop.photo.pc.l).apply(
-            RequestOptions()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-        ).into(binding.ivMainImage)
+        Glide.with(this).load(shop.photo.pc.l).into(binding.ivMainImage)
         binding.tvShopName.text = shop.name
 
-        var catchPhrase = shop.catch
+        val logoUrl = shop.logo_image
+        val access = shop.access
+        val catchPhrase = shop.catch
+        val genreCatchPhrase = shop.genre.catch
+
         if (shop.genre.catch.isBlank()) {
-            binding.tvCatchPhrase.text = shop.catch
+            binding.tvCatchPhrase.text = catchPhrase
         } else {
-            catchPhrase = shop.genre.catch
-            binding.tvCatchPhrase.text = shop.genre.catch
+           binding.tvCatchPhrase.text = genreCatchPhrase
         }
 
         binding.tvBudget.text = shop.budget.name
         binding.tvOpeningHours.text = shop.open
         binding.tvAddressDetail.text = shop.address
 
-        val logoUrl = shop.logo_image
-
-        val access = shop.access
 
         db = AppDatabase.getInstance(this)
         bookmarkDao = db.getBookmarkDao()
 
+        //　ブックマークアイコンのトグル状態の設定のための Room DB Query 要求
+        // toggle OFF => DELETE
+        // toggle ON  => INSERT
         lifecycleScope.launch {
             isBookmarked = withContext(Dispatchers.IO) {
                 bookmarkDao.isShopBookmarked(shopId)
             }
         }
-
 
         binding.btnBookmarkIcon.setOnClickListener {
             if (binding.btnBookmarkIcon.isSelected) {
@@ -111,7 +108,7 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 deleteBookmark(shopId)
             } else {
                 toggleFavoriteState(binding.btnBookmarkIcon)
-                insertBookmark(shopId, logoUrl, shopName, catchPhrase, access, isBookmarked)
+                insertBookmark(shopId, logoUrl, shopName, catchPhrase, genreCatchPhrase, access, isBookmarked)
             }
         }
 
@@ -135,15 +132,15 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun toggleFavoriteState(button: Button) {
         button.isSelected = !button.isSelected
         if (button.isSelected) {
-            // 즐겨찾기 추가할 때 수행할 동작
             Log.d(TAG, "Bookmark added")
             this.isBookmarked = true
-            Toast.makeText(applicationContext, "ブックマークを保存しました。", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext,
+                getString(R.string.bookmark_saved_message), Toast.LENGTH_SHORT).show()
         } else {
-            // 즐겨찾기 제거할 때 수행할 동작
             Log.d(TAG, "Bookmark removed")
             this.isBookmarked = false
-            Toast.makeText(applicationContext, "ブックマークを削除しました。", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext,
+                getString(R.string.bookmark_deleted_message), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -152,6 +149,7 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         logoUrl: String,
         shopName: String,
         catchPhrase: String,
+        genreCatchPhrase: String,
         access: String,
         isBookmarked: Boolean
     ) {
@@ -159,7 +157,7 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             withContext(Dispatchers.IO) {
                 bookmarkDao.insertBookmark(
                     BookmarkEntity(
-                        shopId, logoUrl, shopName, catchPhrase, access, isBookmarked, null
+                        shopId, logoUrl, shopName, catchPhrase, genreCatchPhrase, access, isBookmarked, null
                     )
                 )
             }
@@ -193,6 +191,7 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    // Shop オブジェクトの緯度、経度情報を使用してマップにマーカーを表示
     private fun setMarker() {
         mMap?.let {
             it.clear()
@@ -213,14 +212,15 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
 
+        // ブックマークアイコンを UI に反映
         lifecycleScope.launch {
-            val isShopBookmarked = withContext(Dispatchers.IO) {
+            val isCurrentShopBookmarked = withContext(Dispatchers.IO) {
                 bookmarkDao.isShopBookmarked(shopId)
             }
 
             withContext(Dispatchers.Main) {
-                binding.btnBookmarkIcon.isSelected = isShopBookmarked
-                isBookmarked = isShopBookmarked
+                isBookmarked = isCurrentShopBookmarked
+                binding.btnBookmarkIcon.isSelected = isCurrentShopBookmarked
             }
         }
     }

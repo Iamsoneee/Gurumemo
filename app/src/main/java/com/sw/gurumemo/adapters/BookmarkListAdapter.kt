@@ -35,7 +35,6 @@ class BookmarkListAdapter(
         // TextWatcher オブジェクト定義
         private val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Before Text Changed
                 if (s?.length!! > 0) {
                     iv_check_icon.visibility = View.VISIBLE
                 } else {
@@ -44,11 +43,9 @@ class BookmarkListAdapter(
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // On Text Changed
             }
 
             override fun afterTextChanged(s: Editable?) {
-                // After Text Changed
                 bookmarkList[adapterPosition].memo = s.toString()
             }
         }
@@ -88,10 +85,10 @@ class BookmarkListAdapter(
         if (bookmarkData.catchPhrase.isNotEmpty()) {
             holder.tv_catch_phrase.text = bookmarkData.catchPhrase
         } else {
-            holder.tv_catch_phrase.text = "─── ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ───"
+            holder.tv_catch_phrase.text = bookmarkData.genreCatchPhrase
         }
 
-
+        //　ブックマークトグルボタン
         holder.tv_access.text = bookmarkData.access
         when (bookmarkData.isBookmarked) {
             true -> holder.btn_bookmark_icon.isSelected = true
@@ -102,6 +99,7 @@ class BookmarkListAdapter(
             listener.onBookmarkIconClick(it, position)
         }
 
+        //　チェックアイコンをクリックすると、メモ領域のカーソルが消える
         holder.iv_check_icon.setOnClickListener {
             listener.onCheckIconClick(it, position, holder.et_memo.text.toString())
             holder.et_memo.clearFocus()
@@ -111,6 +109,7 @@ class BookmarkListAdapter(
         }
 
         holder.et_memo.setText(bookmarkData.memo)
+
 
         holder.root.setOnClickListener {
             listener.onItemClick(it, position, bookmarkData.shopId, bookmarkData.shopName)
@@ -123,6 +122,7 @@ class BookmarkListAdapter(
         return bookmarkList.size
     }
 
+    //　BookmarkFragment で RecyclerView アイテム要素のタッチイベントを実装するためのインターフェース
     interface OnItemClickListener {
         fun onBookmarkIconClick(v: View, position: Int)
 

@@ -10,9 +10,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:contentDescription="@string/fragment_home_shop_image_slider"
-        android:scaleType="centerCrop"
-        android:tintMode="src_atop"
-        android:background="@color/offWhite">
+        android:scaleType="centerCrop">
 
     </ImageView>
 

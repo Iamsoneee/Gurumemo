@@ -21,7 +21,6 @@
     <dimen name="fragment_home_logo_text_width">200dp</dimen>
     <dimen name="fragment_home_logo_text_height">80dp</dimen>
     <dimen name="fragment_home_logo_image_size">120dp</dimen>
-    <dimen name="fragment_home_search_bar_width">340dp</dimen>
     <dimen name="fragment_home_location_title">20sp</dimen>
     <dimen name="fragment_home_location_icon_size">24dp</dimen>
     <dimen name="fragment_home_image_slider_height">260dp</dimen>
@@ -33,7 +32,6 @@
 
     <!--  Search Fragment  -->
     <dimen name="fragment_search_back_icon_size">24dp</dimen>
-    <dimen name="fragment_search_search_area_width">320dp</dimen>
     <dimen name="fragment_search_search_hint_size">14sp</dimen>
     <dimen name="fragment_search_erase_icon_size">24dp</dimen>
     <dimen name="fragment_search_location_icon_size">24dp</dimen>

@@ -1,5 +1,6 @@
 package com.sw.gurumemo.views
 
+import android.content.Context.*
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,13 +9,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.sw.gurumemo.Constants
-import com.sw.gurumemo.LocationProvider
 import com.sw.gurumemo.MainActivity
 import com.sw.gurumemo.R
 import com.sw.gurumemo.adapters.CustomSpinnerAdapter
@@ -24,14 +25,12 @@ import com.sw.gurumemo.retrofit.HotPepperService
 import com.sw.gurumemo.retrofit.RetrofitConnection
 import com.sw.gurumemo.retrofit.Shop
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SearchFragment : Fragment(), View.OnClickListener {
 
-    // Passing latitude, longitude data from MainActivity to SearchFragment
+    //　MainActivity から SearchFragment に緯度および経度データを渡す
     companion object {
         private const val TAG = "SearchFragment"
         private const val ARG_LATITUDE = "latitude"
@@ -49,16 +48,13 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
     private var binding: FragmentSearchBinding? = null
 
-    private lateinit var locationProvider: LocationProvider
     private lateinit var adapter: SearchShopListAdapter
     private lateinit var retrofitAPI: HotPepperService
 
-
-    private var isLoading = false
-    private var query: String? = ""
+    private var query: String = ""
     private var currentPage = 1
-    private var range = 1 // 検索範囲 (初期値: 300m)
-    private var order = 1 // 1:店名かな順 / 2:ジャンル順 / 3:小エリ順 / 4:おススメ順
+    private var range = 5 //　検索範囲 (初期値: 3km)
+    private var order = 1 //　1:店名かな順 / 2:ジャンル順 / 3:小エリ順 / 4:おススメ順
     private var genre = ""
     private val pageSize = 30
 
@@ -100,19 +96,16 @@ class SearchFragment : Fragment(), View.OnClickListener {
                     (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
                 val itemTotalCount = recyclerView.adapter!!.itemCount - 1
 
+                //　RecyclerViewが縦方向にスクロールできなくなるか、または最後のアイテムに到達すると、ページの終わりとみなす
                 if (!recyclerView.canScrollVertically(1) && lastVisibleItemPosition == itemTotalCount) {
                     currentPage++
-                    isLoading = true
-                    performSearch(query.orEmpty())
-                } else {
-                    isLoading = false
+                    performSearch(query)
                 }
             }
         })
 
         binding?.etSearchBar?.addTextChangedListener(
             object : TextWatcher {
-                private var searchJob: Job? = null
                 override fun beforeTextChanged(
                     s: CharSequence?,
                     start: Int,
@@ -122,10 +115,6 @@ class SearchFragment : Fragment(), View.OnClickListener {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    searchJob?.cancel()
-                    searchJob = lifecycleScope.launch {
-                        performSearch(s.toString())
-                    }
                 }
 
                 override fun afterTextChanged(s: Editable?) {
@@ -135,9 +124,55 @@ class SearchFragment : Fragment(), View.OnClickListener {
                         binding?.ivEraseButton?.visibility = View.INVISIBLE
                     }
                     query = s.toString()
+                    currentPage = 1
+                    performSearch(query)
+
                 }
             })
 
+        //　キーボードの検索ボタンを押した後、キーボードを閉じる
+        binding?.etSearchBar?.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val inputMethodManager =
+                    requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(binding?.etSearchBar?.windowToken, 0)
+                currentPage = 1
+                performSearch(query)
+                return@setOnEditorActionListener true
+            }
+            false
+        }
+
+        val spinner = binding?.spinner
+        val searchFiltersArray = resources.getStringArray(R.array.search_filters)
+        val adapter = CustomSpinnerAdapter(requireContext(), searchFiltersArray)
+
+        spinner?.adapter = adapter
+        spinner?.setSelection(0) //　初期値: 店名かな順
+
+        spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                when (position) {
+                    0 -> order = 1  //　店名かな順
+                    1 -> order = 2  //　ジャンル順
+                    2 -> order = 3  //　小エリア順
+                    3 -> order = 4  //　おすすめ順
+                }
+                currentPage = 1
+                performSearch(query)
+                binding?.rvShopList?.scrollToPosition(0)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+
+        //　OnClick events
         binding?.ivBackButton?.setOnClickListener(this)
         binding?.ivEraseButton?.setOnClickListener(this)
         binding?.llCurrentLocation?.setOnClickListener(this)
@@ -154,128 +189,104 @@ class SearchFragment : Fragment(), View.OnClickListener {
         binding?.tvFilter3?.setOnClickListener(this)
         binding?.tvFilter4?.setOnClickListener(this)
 
-        val spinner = binding?.spinner
-        val searchFiltersArray = resources.getStringArray(R.array.search_filters)
-        val adapter =
-            CustomSpinnerAdapter(requireContext(), searchFiltersArray)
-
-        spinner?.adapter = adapter
-        spinner?.setSelection(0)
-
-        spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                when (position) {
-                    0 -> order = 1
-                    1 -> order = 2
-                    2 -> order = 3
-                    3 -> order = 4
-                }
-                lifecycleScope.launch { query?.let { performSearch(it) } }
-                binding?.rvShopList?.scrollToPosition(0)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-        }
     }
 
+    //　検索範囲トグルボタン
     private fun updateSelectedRange(newRange: Int) {
-//        selectedRange = if (selectedRange == newRange) {
-//            // 既に選択した検索範囲を再選択すると解除
-//            0
-//        } else {
-//            // 選択されていない検索範囲をクリックすると選択状態に変更
-//            newRange
-//        }
+
+        //　既に選択した検索範囲を再選択すると解除
         if (selectedRange == newRange) {
             selectedRange = 0
-            range = 1
-            performSearch(query.orEmpty())
-        } else {
+            range = 5
+        }
+        //　選択されていない検索範囲をクリックすると選択状態に変更
+        else {
             selectedRange = newRange
         }
+
         val colorAccent = ContextCompat.getColor(requireContext(), R.color.colorAccent)
         val colorSecondary = ContextCompat.getColor(requireContext(), R.color.colorSecondary)
 
-        // すべての検索範囲ボタンの選択状態を初期化
+        //　すべての検索範囲ボタンの選択状態を初期化
         binding?.tvWithin500m?.setTextColor(colorSecondary)
         binding?.tvWithin1km?.setTextColor(colorSecondary)
         binding?.tvWithin2km?.setTextColor(colorSecondary)
         binding?.tvWithin3km?.setTextColor(colorSecondary)
 
-        // 現在選択された検索範囲ボタンのテキストカラーを再設定
+        //　現在選択された検索範囲ボタンのテキストカラーを再設定
         when (selectedRange) {
             1 -> {
                 binding?.tvWithin500m?.setTextColor(colorAccent)
-                range = 2
+                range = 2   //　500m　以内
             }
 
             2 -> {
                 binding?.tvWithin1km?.setTextColor(colorAccent)
-                range = 3
+                range = 3   //　1km　以内
             }
 
             3 -> {
                 binding?.tvWithin2km?.setTextColor(colorAccent)
-                range = 4
+                range = 4   //　2km　以内
             }
 
             4 -> {
                 binding?.tvWithin3km?.setTextColor(colorAccent)
-                range = 5
+                range = 5   //　3km　以内
             }
         }
         currentPage = 1
-        performSearch(query.orEmpty())
+        performSearch(query)
         binding?.rvShopList?.scrollToPosition(0)
     }
 
+    //　検索条件トグルボタン
     private fun updateSelectedFilter(newFilter: Int) {
+
+        //　既に選択した検索条件を再選択すると解除
         if (selectedFilter == newFilter) {
             selectedFilter = 0
             genre = ""
-            performSearch(query.orEmpty())
-        } else {
+            performSearch(query)
+        }
+        //　選択されていない検索条件をクリックすると選択状態に変更
+        else {
             selectedFilter = newFilter
         }
+
         val colorAccent = ContextCompat.getColor(requireContext(), R.color.colorAccent)
         val colorPrimary = ContextCompat.getColor(requireContext(), R.color.colorPrimary)
 
-        // すべての検索条件ボタンの選択状態を初期化
+        //　すべての検索条件ボタンの選択状態を初期化
         binding?.tvFilter1?.setTextColor(colorPrimary)
         binding?.tvFilter2?.setTextColor(colorPrimary)
         binding?.tvFilter3?.setTextColor(colorPrimary)
         binding?.tvFilter4?.setTextColor(colorPrimary)
 
-        // 現在選択された検索条件ボタンのテキストカラーを再設定
+        //　現在選択された検索条件ボタンのテキストカラーを再設定
         when (selectedFilter) {
             1 -> {
                 binding?.tvFilter1?.setTextColor(colorAccent)
-                genre = "G001"
+                genre = "G001" //　居酒屋
             }
 
             2 -> {
                 binding?.tvFilter2?.setTextColor(colorAccent)
-                genre = "G017"
+                genre = "G017" //　韓国料理
             }
 
             3 -> {
                 binding?.tvFilter3?.setTextColor(colorAccent)
-                genre = "G006"
+                genre = "G006" //　イタリアン・フレンチ
             }
 
             4 -> {
                 binding?.tvFilter4?.setTextColor(colorAccent)
-                genre = "G007"
+                genre = "G007" //　中華
             }
         }
         currentPage = 1
-        performSearch(query.orEmpty())
+        performSearch(query)
         binding?.rvShopList?.scrollToPosition(0)
     }
 
@@ -293,50 +304,12 @@ class SearchFragment : Fragment(), View.OnClickListener {
                 binding?.llNoResult?.visibility = View.GONE
             }
 
-            // current location button
             R.id.ll_current_location -> {
-                locationProvider = LocationProvider(requireContext())
-                lifecycleScope.launch {
-                    try {
-                        val address = withContext(Dispatchers.IO) {
-                            locationProvider.getCurrentAddress(currentLatitude, currentLongitude)
-                        }
-                        Log.d(TAG, "Current address before country code check: $address")
-                        address?.let {
-                            if (address.countryCode.equals("JPN") || address.countryCode.equals("JP")) {
-                                currentLatitude = address.latitude
-                                currentLongitude = address.longitude
-                                Log.d(
-                                    TAG,
-                                    "Current location in Japan: $currentLatitude $currentLongitude"
-                                )
-                            } else {
-//                    setting default value in case user doesn't reside in Japan.
-                                currentLatitude = Constants.DEFAULT_LATITUDE_JP
-                                currentLongitude = Constants.DEFAULT_LONGITUDE_JP
-                            }
-                        } ?: run {
-                            currentLatitude = Constants.DEFAULT_LATITUDE_JP
-                            currentLongitude = Constants.DEFAULT_LONGITUDE_JP
-                            Log.e(
-                                TAG,
-                                "Couldn't get latitude, longitude from current location. Default values are set."
-                            )
-                        }
-                        val response = performSearch(query)
-//                val response = performSearch(DEFAULT_QUERY)
-                        Log.d(
-                            TAG,
-                            "Location after the location icon is clicked: $currentLatitude $currentLongitude"
-                        )
-                        Log.d(TAG, "Response after the location icon is clicked: $response")
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Error: ${e.message}")
-                    }
-                }
+                performSearch(query)
                 binding?.rvShopList?.scrollToPosition(0)
             }
 
+            //　検索ボックス以外の領域をタッチすると、カーソルが消える
             R.id.fragment_search -> {
                 binding?.etSearchBar?.isCursorVisible = false
             }
@@ -345,7 +318,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
                 binding?.etSearchBar?.isCursorVisible = true
             }
 
-            // range buttons
+            //　range buttons
             R.id.tv_within_500m -> {
                 updateSelectedRange(1)
             }
@@ -362,22 +335,22 @@ class SearchFragment : Fragment(), View.OnClickListener {
                 updateSelectedRange(4)
             }
 
-            // filter buttons
-            // 居酒屋
+            //　filter buttons
+            //　居酒屋
             R.id.tv_filter_1 -> {
                 updateSelectedFilter(1)
             }
 
-            // 韓国料理
+            //　韓国料理
             R.id.tv_filter_2 -> {
                 updateSelectedFilter(2)
             }
 
-            // イタリアン・フレンチ
+            //　イタリアン・フレンチ
             R.id.tv_filter_3 -> {
                 updateSelectedFilter(3)
             }
-            // 中華
+            //　中華
             R.id.tv_filter_4 -> {
                 updateSelectedFilter(4)
             }
@@ -386,22 +359,26 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
     private fun performSearch(query: String) {
         if (currentPage != 1) {
-            currentPage++
-            locationProvider = LocationProvider(requireContext())
-            val location = locationProvider.getCurrentAddress(currentLatitude, currentLongitude)
-            Log.d(
-                TAG,
-                "Location before searching: $currentLatitude $currentLongitude $location"
-            )
+//            currentPage++
+
             Log.d(TAG, "Query before searching: $query")
             Log.d(TAG, "Range before searching: $range")
             Log.d(TAG, "Order before searching: $order")
             Log.d(TAG, "Genre before searching: $genre")
+
             searchWithQuery(query, currentPage, range, order, genre)
+
         } else {
-            // ページ初期化
-            currentPage = 1
+            //　ページ初期化
+//            currentPage = 1
+
+            Log.d(TAG, "Query before searching: $query")
+            Log.d(TAG, "Range before searching: $range")
+            Log.d(TAG, "Order before searching: $order")
+            Log.d(TAG, "Genre before searching: $genre")
+
             searchWithQuery(query, currentPage, range, order, genre)
+
         }
 
     }
@@ -415,38 +392,39 @@ class SearchFragment : Fragment(), View.OnClickListener {
                     retrofitAPI.getGourmetData(
                         lat = currentLatitude.toString(),
                         lng = currentLongitude.toString(),
-                        nameAny = query, // 店舗名称一部
-                        keyword = query, // キーワード検索
+                        nameAny = query,
+                        nameKana = query,
+                        keyword = query,
+                        address = query,
                         order = order,
-                        range = range, // 検索範囲設定
+                        range = range,
                         start = (page - 1) * pageSize + 1,
                         genre = genre,
                         count = pageSize
                     )
                 }
+
                 Log.d(TAG, "API request for search response: $response")
 
                 withContext(Dispatchers.Main) {
                     if (response.results.shop.isNotEmpty()) {
+
                         if (page == 1) {
+                            // 結果が1ページの場合、前の結果をリストから削除して新しいデータを設定
                             updateUI(response.results.shop, isReplaced = true)
                         } else {
+                            //　結果が1ページ以上の場合、既存の結果に追加で設定
                             updateUI(response.results.shop, isReplaced = false)
                         }
+
                         binding?.llNoResult?.visibility = View.GONE
+
                     } else {
+
                         if (page == 1) {
                             adapter.clearData()
                             binding?.llNoResult?.visibility = View.VISIBLE
                         }
-
-
-//                        if (!isLoading) {
-//                            adapter.clearData()
-//                            binding?.llNoResult?.visibility = View.VISIBLE
-//                        } else {
-//
-//                        }
 
                     }
                 }

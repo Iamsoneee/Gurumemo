@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.sw.gurumemo.Constants
 import com.sw.gurumemo.LocationProvider
 import com.sw.gurumemo.MainActivity
 import com.sw.gurumemo.adapters.HomeShopListAdapter
@@ -28,7 +27,7 @@ import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
-    //    Passing latitude, longitude data from MainActivity to SearchFragment
+    //　MainActivity から SearchFragment に緯度および経度データを渡す
     companion object {
         private const val TAG = "HomeFragment"
         private const val ARG_LATITUDE = "latitude"
@@ -77,16 +76,29 @@ class HomeFragment : Fragment() {
 
         val arguments = arguments
         locationProvider = LocationProvider(requireContext())
+
         if (arguments != null) {
+
             currentLatitude = arguments.getDouble(ARG_LATITUDE, 0.0)
             currentLongitude = arguments.getDouble(ARG_LONGITUDE, 0.0)
-            viewLifecycleOwner.lifecycleScope.launch {
+
+            lifecycleScope.launch {
+
                 val currentAddress = withContext(Dispatchers.IO) {
                     locationProvider.getCurrentAddress(currentLatitude, currentLongitude)
                 }
-                binding?.tvGeocoderTitle?.text = currentAddress?.thoroughfare ?: "Welcome!"
-                binding?.tvGeocoderCountryName?.text = currentAddress?.countryName ?: "周辺のおすすめスポット"
-                binding?.tvGeocoderAdminArea?.text = currentAddress?.adminArea ?: ""
+
+                binding?.tvGeocoderTitle?.text =
+                    currentAddress?.subLocality ?: currentAddress?.thoroughfare
+                            ?: currentAddress?.subLocality ?: getString(
+                        R.string.fragment_home_location_title
+                    )
+
+                binding?.tvGeocoderCountryName?.text =
+                    currentAddress?.countryName ?: getString(R.string.fragment_home_location_subtitle)
+
+                binding?.tvGeocoderAdminArea?.text =
+                    currentAddress?.adminArea ?: currentAddress?.locality ?: ""
             }
         }
 
@@ -110,9 +122,9 @@ class HomeFragment : Fragment() {
 
                 withContext(Dispatchers.Main) {
                     if (response.results.shop.isNotEmpty()) {
-                    adapter.setData(response.results.shop.take(5).shuffled())
+                        adapter.setData(response.results.shop.shuffled().take(5))
                     } else {
-                        Log.d(TAG,"There is no shop data")
+                        Log.d(TAG, "No shop data has found")
                         adapter.setData(emptyList())
                     }
                 }
@@ -126,9 +138,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun setViewPagerWithAutoScroll() {
+
         val springDotsIndicator = binding?.springDotsIndicator
         val viewPager = binding?.vpImageSlider
 
+        //　View Pager のオフセットを調整して、次のページを一部表示する
         val currentVisibleItemPx = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             70f,
@@ -152,6 +166,7 @@ class HomeFragment : Fragment() {
             50f,
             resources.displayMetrics
         ).toInt()
+
         val pageTranslationX = nextVisibleItemPx + currentVisibleItemPx
 
         viewPager?.offscreenPageLimit = 1
@@ -165,7 +180,6 @@ class HomeFragment : Fragment() {
         viewPager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         springDotsIndicator?.attachTo(viewPager!!)
 
-        // auto scroll function
         autoScrollJob = lifecycleScope.launch {
             autoScroll()
         }
@@ -174,17 +188,18 @@ class HomeFragment : Fragment() {
     private suspend fun autoScroll() {
         while (autoScrollEnabled) {
             val itemCount = adapter.itemCount
-//                Log.d(TAG, "Image slider item count: $itemCount")
             if (itemCount > 0) {
                 val currentItem = binding?.vpImageSlider?.currentItem ?: 0
                 val nextItem = (currentItem + 1) % itemCount
                 binding?.vpImageSlider?.setCurrentItem(nextItem, true)
 
             }
-            delay(2000)  // Move to next every 2 seconds.
+            delay(2500)  //　スライド移動速度
 
         }
     }
+
+    //　バックグラウンドでのオートスクロール作業を一時停止し(onPause, onDestroyView)、画面が再開された際に再開(onResume)
 
     override fun onPause() {
         super.onPause()
@@ -194,6 +209,7 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
         if (!autoScrollJob.isActive) {
             autoScrollJob = Job()
             autoScrollJob = lifecycleScope.launch {

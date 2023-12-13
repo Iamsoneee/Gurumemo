@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
-    // to hide API key
+    // APIキーを隠すため
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
@@ -44,20 +44,24 @@ android {
 }
 
 dependencies {
-
     // Room Dependencies
-    val room_version = "2.5.0"
+    val room_version = "2.6.1"
 
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
+    // To use Kotlin Symbol Processing (KSP)
     ksp("androidx.room:room-compiler:$room_version")
+
+//    implementation("androidx.room:room-runtime:$2.5.0")
+//    annotationProcessor("androidx.room:room-compiler:$2.5.0")
+//    ksp("androidx.room:room-compiler:$2.5.0")
 
     // Coroutine Dependencies
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0-RC")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0-RC")
 
-    // to enable back button
-    implementation("androidx.activity:activity:1.6.0-alpha05")
+    // 戻るボタンのイベント処理 (MainActivity)
+    implementation("androidx.activity:activity-ktx:1.9.0-alpha01")
 
     // Navigation Dependencies
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
@@ -67,9 +71,8 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-
     // Google Maps & Location Dependencies
-    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
     // UI related Dependencies
