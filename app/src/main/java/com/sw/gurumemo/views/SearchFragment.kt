@@ -53,7 +53,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
     private var query: String = ""
     private var currentPage = 1
-    private var range = 5 //　検索範囲 (初期値: 3km)
+    private var range = 5 //　検索半径 (初期値: 3km)
     private var order = 1 //　1:店名かな順 / 2:ジャンル順 / 3:小エリ順 / 4:おススメ順
     private var genre = ""
     private val pageSize = 30
@@ -191,15 +191,15 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
     }
 
-    //　検索範囲トグルボタン
+    //　検索半径トグルボタン
     private fun updateSelectedRange(newRange: Int) {
 
-        //　既に選択した検索範囲を再選択すると解除
+        //　既に選択した検索半径を再選択すると解除
         if (selectedRange == newRange) {
             selectedRange = 0
             range = 5
         }
-        //　選択されていない検索範囲をクリックすると選択状態に変更
+        //　選択されていない検索半径をクリックすると選択状態に変更
         else {
             selectedRange = newRange
         }
@@ -207,13 +207,13 @@ class SearchFragment : Fragment(), View.OnClickListener {
         val colorAccent = ContextCompat.getColor(requireContext(), R.color.colorAccent)
         val colorSecondary = ContextCompat.getColor(requireContext(), R.color.colorSecondary)
 
-        //　すべての検索範囲ボタンの選択状態を初期化
+        //　すべての検索半径ボタンの選択状態を初期化
         binding?.tvWithin500m?.setTextColor(colorSecondary)
         binding?.tvWithin1km?.setTextColor(colorSecondary)
         binding?.tvWithin2km?.setTextColor(colorSecondary)
         binding?.tvWithin3km?.setTextColor(colorSecondary)
 
-        //　現在選択された検索範囲ボタンのテキストカラーを再設定
+        //　現在選択された検索半径ボタンのテキストカラーを再設定
         when (selectedRange) {
             1 -> {
                 binding?.tvWithin500m?.setTextColor(colorAccent)
@@ -233,6 +233,11 @@ class SearchFragment : Fragment(), View.OnClickListener {
             4 -> {
                 binding?.tvWithin3km?.setTextColor(colorAccent)
                 range = 5   //　3km　以内
+            }
+
+            // current location icon
+            5 -> {
+                range = 1 // 300m　以内
             }
         }
         currentPage = 1
@@ -292,7 +297,6 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
 
     override fun onClick(v: View?) {
-        val query: String = binding?.etSearchBar?.text.toString()
         when (v?.id) {
             R.id.iv_back_button -> {
                 (requireActivity() as MainActivity).binding.bottomNavigationView.selectedItemId =
@@ -304,11 +308,6 @@ class SearchFragment : Fragment(), View.OnClickListener {
                 binding?.llNoResult?.visibility = View.GONE
             }
 
-            R.id.ll_current_location -> {
-                performSearch(query)
-                binding?.rvShopList?.scrollToPosition(0)
-            }
-
             //　検索ボックス以外の領域をタッチすると、カーソルが消える
             R.id.fragment_search -> {
                 binding?.etSearchBar?.isCursorVisible = false
@@ -316,6 +315,10 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
             R.id.et_search_bar -> {
                 binding?.etSearchBar?.isCursorVisible = true
+            }
+
+            R.id.ll_current_location -> {
+               updateSelectedRange(5)
             }
 
             //　range buttons
