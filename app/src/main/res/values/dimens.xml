@@ -41,6 +41,7 @@
     <dimen name="fragment_search_logo_image_size">120dp</dimen>
     <dimen name="fragment_search_logo_text_size">24sp</dimen>
     <dimen name="fragment_search_hint_text_size">14sp</dimen>
+    <dimen name="fragment_search_wi_fi_text_size">12sp</dimen>
 
     <!--  Shop Item (Search Fragment)  -->
     <dimen name="item_shop_shop_name">16sp</dimen>
@@ -69,8 +70,8 @@
     <dimen name="activity_shop_detail_bookmark_icon">32dp</dimen>
     <dimen name="activity_shop_detail_share_icon">32dp</dimen>
     <dimen name="activity_shop_detail_shop_image_height">260dp</dimen>
-    <dimen name="activity_shop_detail_shop_name_size">18sp</dimen>
-    <dimen name="activity_shop_detail_address_title_size">14sp</dimen>
+    <dimen name="activity_shop_detail_shop_name_size">20sp</dimen>
+    <dimen name="activity_shop_detail_catch_phrase_size">16sp</dimen>
     <dimen name="activity_shop_detail_line_divider_height">1dp</dimen>
     <dimen name="activity_shop_detail_map_fragment_height">260dp</dimen>
 

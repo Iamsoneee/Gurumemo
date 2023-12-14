@@ -3,12 +3,14 @@ package com.sw.gurumemo.adapters
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.sw.gurumemo.R
 import com.sw.gurumemo.ShopDetailActivity
 import com.sw.gurumemo.databinding.ItemShopBinding
@@ -24,7 +26,8 @@ class SearchShopListAdapter(private val context: Context) :
         fun bind(shop: Shop) {
             binding.apply {
                 if (!shop.logo_image.contains("m30_img_noimage")) {
-                    Glide.with(itemView.context).load(shop.logo_image).into(ivThumbnailImage)
+                    Glide.with(itemView.context).load(shop.logo_image)
+                        .override(Target.SIZE_ORIGINAL).centerCrop().into(ivThumbnailImage)
                 } else {
                     Glide.with(itemView.context).load(R.drawable.default_shop_logo).apply(
                         RequestOptions()
@@ -40,7 +43,14 @@ class SearchShopListAdapter(private val context: Context) :
                 } else {
                     tvCatchPhrase.text = shop.genre.catch
                 }
+
                 tvStationName.text = "${shop.station_name}駅"
+
+                if (shop.wifi.contains("あり")) {
+                    tvWiFi.visibility = View.VISIBLE
+                } else {
+                    tvWiFi.visibility = View.INVISIBLE
+                }
             }
         }
     }

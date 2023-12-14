@@ -29,9 +29,10 @@ class HomeShopListAdapter(private val context: Context) :
 
         fun bind(shop: Shop) {
             binding.apply {
-                Glide.with(itemView.context).load(shop.photo.pc.l)
+                Glide.with(itemView.context).load(shop.photo.pc.l).override(Target.SIZE_ORIGINAL)
                     .into(ivShop)
                 tvShopName.text = shop.name
+                tvShopName.visibility = View.VISIBLE
             }
         }
 
@@ -41,9 +42,13 @@ class HomeShopListAdapter(private val context: Context) :
                 Glide.with(itemView.context)
                     .load(R.drawable.default_unavailable_guide_image)
                     .into(ivShop)
+                tvShopName.visibility = View.GONE
+
             }
         }
+
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -54,11 +59,9 @@ class HomeShopListAdapter(private val context: Context) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         if (shops.isNullOrEmpty()) {
-            holder.itemView.visibility = View.GONE
             holder.bindDefaultImage()
         } else {
             val shop = shops[position]
-            holder.itemView.visibility = View.VISIBLE
             holder.bind(shop)
             holder.itemView.setOnClickListener {
                 val intent = Intent(context, ShopDetailActivity::class.java)

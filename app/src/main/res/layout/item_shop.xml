@@ -17,8 +17,8 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="5"
-        android:orientation="vertical"
         android:gravity="center_vertical"
+        android:orientation="vertical"
         android:paddingVertical="12dp"
         android:paddingStart="8dp"
         android:paddingEnd="0dp">
@@ -29,8 +29,8 @@
             android:layout_height="wrap_content"
             android:autoSizeTextType="none"
             android:ellipsize="end"
-            android:paddingVertical="4dp"
             android:maxLines="1"
+            android:paddingVertical="4dp"
             android:text="@string/shop_name"
             android:textSize="@dimen/item_shop_shop_name"
             android:textStyle="bold" />
@@ -39,35 +39,58 @@
             android:id="@+id/tv_catch_phrase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="4dp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:paddingTop="4dp"
             android:text="@string/catch_phrase" />
 
         <TextView
             android:id="@+id/tv_access"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="4dp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:paddingTop="4dp"
             android:text="@string/access" />
 
     </LinearLayout>
 
-  <TextView
-      android:id="@+id/tv_station_name"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/station_name"
-      android:background="@drawable/filter_background_filled"
-      android:backgroundTint="@color/colorAccentTransparent30"
-      android:textSize="@dimen/item_shop_station_name"
-      android:paddingHorizontal="8dp"
-      android:layout_marginTop="16dp"
-      android:textStyle="bold"
-      android:autoSizeTextType="uniform"
-      android:maxLines="1"
-      android:textColor="@color/white"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal|end"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_station_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:autoSizeTextType="uniform"
+            android:background="@drawable/filter_background_filled"
+            android:backgroundTint="@color/colorAccentTransparent30"
+            android:maxLines="1"
+            android:paddingHorizontal="8dp"
+            android:text="@string/station_name"
+            android:textColor="@color/white"
+            android:textSize="@dimen/item_shop_station_name"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_wi_fi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:autoSizeTextType="uniform"
+            android:background="@drawable/filter_background_filled"
+            android:backgroundTint="@color/blueWiFiText"
+            android:maxLines="1"
+            android:paddingHorizontal="8dp"
+            android:text="@string/wi_fi"
+            android:textSize="@dimen/fragment_search_wi_fi_text_size"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+
 
 </LinearLayout>

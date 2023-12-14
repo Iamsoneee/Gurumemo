@@ -12,4 +12,5 @@
     <color name="colorSecondary">#FFFBF8F4</color>
     <color name="colorAccent">#FFD32212</color>
     <color name="colorAccentTransparent30">#4DD32212</color>
+    <color name="blueWiFiText">#99A9BCFF</color>
 </resources>

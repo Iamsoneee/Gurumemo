@@ -29,6 +29,7 @@ data class Shop(
     val open: String?,
     val lat: Double?,
     val lng: Double?,
+    val wifi: String,
     val urls: Urls,
     val small_area: SmallArea,
     val station_name: String

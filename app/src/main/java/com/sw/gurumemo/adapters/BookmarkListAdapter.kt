@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.sw.gurumemo.R
 import com.sw.gurumemo.databinding.ItemBookmarkBinding
 import com.sw.gurumemo.db.BookmarkEntity
@@ -22,6 +24,7 @@ class BookmarkListAdapter(
 
     inner class ViewHolder(binding: ItemBookmarkBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         val root = binding.root
         val iv_thumbnail_image = binding.ivThumbnailImage
         val tv_shop_name = binding.tvShopName
@@ -68,7 +71,7 @@ class BookmarkListAdapter(
         val bookmarkData = bookmarkList[position]
 
         if (!bookmarkData.logoImage.contains("m30_img_noimage")) {
-            Glide.with(holder.itemView.context).load(bookmarkData.logoImage)
+            Glide.with(holder.itemView.context).load(bookmarkData.logoImage).override(Target.SIZE_ORIGINAL)
                 .into(holder.iv_thumbnail_image)
         } else {
             Glide.with(holder.itemView.context).load(R.drawable.default_shop_logo).apply(

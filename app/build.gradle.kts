@@ -78,6 +78,7 @@ dependencies {
     // UI related Dependencies
     implementation("de.hdodenhof:circleimageview:3.1.0")    // for circle image view
     implementation("com.github.bumptech.glide:glide:4.16.0")    // getting images from URL
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
     implementation("androidx.viewpager2:viewpager2:1.0.0")  // for ViewPager
     implementation("com.tbuonomo:dotsindicator:5.0")    // indicator for ViewPager
 

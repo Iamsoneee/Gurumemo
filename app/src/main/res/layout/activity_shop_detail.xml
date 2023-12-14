@@ -81,6 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:textSize="@dimen/activity_shop_detail_catch_phrase_size"
                 android:text="@string/catch_phrase" />
 
             <TextView
@@ -107,7 +108,7 @@
                 android:id="@+id/tv_address_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_shop_detail_address_title_size"
+                android:layout_marginTop="14dp"
                 android:text="@string/address"
                 android:textStyle="bold" />
 
