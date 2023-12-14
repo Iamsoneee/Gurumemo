@@ -33,9 +33,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
     buildFeatures{
         viewBinding = true
         buildConfig = true
@@ -51,10 +53,6 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$room_version")
     // To use Kotlin Symbol Processing (KSP)
     ksp("androidx.room:room-compiler:$room_version")
-
-//    implementation("androidx.room:room-runtime:$2.5.0")
-//    annotationProcessor("androidx.room:room-compiler:$2.5.0")
-//    ksp("androidx.room:room-compiler:$2.5.0")
 
     // Coroutine Dependencies
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0-RC")

@@ -2,18 +2,11 @@ package com.sw.gurumemo.adapters
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.sw.gurumemo.R
 import com.sw.gurumemo.ShopDetailActivity
@@ -58,7 +51,7 @@ class HomeShopListAdapter(private val context: Context) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        if (shops.isNullOrEmpty()) {
+        if (shops.isEmpty()) {
             holder.bindDefaultImage()
         } else {
             val shop = shops[position]

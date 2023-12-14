@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
         setupUI()
 
-        // Bottom Navigation Setting (初期値 - HomeFragment)
+        //　Bottom Navigation Setting (初期値 - HomeFragment)
         setupBottomNavigationView()
         if (savedInstanceState == null) {
             binding.bottomNavigationView.selectedItemId = R.id.fragment_home
@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    //　戻るボタンのイベント設定
     private var backPressedTime = 0L
 
     private val callback = object : OnBackPressedCallback(true) {
@@ -81,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //    to hide keyboard when user touch outside the edit text
+    //　ユーザーが EditText の外側をタッチした際にキーボードを非表示にするため
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         val imm: InputMethodManager =
             getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -89,7 +90,7 @@ class MainActivity : AppCompatActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
-//    Bottom Navigation Settings
+    //　Bottom Navigation 設定
 
     private fun setupBottomNavigationView() {
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
@@ -129,8 +130,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.visibility = View.VISIBLE
     }
 
-//    Getting current location information
-
+    //　現在の位置情報を取得
     private fun setupUI() {
         locationProvider = LocationProvider(this@MainActivity)
 
@@ -150,7 +150,10 @@ class MainActivity : AppCompatActivity() {
                 if (address.countryCode.equals("JPN") || address.countryCode.equals("JP")) {
                     latitude = locationProvider.getLocationLatitude()
                     longitude = locationProvider.getLocationLongitude()
-                    Log.d(TAG, "Current location in Japan: $latitude $longitude ${address.countryCode}")
+                    Log.d(
+                        TAG,
+                        "Current location in Japan: $latitude $longitude ${address.countryCode}"
+                    )
                 } else {
                     // ユーザーが日本に居住していない場合のデフォルト値の設定
                     latitude = Constants.DEFAULT_LATITUDE_JP

@@ -53,7 +53,7 @@ class BookmarkFragment : Fragment(), BookmarkListAdapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Setting ActionBar
+        // ActionBar　設定
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding?.toolbarBookmarkFragment)
         (requireActivity() as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(false)

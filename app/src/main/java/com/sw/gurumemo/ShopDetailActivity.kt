@@ -131,7 +131,7 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    // Bookmark Function
+    // ブックマーク機能
     private fun toggleFavoriteState(button: Button) {
         button.isSelected = !button.isSelected
         if (button.isSelected) {
@@ -177,7 +177,7 @@ class ShopDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-    // setting google maps fragment
+    // グーグルマップ設定
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap

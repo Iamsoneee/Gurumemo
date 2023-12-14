@@ -190,11 +190,11 @@
 
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:layout_weight="1"
             android:autoSizeTextType="uniform"
+            android:layout_marginEnd="4dp"
             android:text="@string/search_by_filter"
             android:textSize="@dimen/fragment_search_search_by_filter_text_size"
             android:textStyle="bold" />
