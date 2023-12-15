@@ -32,7 +32,7 @@
 >
 >**使用API**：
 >> Hot Pepper API : https://webservice.recruit.co.jp/doc/hotpepper/reference.html  
->> Google Maps API : https://developers.google.com/maps?hl=ko
+>> Google Maps API : https://developers.google.com/maps
 >
 >**使用ライブラリ**：
 
