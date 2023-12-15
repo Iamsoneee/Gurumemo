@@ -1,4 +1,7 @@
 # ✏️📒 味わい深い瞬間を共有する、グルメモ
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/Iamsoneee/Gurumemo/master)
+![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/Iamsoneee/Gurumemo)  
+
 <img src=https://github.com/Iamsoneee/Gurumemo/assets/87652780/f37ead9f-2996-429b-a7da-722d95b504ae width=500/>
 
 <br>
