@@ -7,7 +7,7 @@
 <br>
 
 **[仕様書]**  
-[Gurumemo Application Manual PDF ダウンロード](https://drive.google.com/file/d/1ttViWP_upSHIfcmmt8y7nqClEMNRytdF/view?usp=sharing)
+[Gurumemo Application Manual PDF ダウンロード](https://drive.google.com/file/d/16OTEzwExTiba2cF7d6mE26umebfvT_WM/view?usp=sharing)
 
 <br>
 
