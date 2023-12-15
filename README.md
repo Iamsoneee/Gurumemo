@@ -27,6 +27,10 @@
 >
 >**開発期間**：2023.12.01～2023.12.15（15日間）  
 >
+>**使用API**：
+>> Hot Pepper API : https://webservice.recruit.co.jp/doc/hotpepper/reference.html  
+>> Google Maps API : https://developers.google.com/maps?hl=ko
+>
 >**使用ライブラリ**：
 
 | Library | Version | 
