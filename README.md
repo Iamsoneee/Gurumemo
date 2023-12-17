@@ -64,7 +64,7 @@
 ## 📱 画面構成（例）
 - **Splash Activity & Home Fragment**
 
-<div>
+<div display=flex>
 <img src=https://github.com/Iamsoneee/Gurumemo/assets/87652780/c43829bd-a5f9-4cea-b610-50c73e98cc8c height=300/>
 <img src=https://github.com/Iamsoneee/Gurumemo/assets/87652780/9413cde2-7aac-402d-b5f2-574741d7745e height=320/>
 </div>
@@ -73,7 +73,7 @@
 
 - **Search Fragment**
 
-<div>
+<div display=flex>
 <img src=https://github.com/Iamsoneee/Gurumemo/assets/87652780/59ada851-bfcb-4322-b48c-57c2f2b24efa height=300/>
 <img src=https://github.com/Iamsoneee/Gurumemo/assets/87652780/dab460d6-04dc-4b67-a975-27be32e5b38b height=320/>
 </div>
